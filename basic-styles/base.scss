@@ -1,0 +1,53 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+}
+
+* {
+  @include scrollbars(6px, var(--color-dimmed), var(--color-contrast-border));
+}
+
+html {
+  font-size: 62.5%;
+  height: 100%;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-family: $font-face-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-base;
+  letter-spacing: 0.01em;
+  line-height: $font-line-height-base;
+  height: 100%;
+  overflow-x: hidden;
+  min-width: 320px;
+  margin: 0;
+  font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+}
+
+@include scrollbars(6px, var(--color-dimmed), var(--color-contrast-border));
+
+::selection {
+  background-color: var(--color-alt-bg)!important;
+  color: var(--color-text);
+}
+
+.page-container {
+  min-height: calc(100vh - 8rem);
+  display: flex;
+  flex-direction: column;
+  /*@media (min-width: $responsive-mobile-browser-width) {
+    justify-content: center;
+  }*/
+
+  > .no-center {
+    margin-bottom: auto;
+  }
+}

@@ -1,0 +1,8 @@
+.highlighter {
+  animation: highlighter 0.6s ease-in;
+}
+
+@keyframes highlighter {
+  from {background-color: var(--color-alt-bg);}
+  to {background-color: transparent;}
+}

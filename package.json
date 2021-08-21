@@ -1,0 +1,27 @@
+{
+  "name": "@stellar-expert/ui-framework",
+  "version": "1.0.0",
+  "private": true,
+  "description": "StellarExpert UI shared components library",
+  "main": "index.js",
+  "keywords": [
+    "StellarExpert",
+    "UI"
+  ],
+  "author": "orbitlens <orbit@stellar.expert>",
+  "peerDependencies": {
+    "classnames": ">=2",
+    "prop-types": ">=15",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "react-fast-compare": ">=3",
+    "stellar-sdk": ">=8",
+    "throttle-debounce": "^2.3.0"
+  },
+  "dependencies": {
+    "highlight.js": "^10.7.3",
+    "history": "^4.10.1",
+    "react-datepicker": "^4.2.0",
+    "react-timeago": "^6.2.0"
+  }
+}

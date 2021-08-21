@@ -1,0 +1,20 @@
+.asset-link {
+  .asset-issuer {
+    color: var(--color-dimmed);
+    font-size: 0.8em;
+    letter-spacing: 0;
+  }
+
+  .asset-icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    margin-right: .2em;
+    position: relative;
+    line-height: 1.2;
+    top: -0.1em;
+    background: transparent center center no-repeat;
+    background-size: contain;
+  }
+}

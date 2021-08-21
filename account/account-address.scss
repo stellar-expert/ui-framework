@@ -1,0 +1,22 @@
+.account-address {
+  * {
+    white-space: nowrap;
+  }
+
+  .account-pubkey {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  &.plain * {
+    font: inherit;
+    white-space: normal;
+  }
+}
+
+h2,
+.table {
+  .account-address * {
+    letter-spacing: -.05em;
+  }
+}

@@ -1,16 +1,17 @@
 input:not([type='checkbox']):not([type='radio']),
 textarea,
-select {
+select,
+.input-like {
   appearance: none;
   background-color: var(--color-bg);
   border: 1px solid var(--color-contrast-border);
   border-radius: $border-radius-input;
   box-shadow: none;
   box-sizing: inherit;
+  height: 4rem;
   font-size: $font-size-base;
   font-family: $font-face-primary;
   color: var(--color-text);
-  height: 4rem;
   padding: 0.6rem 1rem;
   width: 100%;
 
@@ -25,6 +26,11 @@ input[type='radio'] {
   display: inline;
   margin-left: 0;
   filter: grayscale(100%);
+}
+
+.input-like{
+  min-height: 4rem;
+  height: auto;
 }
 
 textarea {

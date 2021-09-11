@@ -10,7 +10,7 @@ import {parseMuxedAccount} from './muxed-account-parser'
 import './account-address.scss'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 
-export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix}) {
+export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, ...otherProps}) {
     const muxedInfo = StrKey.isValidMed25519PublicKey(account) && parseMuxedAccount(account)
     if (!StrKey.isValidEd25519PublicKey(account) && !muxedInfo) return null
 
@@ -53,7 +53,8 @@ export function AccountAddress({account, chars = 8, name, link, style, className
         title: account,
         'aria-label': account,
         className: cn('account-address', className),
-        style: innerStyle
+        style: innerStyle,
+        ...otherProps
     }
     let renderAs = 'span'
 

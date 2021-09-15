@@ -11,7 +11,7 @@ function getSelectedOption(values, options) {
             if (option) return {option, isDefault: false}
         }
     }
-    return {option: options[0], isDefault: true}
+    return {option: options.find(opt => typeof opt === 'string' || !opt.disabled), isDefault: true}
 }
 
 function calculateDropdownPosition(list) {
@@ -31,12 +31,24 @@ function DropdownOption({option, isSelected, select, style}) {
     if (!title) {
         title = value
     }
-    return <li className="dd-list-item" key={value || href} onClick={e => select(e, option)} style={style}>
+
+    function selectOption(e) {
+        if (option.disabled) {
+            e.stopPropagation()
+            return
+        }
+        if (!option.href) {
+            e.preventDefault()
+        }
+        select(option)
+    }
+
+    return <li className="dd-list-item" key={value || href} onClick={selectOption} style={style}>
         <a href={href || '#'} className={cn({className, selected: isSelected})}>{title}</a>
     </li>
 }
 
-export function Dropdown({options, title, value, disabled, className, onChange, hint, showToggle, hideSelected}) {
+export function Dropdown({options, title, value, disabled, className, onChange, hint, showToggle, hideSelected, maxHeight = '10em'}) {
     const [listOpen, updateListOpen] = useState(false),
         [selectedValue, updateSelectedValue] = useDependantState(() => {
             document.addEventListener('click', collapseDropdown)
@@ -55,10 +67,7 @@ export function Dropdown({options, title, value, disabled, className, onChange, 
         updateListOpen(prevState => disabled ? false : !prevState)
     }
 
-    function select(e, option) {
-        if (!option.href || disabled) {
-            e.preventDefault()
-        }
+    function select(option) {
         collapseDropdown()
         if (disabled) return
         onChange && onChange(option.value || option)
@@ -82,7 +91,7 @@ export function Dropdown({options, title, value, disabled, className, onChange, 
             {ddTitle}{!!showToggle && <span className={cn('dd-toggle', {visible: listOpen})}/>}
         </a>
         <ul className={cn('dd-list', {visible: listOpen && !disabled})} ref={list} style={posStyle}>
-            {options.map((option, i) => {
+            {options.filter(opt => !opt.hidden).map((option, i) => {
                 if (option === '-') return <li className="dd-list-item" key={i + '-'}>
                     <hr/>
                 </li>
@@ -150,5 +159,9 @@ Dropdown.propTypes = {
     /**
      * Do not show selected item in the dropdown list
      */
-    hideSelected: PropTypes.bool
+    hideSelected: PropTypes.bool,
+    /**
+     * Maximum dropdown list height
+     */
+    maxHeight: PropTypes.bool
 }

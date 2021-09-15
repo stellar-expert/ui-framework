@@ -1,0 +1,23 @@
+.active-icon {
+  display: inline-block;
+  padding: 0 .3em;
+  position: relative;
+
+  &:active {
+    color: var(--color-bg);
+    outline: none;
+
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: -.1em;
+      left: .15em;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 50%;
+      background: var(--color-highlight);
+      z-index: -1;
+    }
+  }
+}

@@ -1,8 +1,8 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "description": "StellarExpert UI shared components library",
+  "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "keywords": [
     "StellarExpert",
@@ -21,6 +21,7 @@
   "dependencies": {
     "highlight.js": "^10.7.3",
     "history": "^4.10.1",
+    "react-copy-to-clipboard": "^5.0.4",
     "react-datepicker": "^4.2.0",
     "react-timeago": "^6.2.0"
   }

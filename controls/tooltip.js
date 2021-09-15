@@ -39,16 +39,15 @@ function getTooltipPosition(e, node, desiredPlace, offset) {
     }
 
     function isOutside(p) {
-        return getTipOffsetLeft(p) < 0 || //outsideLeft
-            getTipOffsetRight(p) > window.innerWidth || //outsideRight
-            getTipOffsetTop(p) < 0 || //outsideTop
-            getTipOffsetBottom(p) > window.innerHeight //outsideBottom
+        return getTipOffsetLeft(p) < 0 || //outside left
+            getTipOffsetRight(p) > window.innerWidth || //outside right
+            getTipOffsetTop(p) < 0 || //outside top
+            getTipOffsetBottom(p) > window.innerHeight //outside bottom
     }
 
     function isInside(p) {
         return !isOutside(p)
     }
-
 
     let place
     if (isInside(desiredPlace)) {

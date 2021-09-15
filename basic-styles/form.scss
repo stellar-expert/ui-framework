@@ -1,4 +1,4 @@
-input:not([type='checkbox']):not([type='radio']),
+input:not([type='checkbox']):not([type=radio],[type=range]),
 textarea,
 select,
 .input-like {
@@ -21,6 +21,12 @@ select,
   }
 }
 
+input[type=range] {
+  height: 2px;
+  width: 100%;
+  margin: 0;
+}
+
 input[type='checkbox'],
 input[type='radio'] {
   display: inline;
@@ -28,7 +34,7 @@ input[type='radio'] {
   filter: grayscale(100%);
 }
 
-.input-like{
+.input-like {
   min-height: 4rem;
   height: auto;
 }

@@ -89,7 +89,7 @@ AccountAddress.propTypes = {
     /**
      * Visible address characters count
      */
-    chars: PropTypes.oneOfType([PropTypes.number, 'all']),
+    chars: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     /**
      * Whether to show/hide account identicon
      */

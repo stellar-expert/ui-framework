@@ -24,28 +24,31 @@ function isValidAssetCode(code) {
 export class AssetDescriptor {
     /**
      * Creates an instance of the Asset
-     * @param codeOrFullyQualifiedName {String} - Asset code or fully qualified asset name in CODE-ISSUER-TYPE format.
+     * @param code {String|Asset|AssetDescriptor|{code:String,issuer:String}} - Asset code or fully qualified asset name in CODE-ISSUER-TYPE format.
      * @param issuer [String] - Asset issuer account public key.
      * @param type [String] - Asset type. One of ['credit_alphanum4', 'credit_alphanum12', 'native'].
      */
-    constructor(codeOrFullyQualifiedName, issuer, type) {
-        if (codeOrFullyQualifiedName instanceof AssetDescriptor) {
-            //clone Asset
-            ['code', 'type', 'issuer'].forEach(field => this[field] = codeOrFullyQualifiedName[field])
+    constructor(code, issuer, type) {
+        if (code instanceof AssetDescriptor) {
+            Object.assign(this, code)
+        } else if (typeof code === 'object' && !issuer) {
+            this.code = code.code
+            this.issuer = code.issuer
+            this.type = code.issuer ? normalizeType(this.code) : 0
         } else if (issuer !== undefined) {
-            this.code = codeOrFullyQualifiedName
-            this.type = normalizeType(codeOrFullyQualifiedName, type)
+            this.code = code
+            this.type = normalizeType(code, type)
             this.issuer = issuer
-        } else if (((codeOrFullyQualifiedName === nativeAssetCode || codeOrFullyQualifiedName === 'native') && !type) || type === 0) {
+        } else if (((code === nativeAssetCode || code === 'native') && !type) || type === 0) {
             this.type = 0
             this.code = nativeAssetCode
         } else {
-            if (!codeOrFullyQualifiedName || typeof codeOrFullyQualifiedName !== 'string' || codeOrFullyQualifiedName.length < 3)
-                throw new TypeError(`Invalid asset name: ${codeOrFullyQualifiedName}.`)
-            const separator = codeOrFullyQualifiedName.includes(':') ? ':' : '-'
-            const parts = codeOrFullyQualifiedName.split(separator)
+            if (!code || typeof code !== 'string' || code.length < 3)
+                throw new TypeError(`Invalid asset name: ${code}.`)
+            const separator = code.includes(':') ? ':' : '-'
+            const parts = code.split(separator)
             if (parts.length < 2)
-                throw new TypeError(`Invalid asset name: ${codeOrFullyQualifiedName}.`)
+                throw new TypeError(`Invalid asset name: ${code}.`)
             this.code = parts[0]
             this.issuer = parts[1]
             this.type = normalizeType(this.code, parts[2])
@@ -55,6 +58,8 @@ export class AssetDescriptor {
         //if (!this.code || !/^[a-zA-Z0-9]{1,12}$/.test(this.code)) throw new Error(`Invalid asset code. See https://www.stellar.org/developers/guides/concepts/assets.html#alphanumeric-4-character-maximum`)
         Object.freeze(this)
     }
+
+    type = 0
 
     get isNative() {
         return this.type === 0
@@ -139,9 +144,10 @@ export function parseAssetFromObject(obj, prefix = '') {
 }
 
 export function isAssetValid(asset) {
-    if (asset instanceof AssetDescriptor) return true
-    if (typeof asset !== 'string') return false
-    if (asset === 'XLM') return true
-    const [code, issuer] = asset.split('-')
-    return StrKey.isValidEd25519PublicKey(issuer) && isValidAssetCode(code)
+    try {
+        new AssetDescriptor(asset)
+        return true
+    } catch (e) {
+        return false
+    }
 }

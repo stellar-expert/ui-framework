@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import {useDependantState} from '../state/state-hooks'
+import {throttle} from 'throttle-debounce'
+import {useDeepEffect} from '../state/state-hooks'
 import apiCall from '../api/explorer-api-call'
 import {stringifyQuery} from '../state/navigation'
 
@@ -17,29 +18,29 @@ const defaults = {
 export function useAssetList(params) {
     const [loading, setLoading] = useState(false),
         [cursor, setCursor] = useState(),
-        [assets, setAssets] = useDependantState(() => {
-            setCursor(undefined)
-            loadPage()
-            return []
-        }, [params])
-
-
-    function loadPage() {
-        let endpoint = explorerNetwork + '/asset' + stringifyQuery({...defaults, ...params, cursor})
-        setLoading(true)
-        apiCall(endpoint)
-            .then(({_embedded}) => {
-                const res = _embedded.records
-                if (res.length) {
-                    setAssets(assets => [...assets, ...res])
-                    setCursor(res[res.length - 1].paging_token)
-                }
-            })
-            .catch(e => console.error(e))
-            .finally(() => {
-                setLoading(false)
-            })
-    }
+        [assets, setAssets] = useState([]),
+        loadPage = throttle(1000, function () {
+            let endpoint = explorerNetwork + '/asset' + stringifyQuery({...defaults, ...params, cursor})
+            setLoading(true)
+            apiCall(endpoint)
+                .then(({_embedded}) => {
+                    const res = _embedded.records
+                    if (res.length) {
+                        setCursor(res[res.length - 1].paging_token)
+                    }
+                    setAssets(existing => [...existing, ...res])
+                    setLoading(false)
+                })
+                .catch(e => console.error(e))
+                .finally(() => {
+                    setLoading(false)
+                })
+        })
+    useDeepEffect(() => {
+        setCursor(undefined)
+        setAssets([])
+        loadPage()
+    }, [params])
 
     return {assets, loadPage, loading}
 }

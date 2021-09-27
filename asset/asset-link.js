@@ -12,7 +12,7 @@ function getIcon(meta) {
 }
 
 export function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
-    if (typeof asset === 'string') asset = new AssetDescriptor(asset)
+    if (!(asset instanceof AssetDescriptor)) asset = new AssetDescriptor(asset)
     const meta = useAssetMeta(asset)
     const children = innerText ? innerText : <>
         {icon !== false && <>

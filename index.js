@@ -8,7 +8,9 @@ export * from './state/state-hooks'
 export * from './state/dynamic-module'
 export * from './state/navigation'
 export * from './state/on-screen-hooks'
+export * from './state/screen-orientation-hooks'
 export * from './state/theme'
+export * from './numeric/formatting-utils'
 //cache
 export * from './api/client-cache'
 //basic UI controls
@@ -20,11 +22,12 @@ export * from './controls/update-highlighter'
 export * from './controls/tabs'
 export * from './controls/dropdown'
 export * from './controls/code-block'
-export * from './controls/theme-selector'
 //interaction
 export * from './interaction/block-select'
 export * from './interaction/copy-to-clipboard'
 export * from './interaction/spoiler'
+export * from './interaction/theme-selector'
+export * from './interaction/inline-progress'
 //date components
 export * from './date/date-selector'
 export * from './date/elapsed-time'

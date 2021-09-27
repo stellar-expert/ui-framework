@@ -31,7 +31,7 @@ export function useDependantState(stateInitializer, dependencies, finalizer) {
         //check that dependencies really changed
         if (dependenciesChanged) {
             //re-initialize state when any of the dependencies changed
-            updateState(typeof stateInitializer === 'function' ? stateInitializer(dependencies) : stateInitializer)
+            updateState(typeof stateInitializer === 'function' ? stateInitializer(dependencies, state) : stateInitializer)
         }
         return finalizer || undefined
     }, pinnedDeps.current)

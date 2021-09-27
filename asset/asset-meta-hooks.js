@@ -3,6 +3,8 @@ import {BatchInfoLoader} from '../api/batch-info-loader'
 import {useDependantState} from '../state/state-hooks'
 import ClientCache from '../api/client-cache'
 import {stringifyQuery} from '../state/navigation'
+import {useEffect, useState} from 'react'
+import {AssetDescriptor} from './asset-descriptor'
 
 /**
  * @typedef AssetBasicTomlInfo
@@ -28,6 +30,14 @@ const loader = new BatchInfoLoader(batch => {
     return {key: entry.name, info: entry}
 })
 
+function retrieveFromCache(asset) {
+    //try to load from the shared cache
+    const cachedEntry = cache.get(asset)
+    if (cachedEntry && !cachedEntry.isStale) {
+        if (!cachedEntry.isExpired) return cachedEntry.data//everything is up to date - no need to re-fetch
+    }
+}
+
 /**
  *
  * @param {AssetDescriptor|String} asset
@@ -35,21 +45,19 @@ const loader = new BatchInfoLoader(batch => {
  */
 export function useAssetMeta(asset) {
     if (typeof asset !== 'string') {
-        asset = asset.toFQAN()
+        asset = new AssetDescriptor(asset).toFQAN()
     }
-    const [assetInfo, setAssetInfo] = useDependantState(() => {
-        if (!asset) return null
-        let info = null
-        //try to load from the shared cache
-        const cachedEntry = cache.get(asset)
-        if (cachedEntry && !cachedEntry.isStale) {
-            info = cachedEntry.data
-            if (!cachedEntry.isExpired) return info//everything is up to date - no need to re-fetch
+    const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
+    useEffect(() => {
+        const cached = retrieveFromCache(asset)
+        if (cached) {
+            setAssetInfo(cached)
+            return
         }
         //load from the server
         loader.loadEntry(asset)
-            .then(di => setAssetInfo(di))
-        return info
+            .then(setAssetInfo)
     }, [asset])
+
     return assetInfo
 }

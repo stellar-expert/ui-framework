@@ -45,6 +45,8 @@ class NavigationWrapper {
         history.location.hash = value
     }
 
+    preventNavigationInsideIframe = false
+
     /**
      * Update query string.
      * @param {Object} paramsToSet - Object containing query params to set.
@@ -99,7 +101,7 @@ export function bindClickNavHandler(container) {
             const href = link.getAttribute('href')
             if (link.target === '_blank' || !href) return
             if (href === '#') return e.preventDefault()
-            if (window.parent !== window) {
+            if (window.parent !== window && navigation.preventNavigationInsideIframe) {
                 window.top.location = /^(https?):\/\//.test(href) ? href : (window.origin + href)
                 return e.preventDefault()
             }

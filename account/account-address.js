@@ -7,10 +7,12 @@ import {InfoTooltip} from '../controls/info-tooltip'
 import {useDirectory} from '../directory/directory-hooks'
 import {formatLongHex} from '../numeric/formatting-utils'
 import {parseMuxedAccount} from './muxed-account-parser'
-import './account-address.scss'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
+import {useStellarNetwork} from '../state/stellar-network-hooks'
+import './account-address.scss'
 
 export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, ...otherProps}) {
+    useStellarNetwork()
     const muxedInfo = StrKey.isValidMed25519PublicKey(account) && parseMuxedAccount(account)
     if (!StrKey.isValidEd25519PublicKey(account) && !muxedInfo) return null
 

@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {formatExplorerLink} from './ledger-entry-href-formatter'
+import {useStellarNetwork} from '../state/stellar-network-hooks'
 
 function LedgerEntryLink({type, id, children}) {
+    useStellarNetwork()
     return <a href={formatExplorerLink(type, id)} target="_blank">{children || id}</a>
 }
 

@@ -4,6 +4,7 @@ import apiCache from './api-cache'
 import fetchExplorerApi from './explorer-api-call'
 import {stringifyQuery} from '../state/navigation'
 import {addVisibilityChangeListener, isDocumentVisible} from '../state/page-visibility-helpers'
+import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 class APIResult {
     constructor(data, ts) {
@@ -119,7 +120,7 @@ export function useAPI(apiEndpoint, {refreshInterval, ttl = 60, processResult} =
             apiEndpoint = apiEndpoint.path + stringifyQuery(apiEndpoint.query)
         }
 
-        const endpointWithQuery = `${explorerNetwork}/${apiEndpoint}`
+        const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
 
         function load() {
             fetchData(endpointWithQuery, ttl, processResult)

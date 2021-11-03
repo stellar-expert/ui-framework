@@ -4,6 +4,7 @@ import isEqual from 'react-fast-compare'
 import apiCache from './api-cache'
 import fetchExplorerApi from './explorer-api-call'
 import {useDependantState} from '../state/state-hooks'
+import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 function inverseOrder(order) {
     return order === 'desc' ? 'asc' : 'desc'
@@ -314,7 +315,7 @@ export function usePaginatedAPI(apiEndpoint,
     if (defaultQueryParams.order) {
         defaultSortOrder = defaultQueryParams.order
     }
-    const endpoint = includeNetwork ? `${explorerNetwork}/${apiEndpoint.path}` : apiEndpoint.path
+    const endpoint = includeNetwork ? `${getCurrentStellarNetwork()}/${apiEndpoint.path}` : apiEndpoint.path
 
     const [apiResponseData, updateApiResponseData] = useDependantState(() => {
         const res = new PaginatedListViewModel(endpoint, {

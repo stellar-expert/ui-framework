@@ -3,6 +3,7 @@ import {throttle} from 'throttle-debounce'
 import {useDeepEffect} from '../state/state-hooks'
 import apiCall from '../api/explorer-api-call'
 import {stringifyQuery} from '../state/navigation'
+import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 const defaults = {
     limit: 20,
@@ -20,7 +21,7 @@ export function useAssetList(params) {
         [cursor, setCursor] = useState(),
         [assets, setAssets] = useState([]),
         loadPage = throttle(1000, function () {
-            let endpoint = explorerNetwork + '/asset' + stringifyQuery({...defaults, ...params, cursor})
+            let endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery({...defaults, ...params, cursor})
             setLoading(true)
             apiCall(endpoint)
                 .then(({_embedded}) => {

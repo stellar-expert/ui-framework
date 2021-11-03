@@ -1,10 +1,10 @@
+import {useEffect, useState} from 'react'
+import {AssetDescriptor, isValidPoolId} from './asset-descriptor'
 import apiCall from '../api/explorer-api-call'
 import {BatchInfoLoader} from '../api/batch-info-loader'
-import {useDependantState} from '../state/state-hooks'
 import ClientCache from '../api/client-cache'
 import {stringifyQuery} from '../state/navigation'
-import {useEffect, useState} from 'react'
-import {AssetDescriptor} from './asset-descriptor'
+import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
  * @typedef AssetBasicTomlInfo
@@ -24,7 +24,7 @@ import {AssetDescriptor} from './asset-descriptor'
 const cache = new ClientCache({prefix: 'am:'})
 
 const loader = new BatchInfoLoader(batch => {
-    return apiCall(explorerNetwork + '/asset/meta' + stringifyQuery({asset: batch}))
+    return apiCall(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
 }, entry => {
     cache.set(entry.name, entry)
     return {key: entry.name, info: entry}
@@ -44,9 +44,7 @@ function retrieveFromCache(asset) {
  * @return {AssetMeta}
  */
 export function useAssetMeta(asset) {
-    if (typeof asset !== 'string') {
-        asset = new AssetDescriptor(asset).toFQAN()
-    }
+    asset = AssetDescriptor.parse(asset).toFQAN()
     const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
     useEffect(() => {
         const cached = retrieveFromCache(asset)

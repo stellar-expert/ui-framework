@@ -1,5 +1,6 @@
-import {StrKey, Asset} from 'stellar-sdk'
+import {StrKey, Asset, LiquidityPoolAsset} from 'stellar-sdk'
 import {formatLongHex} from '../numeric/formatting-utils'
+import {generateLiquidityPoolId} from '../liquidity-pool/liquidity-pool-id'
 
 function normalizeType(code, type) {
     switch (type) {
@@ -29,6 +30,7 @@ export class AssetDescriptor {
      * @param type [String] - Asset type. One of ['credit_alphanum4', 'credit_alphanum12', 'native'].
      */
     constructor(code, issuer, type) {
+        if (this instanceof LiquidityPoolDescriptor) return
         if (code instanceof AssetDescriptor) {
             Object.assign(this, code)
         } else if (typeof code === 'object' && !issuer) {
@@ -123,7 +125,48 @@ export class AssetDescriptor {
     static get native() {
         return new AssetDescriptor(nativeAssetCode)
     }
+
+    static parse(source) {
+        if (source instanceof AssetDescriptor)
+            return source
+        if (isValidPoolId(source))
+            return new LiquidityPoolDescriptor(source)
+        if (source instanceof LiquidityPoolAsset)
+            return new LiquidityPoolDescriptor(generateLiquidityPoolId(source))
+        return new AssetDescriptor(source)
+    }
 }
+
+export class LiquidityPoolDescriptor extends AssetDescriptor {
+    constructor(id) {
+        super()
+        this.poolId = id
+        this.poolType = 0
+        this.type = 3
+    }
+
+    poolId
+
+    poolType
+
+    toString() {
+        return this.poolId
+    }
+
+    toFQAN() {
+        return this.poolId
+    }
+
+    toCurrency(maxLength) {
+        if (maxLength) return formatLongHex(this.poolId, maxLength)
+        return this.poolId
+    }
+
+    toAsset() {
+        throw new TypeError(`Impossible to convert LiquidityPoolDescriptor to LiquidityPoolAsset`)
+    }
+}
+
 
 /**
  * Parses asset from Horizon API response
@@ -133,6 +176,8 @@ export class AssetDescriptor {
  */
 export function parseAssetFromObject(obj, prefix = '') {
     const keyPrefix = prefix + 'asset'
+    if (obj[keyPrefix + '_type'] === 'liquidity_pool_shares')
+        return new LiquidityPoolDescriptor(obj.liquidity_pool_id)
     if (obj[keyPrefix])  //new format
         return new AssetDescriptor(obj[keyPrefix])
     const type = obj[keyPrefix + '_type']
@@ -144,10 +189,18 @@ export function parseAssetFromObject(obj, prefix = '') {
 }
 
 export function isAssetValid(asset) {
+    if (asset instanceof AssetDescriptor) return true
+    if (isValidPoolId(asset)) return true
     try {
         new AssetDescriptor(asset)
         return true
     } catch (e) {
         return false
     }
+}
+
+export function isValidPoolId(poolId) {
+    if (typeof poolId === 'string') return /^\w{64}$/.test(poolId)
+    if (poolId instanceof Uint8Array) return poolId.length === 32
+    return false
 }

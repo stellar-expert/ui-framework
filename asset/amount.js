@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {AssetLink} from './asset-link'
-import {AssetDescriptor, isAssetValid} from './asset-descriptor'
+import {AssetDescriptor, isAssetValid, isValidPoolId} from './asset-descriptor'
 import {formatCurrency, formatWithAutoPrecision} from '../numeric/formatting-utils'
 
 export function Amount({amount, asset, decimals, adjust, round, icon}) {
@@ -14,7 +14,7 @@ export function Amount({amount, asset, decimals, adjust, round, icon}) {
     }
     const value = decimals === 'auto' ? formatWithAutoPrecision(amount) : formatCurrency(amount, decimals)
     return <span className="amount nowrap">
-        {value} {!!asset && (isAssetValid(asset) ?
+        {value} {!!asset && !isValidPoolId(asset.toString()) && (isAssetValid(asset) ?
         <AssetLink asset={asset} icon={icon}/> : asset.toString())}
     </span>
 }

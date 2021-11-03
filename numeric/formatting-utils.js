@@ -1,28 +1,34 @@
-function stripTrailingZeros(value) {
+import Bignumber from 'bignumber.js'
+
+export function stripTrailingZeros(value) {
     if (typeof value !== 'string') return value
-    return value.replace(/\.?0+$/, '')
+    let [int, reminder] = value.split('.')
+    if (!reminder) return int
+    reminder = reminder.replace(/0+$/, '')
+    if (!reminder.length) return int
+    return int + '.' + reminder
 }
 
-function addDecimalsSeparators(str, separator = ',', trimTrailingZeros = true) {
+function addDecimalsSeparators(value, separator = ',', trimTrailingZeros = true) {
+    //TODO: use Bignumber.toFormat() method instead
     //split numeric to parts
-    let [left, right = ''] = str.split('.'),
+    let [int, reminder] = value.split('.'),
         res = ''
     //split digit groups
-    while (left.length > 3) {
-        res = separator + left.substr(-3) + res
-        left = left.substr(0, left.length - 3)
+    while (int.length > 3) {
+        res = separator + int.substr(-3) + res
+        int = int.substr(0, int.length - 3)
     }
-    //split negative sign
-    if (left === '-') {
+    //strip negative sign
+    if (int === '-') {
         res = res.substr(1)
     }
-    res = left + res
-    if (trimTrailingZeros) {
-        //cleanup and add right part
-        right = stripTrailingZeros(right)
+    res = int + res
+    if (reminder) {
+        res += '.' + reminder
     }
-    if (right) {
-        res += '.' + right
+    if (trimTrailingZeros) {
+        res = stripTrailingZeros(res)
     }
     return res
 }
@@ -42,9 +48,12 @@ export function formatCurrency(value, decimals = 7, separator = ',') {
 
 export function formatWithPrecision(value, precision = 7, separator = ',') {
     if (!value) return '0'
+    if (typeof value === 'number') {
+        value = value.toFixed(14)
+    }
     if (typeof value === 'string') {
-        value = parseFloat(value)
-        if (isNaN(value)) return '0'
+        value = new Bignumber(value)
+        if (value.isNaN()) return '0'
     }
     //use 7 decimals if not specified
     if (!(precision >= 0)) {
@@ -54,11 +63,14 @@ export function formatWithPrecision(value, precision = 7, separator = ',') {
 }
 
 export function formatWithAutoPrecision(value, separator = ',') {
-    if (!value) return 0
-    if (typeof value === 'string') {
-        value = parseFloat(value)
+    if (!value) return '0'
+    if (typeof value === 'number') {
+        value = value.toFixed(14)
     }
-    let p = Math.ceil(Math.log10(value)),
+    if (typeof value === 'string') {
+        value = new Bignumber(value)
+    }
+    let p = Math.ceil(Math.log10(value.toNumber())),
         reminderPrecision = p > 1 ? (3 - p) : (Math.abs(p) + 2)
     if (reminderPrecision < 0) {
         reminderPrecision = 0
@@ -108,6 +120,15 @@ export function formatPrice(value, significantDigits = 4) {
     return formatCurrency(res)
 }
 
+/**
+ * Convert rational price representation to Number
+ * @param {{n: Number, d: Number}} price
+ * @return {Number}
+ */
+export function approximatePrice(price) {
+    return price.n / price.d
+}
+
 export function formatLongHex(src, symbols = 8) {
     if (src.length <= symbols) return src
     const affixLength = Math.max(2, Math.floor(symbols / 2))
@@ -119,6 +140,11 @@ export function formatLongHex(src, symbols = 8) {
  * @param {Number|String} amount - Value to format.
  * @return {String}
  */
-export function adjustAmount(amount) {
-    return stripTrailingZeros(parseFloat(amount).toFixed(7)) || '0'
+export function adjustAmount(amount = '0') {
+    if (typeof amount === 'number') {
+        amount = amount.toFixed(7)
+    } else {
+        amount = new Bignumber(amount.toString()).toFixed(7)
+    }
+    return stripTrailingZeros(amount)
 }

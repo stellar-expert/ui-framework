@@ -15,7 +15,7 @@ function AssetIcon({asset, style}) {
         icon = meta?.toml_info?.image || meta?.toml_info?.orgLogo
     if (asset.toString() === 'XLM') return <span className="asset-icon icon icon-stellar" style={style}/>
     if (icon) return <span style={{...style, backgroundImage: `url('${icon}')`}} className="asset-icon"/>
-    return <span className="asset-icon icon icon-circle" style={style}/>
+    return <span className="asset-icon icon icon-dot-circled" style={style}/>
 }
 
 function AssetIssuer({asset}) {
@@ -47,7 +47,8 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[0].asset}/>}
                         {AssetDescriptor.parse(meta.assets[0].asset).toCurrency()}
-                    </span><b className="color-primary">/</b>
+                    </span>
+                    &nbsp;<i className="icon icon-plus text-tiny dimmed"/>&nbsp;
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[1].asset}/>}
                         {AssetDescriptor.parse(meta.assets[1].asset).toCurrency()}

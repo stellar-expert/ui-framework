@@ -52,9 +52,13 @@ export function useAssetMeta(asset) {
             setAssetInfo(cached)
             return
         }
+        let unloaded = false
         //load from the server
         loader.loadEntry(asset)
-            .then(setAssetInfo)
+            .then(a => !unloaded && setAssetInfo(a))
+        return () => {
+            unloaded = true
+        }
     }, [asset])
 
     return assetInfo

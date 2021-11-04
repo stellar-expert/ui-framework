@@ -22,7 +22,7 @@
     "highlight.js": "^10.7.3",
     "history": "^4.10.1",
     "react-copy-to-clipboard": "^5.0.4",
-    "react-datepicker": "^4.2.0",
-    "react-timeago": "^6.2.0"
+    "react-datepicker": "^4.3.0",
+    "react-timeago": "^6.2.1"
   }
 }

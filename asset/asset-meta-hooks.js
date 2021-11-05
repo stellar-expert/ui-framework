@@ -48,10 +48,8 @@ export function useAssetMeta(asset) {
     const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
     useEffect(() => {
         const cached = retrieveFromCache(asset)
-        if (cached) {
-            setAssetInfo(cached)
-            return
-        }
+        setAssetInfo(cached)
+        if (cached) return
         let unloaded = false
         //load from the server
         loader.loadEntry(asset)

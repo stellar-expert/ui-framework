@@ -15,5 +15,10 @@
     line-height: 1.1;
     background: transparent center center no-repeat;
     background-size: contain;
+    margin-top: -0.2em;
+
+    &.icon {
+      margin-top: 0;
+    }
   }
 }

@@ -21,7 +21,7 @@ export function Slider({title, value, max, step = 1, onChange, ...otherProps}) {
     return <div className="slider dual-layout dimmed text-small" {...otherProps}>
         <div>{title}</div>
         <div>
-            <input type="range" min={0} max={max} step={step} value={innerValue} onChange={change}/>
+            <input type="range" min={0} max={max} step={step} value={innerValue} onChange={change} data-lpignore="true"/>
         </div>
         <div>
             <input type="text" value={innerValue} onChange={change}/>%

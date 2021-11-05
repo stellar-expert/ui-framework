@@ -25,7 +25,7 @@ export function getLiquidityPoolAsset(assets) {
         if (!a.issuer) return -1
         if (!b.issuer) return 1
         if (a.code < b.code) return -1
-        if (a.code > b.code) return -1
+        if (a.code > b.code) return 1
         if (a.issuer < b.issuer) return -1
         if (a.issuer > b.issuer) return 1
         return 0

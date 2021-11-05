@@ -59,7 +59,7 @@ export function formatWithPrecision(value, precision = 7, separator = ',') {
     if (!(precision >= 0)) {
         precision = 7
     }
-    return addDecimalsSeparators(value.toFixed(precision), separator)
+    return addDecimalsSeparators(value.toFixed(precision), separator, false)
 }
 
 export function formatWithAutoPrecision(value, separator = ',') {

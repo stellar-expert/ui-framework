@@ -75,7 +75,9 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         children
     }
     if (link === false) return <span {...props}/>
-    if (!link) {
+    if (typeof link === 'string') {
+        props.href = link
+    } else {
         props.href = formatExplorerLink('asset', asset.toString())
         if (window.origin !== explorerFrontendOrigin) {
             props.target = '_blank'

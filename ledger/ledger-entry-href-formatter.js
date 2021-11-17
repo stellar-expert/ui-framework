@@ -6,5 +6,16 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
  * @return {String}
  */
 export function formatExplorerLink(type, id) {
-    return `${explorerFrontendOrigin}/explorer/${getCurrentStellarNetwork()}/${type}/${id}`
+    const segments = [
+        explorerFrontendOrigin !== window.origin ? explorerFrontendOrigin : '',
+        'explorer',
+        getCurrentStellarNetwork()
+    ]
+    if (type) {
+        segments.push(type)
+    }
+    if (id) {
+        segments.push(id)
+    }
+    return segments.join('/')
 }

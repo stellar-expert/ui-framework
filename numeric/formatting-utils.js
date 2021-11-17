@@ -117,7 +117,7 @@ export function formatPrice(value, significantDigits = 4) {
             res = res + reminder.substr(1)
         }
     }
-    return formatCurrency(res)
+    return stripTrailingZeros(formatCurrency(res))
 }
 
 /**

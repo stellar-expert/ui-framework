@@ -43,7 +43,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
     if (!innerText) {
         if (asset.poolId) {
             children = <>
-                {!!meta && <span>
+                {!!meta && <span title={'Pool ' + asset.poolId}>
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[0].asset}/>}
                         {AssetDescriptor.parse(meta.assets[0].asset).toCurrency()}
@@ -54,7 +54,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                         {AssetDescriptor.parse(meta.assets[1].asset).toCurrency()}
                     </span>{' '}
                 </span>}
-                liquidity pool {formatLongHex(asset.poolId, 8)}
+                liquidity pool
             </>
         } else {
             children = <>

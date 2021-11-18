@@ -2,7 +2,7 @@ import {createBrowserHistory} from 'history'
 
 export const history = createBrowserHistory()
 
-let queryString = {},
+let queryString = parseQuery(),
     observers = []
 
 function notifyChanged(nav) {

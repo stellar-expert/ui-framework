@@ -11,42 +11,91 @@ import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
 import './account-address.scss'
 
+/**
+ *
+ * @param {String} key
+ * @return {{address: String, type: ('muxed'|'ed5519'|'hash'|'tx'), [muxedId]: BigInt}|{error: Error}}
+ */
+function decodeKeyType(key) {
+    try {
+        switch (key.substr(0, 1)) {
+            case 'M':
+                return {
+                    type: 'muxed',
+                    ...parseMuxedAccount(key)
+                }
+            case 'G':
+                if (!StrKey.isValidEd25519PublicKey(key)) return {
+                    error: new Error(`Invalid public key: ${key}`)
+                }
+                return {
+                    type: 'ed5519',
+                    address: key
+                }
+            case 'X':
+                StrKey.decodeSha256Hash(key)
+                return {
+                    type: 'hash',
+                    address: key
+                }
+            case 'T':
+                StrKey.decodePreAuthTx(key)
+                return {
+                    type: 'tx',
+                    address: key
+                }
+        }
+    } catch (e) {
+        console.error(e)
+        return {
+            error: e
+        }
+    }
+}
+
+function isPublicKey(type) {
+    return type === 'muxed' || type === 'ed5519'
+}
+
+function AccountDisplayName({type, address, name}) {
+    let directoryInfo = useDirectory(!name && isPublicKey(type) && address),
+        warning
+    if (name === false) return null
+    if (directoryInfo) {
+        name = directoryInfo.name
+        if (directoryInfo.tags.includes('malicious')) {
+            warning = <i className="icon icon-warning color-warning"
+                         title="This account was reported for illicit or fraudulent activity. Do not send funds to this address and do not trust any person affiliated with it."/>
+        }
+    }
+    if (!name && !warning) return null
+    return <>
+        {name ? `[${name}] ` : ''}
+        {warning}
+    </>
+
+}
+
 export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, ...otherProps}) {
     useStellarNetwork()
-    const muxedInfo = StrKey.isValidMed25519PublicKey(account) && parseMuxedAccount(account)
-    if (!StrKey.isValidEd25519PublicKey(account) && !muxedInfo) return null
+    let {type, address, muxedId} = decodeKeyType(account)
+    if (!type) return null //failed to decode address type
 
-    let innerStyle = !style ? undefined : style,
-        displayAddress = account
+    let innerStyle = !style ? undefined : style
 
     if (chars && chars !== 'all') {
-        displayAddress = formatLongHex(account, chars)
-    }
-    let displayName, warning
-    if (name !== false) {
-        displayName = name
-        if (!displayName) {
-            const directoryInfo = useDirectory(muxedInfo?.address || account)
-            if (directoryInfo) {
-                displayName = directoryInfo.name
-                if (directoryInfo.tags.includes('malicious')) {
-                    warning = <i className="icon icon-warning color-warning"
-                                 title="This account was reported for illicit or fraudulent activity. Do not send funds to this address and do not trust any person affiliated with it."/>
-                }
-            }
-        }
+        address = formatLongHex(account, chars)
     }
 
     const children = <>
         {prefix}
-        {icon !== false && <AccountIdenticon key="identicon" address={muxedInfo?.address || account}/>}
-        {displayName && <>[{displayName}] </>}
-        {warning}
-        <span className="account-pubkey" key="pubkey">{displayAddress}</span>
-        {!!muxedInfo && <InfoTooltip icon="icon-plus">
+        {icon !== false && <AccountIdenticon key="identicon" address={address}/>}
+        <AccountDisplayName type={type} address={address} name={name}/>
+        <span className="account-pubkey" key="pubkey">{address}</span>
+        {muxedId !== undefined && <InfoTooltip icon="icon-plus">
             Subaccount of a custodial account<br/>
-            <AccountAddress account={muxedInfo.address} name={false} chars={12}/>
-            <div className="dimmed text-tiny micro-space">Multiplexed id: {muxedInfo.muxedId.toString()}</div>
+            <AccountAddress account={address} name={false} chars={12}/>
+            <div className="dimmed text-tiny micro-space">Multiplexed id: {muxedId.toString()}</div>
         </InfoTooltip>}
         {suffix}
     </>
@@ -60,7 +109,7 @@ export function AccountAddress({account, chars = 8, name, link, style, className
     }
     let renderAs = 'span'
 
-    if (link !== false) {
+    if (link !== false && isPublicKey(type)) {
         renderAs = 'a'
         if (typeof link === 'string') {
             containerProps.href = link
@@ -91,7 +140,7 @@ AccountAddress.propTypes = {
     /**
      * Visible address characters count
      */
-    chars: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    chars: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['all'])]),
     /**
      * Whether to show/hide account identicon
      */

@@ -46,7 +46,6 @@ export async function getDirectoryEntry(address, options) {
  */
 export function useDirectory(address, options) {
     const {forceRefresh = false} = options || {}
-    let unloaded = false
     const [directoryInfo, setDirectoryInfo] = useDependantState(() => {
         if (!address || !StrKey.isValidEd25519PublicKey(address)) return null
         let info = null
@@ -60,11 +59,9 @@ export function useDirectory(address, options) {
         }
         //load from the server
         loader.loadEntry(address)
-            .then(di => unloaded && setDirectoryInfo(di))
+            .then(di => setDirectoryInfo(di))
         return info
-    }, [address, options], () => {
-        unloaded = true
-    })
+    }, [address, forceRefresh])
     return directoryInfo
 }
 

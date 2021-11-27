@@ -80,13 +80,12 @@ export function formatWithAutoPrecision(value, separator = ',') {
 
 export function formatWithAbbreviation(value, decimals = 2) {
     let abs = Math.abs(value),
-        tier = Math.log10(abs) / 3 | 0,
-        suffix = ['', 'K', 'M', 'G', 'T', 'P'][tier]
-    if (tier > 0) {
-        abs = stripTrailingZeros((abs / Math.pow(10, tier * 3)).toFixed(decimals))
-    } else {
-        abs = formatWithAutoPrecision(abs)
-    }
+        tier = Math.log10(abs) / 3 | 0
+
+    if (tier <= 0) return formatWithAutoPrecision(value)
+
+    const suffix = ['', 'K', 'M', 'G', 'T', 'P'][tier]
+    abs = stripTrailingZeros((abs / Math.pow(10, tier * 3)).toFixed(decimals))
     return `${value < 0 ? '-' : ''}${abs || '0'}${suffix}`
 }
 

@@ -46,8 +46,9 @@ export function formatCurrency(value, decimals = 7, separator = ',') {
     return formatWithPrecision(value, decimals, separator)
 }
 
-export function formatWithPrecision(value, precision = 7, separator = ',') {
-    if (!value) return '0'
+function safeParseBignumber(value) {
+    if (!value) return new Bignumber(0)
+    if (value instanceof Bignumber) return value
     if (typeof value === 'number') {
         value = value.toFixed(14)
     }
@@ -55,11 +56,15 @@ export function formatWithPrecision(value, precision = 7, separator = ',') {
         value = new Bignumber(value)
         if (value.isNaN()) return '0'
     }
+    throw new TypeError(`Unsupported BigNumber value type: ${typeof value}`)
+}
+
+export function formatWithPrecision(value, precision = 7, separator = ',') {
     //use 7 decimals if not specified
     if (!(precision >= 0)) {
         precision = 7
     }
-    return addDecimalsSeparators(value.toFixed(precision), separator, true)
+    return addDecimalsSeparators(safeParseBignumber(value).toFixed(precision), separator, true)
 }
 
 export function formatWithAutoPrecision(value, separator = ',') {
@@ -98,25 +103,13 @@ export function formatWithGrouping(value, group) {
     return addDecimalsSeparators(value.toFixed(precision), ',', true)
 }
 
-/**
- *
- * @param {Number|String} value
- * @param {Number} [significantDigits]
- * @return {String}
- */
-export function formatPrice(value, significantDigits = 4) {
-    //TODO: deal with situations like 0.0000023
-    value = parseFloat(value)
-    let int = value | 0,
-        res = int.toString()
-    if (res.length < significantDigits) {
-        const reminder = (value % 1).toPrecision(significantDigits - (int === 0 ? 0 : res.length))
-        //skip reminder if we have more than 10^2 difference between the integral part and the reminder
-        if (!(reminder.match(new RegExp('^' + '0'.repeat(significantDigits))) && res > 0)) {
-            res = res + reminder.substr(1)
-        }
+function formatPrice(value, significantDigits = 4) {
+    const [int] = safeParseBignumber(value).toString()
+    if (int !== '0') {
+        significantDigits -= int.length
     }
-    return stripTrailingZeros(formatCurrency(res))
+    const res = formatWithPrecision(value, significantDigits, '')
+    return stripTrailingZeros(res)
 }
 
 /**

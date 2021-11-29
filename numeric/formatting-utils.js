@@ -103,7 +103,7 @@ export function formatWithGrouping(value, group) {
     return addDecimalsSeparators(value.toFixed(precision), ',', true)
 }
 
-function formatPrice(value, significantDigits = 4) {
+export function formatPrice(value, significantDigits = 4) {
     const [int] = safeParseBignumber(value).toString()
     if (int !== '0') {
         significantDigits -= int.length

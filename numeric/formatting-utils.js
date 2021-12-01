@@ -48,14 +48,14 @@ export function formatCurrency(value, decimals = 7, separator = ',') {
 
 function safeParseBignumber(value) {
     if (!value) return new Bignumber(0)
-    if (value instanceof Bignumber) return value
     if (typeof value === 'number') {
-        value = value.toFixed(14)
+        value = value.toFixed(7)
     }
     if (typeof value === 'string') {
         value = new Bignumber(value)
         if (value.isNaN()) return '0'
     }
+    if (value instanceof Bignumber) return value
     throw new TypeError(`Unsupported BigNumber value type: ${typeof value}`)
 }
 

@@ -39,7 +39,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
     let children = innerText
     if (!innerText) {
         if (asset.poolId && meta) {
-            const [assetA, assetB] = meta.assets.map(AssetDescriptor.parse)
+            const [assetA, assetB] = meta.assets.map(a => AssetDescriptor.parse(a.asset))
             children = <>
                 <span title={'Liquidity pool ' + asset.poolId}>
                     <span>

@@ -36,14 +36,11 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         meta = useAssetMeta(asset)
     useStellarNetwork()
     if (!asset) return null
-    if (asset.poolId) {
-        link = false
-    }
     let children = innerText
     if (!innerText) {
         if (asset.poolId) {
             children = <>
-                {!!meta && <span title={'Pool ' + asset.poolId}>
+                {!!meta && <span title={'Liquidity pool ' + asset.poolId}>
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[0].asset}/>}
                         {AssetDescriptor.parse(meta.assets[0].asset).toCurrency()}
@@ -52,9 +49,8 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[1].asset}/>}
                         {AssetDescriptor.parse(meta.assets[1].asset).toCurrency()}
-                    </span>{' '}
+                    </span>
                 </span>}
-                liquidity pool
             </>
         } else {
             children = <>
@@ -78,7 +74,9 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
     if (typeof link === 'string') {
         props.href = link
     } else {
-        props.href = formatExplorerLink('asset', asset.toString())
+        props.href = asset.poolId ?
+            formatExplorerLink('liquidity-pool', asset.poolId) :
+            formatExplorerLink('asset', asset.toString())
         if (window.origin !== explorerFrontendOrigin) {
             props.target = '_blank'
         }

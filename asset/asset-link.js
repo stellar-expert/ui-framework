@@ -38,21 +38,22 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
     if (!asset) return null
     let children = innerText
     if (!innerText) {
-        if (asset.poolId) {
+        if (asset.poolId && meta) {
+            const [assetA, assetB] = meta.assets.map(AssetDescriptor.parse)
             children = <>
-                {!!meta && <span title={'Liquidity pool ' + asset.poolId}>
+                <span title={'Liquidity pool ' + asset.poolId}>
                     <span>
-                        {icon !== false && <AssetIcon asset={meta.assets[0].asset}/>}
-                        {AssetDescriptor.parse(meta.assets[0].asset).toCurrency()}
-                        {issuer === true && <AssetIssuer asset={asset}/>}
+                        {icon !== false && <AssetIcon asset={assetA}/>}
+                        {assetA.toCurrency()}
+                        {issuer === true && <AssetIssuer asset={assetA}/>}
                     </span>
                     <span style={{fontSize: '0.7em'}}>&nbsp;<i className="icon icon-plus dimmed"/>&nbsp;</span>
                     <span>
-                        {icon !== false && <AssetIcon asset={meta.assets[1].asset}/>}
-                        {AssetDescriptor.parse(meta.assets[1].asset).toCurrency()}
-                        {issuer === true && <AssetIssuer asset={asset}/>}
+                        {icon !== false && <AssetIcon asset={assetB}/>}
+                        {AssetDescriptor.parse(assetB).toCurrency()}
+                        {issuer === true && <AssetIssuer asset={assetB}/>}
                     </span>
-                </span>}
+                </span>
             </>
         } else {
             children = <>

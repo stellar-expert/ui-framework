@@ -38,9 +38,10 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
     if (!asset) return null
     let children = innerText
     if (!innerText) {
-        if (asset.poolId && meta) {
-            const [assetA, assetB] = meta.assets.map(a => AssetDescriptor.parse(a.asset))
-            children = <>
+        if (asset.poolId) {
+            if (meta) {
+                const [assetA, assetB] = meta.assets.map(a => AssetDescriptor.parse(a.asset))
+                children = <>
                 <span title={'Liquidity pool ' + asset.poolId}>
                     <span>
                         {icon !== false && <AssetIcon asset={assetA}/>}
@@ -54,7 +55,10 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                         {issuer === true && <AssetIssuer asset={assetB}/>}
                     </span>
                 </span>
-            </>
+                </>
+            } else {
+                children = <>{formatLongHex(asset.poolId)}</>
+            }
         } else {
             children = <>
                 {directoryInfo && (directoryInfo.tags || []).includes('malicious') &&

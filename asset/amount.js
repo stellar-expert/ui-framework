@@ -16,7 +16,7 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
     return <span className="amount nowrap">
         {stripTrailingZeros(value)}
         {!!asset && <>
-            {isAssetValid(asset) || isValidPoolId(asset) ? <AssetLink asset={asset} icon={icon} issuer={issuer}/> : asset.toString()}
+            {' '}{isAssetValid(asset) || isValidPoolId(asset) ? <AssetLink asset={asset} icon={icon} issuer={issuer}/> : asset.toString()}
         </>}
     </span>
 }

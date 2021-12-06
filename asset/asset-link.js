@@ -44,11 +44,13 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[0].asset}/>}
                         {AssetDescriptor.parse(meta.assets[0].asset).toCurrency()}
+                        {issuer === true && <AssetIssuer asset={asset}/>}
                     </span>
-                    &nbsp;<i className="icon icon-plus text-tiny dimmed"/>&nbsp;
+                    <span style={{fontSize: '0.7em'}}>&nbsp;<i className="icon icon-plus dimmed"/>&nbsp;</span>
                     <span>
                         {icon !== false && <AssetIcon asset={meta.assets[1].asset}/>}
                         {AssetDescriptor.parse(meta.assets[1].asset).toCurrency()}
+                        {issuer === true && <AssetIssuer asset={asset}/>}
                     </span>
                 </span>}
             </>
@@ -59,7 +61,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                    title="Warning: reported for illicit or fraudulent activity"/>}
                 {icon !== false && <AssetIcon asset={asset}/>}
                 {asset.code}
-                {!!issuer && <AssetIssuer asset={asset}/>}
+                {issuer !== false && <AssetIssuer asset={asset}/>}
             </>
         }
     }
@@ -86,7 +88,6 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
 
 AssetLink.defaultProps = {
     link: true,
-    issuer: true,
     icon: true
 }
 

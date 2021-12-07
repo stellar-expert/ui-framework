@@ -87,11 +87,11 @@
 
       &:first-child {
         border-top: 1px solid var(--color-contrast-border);
-        padding-top: 0.5em;
+        padding-top: $container-padding!important;
       }
 
       &:last-child {
-        padding-bottom: 0.5em;
+        padding-bottom: $container-padding!important;
       }
     }
 

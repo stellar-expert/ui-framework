@@ -16,17 +16,18 @@
     transition: background-color 0.1s;
   }
 
-  td {
-    vertical-align: middle;
-  }
-
   td, th {
     padding: .5em .7em;
-    border: 1px solid var(--color-contrast-border);
+    border: none;
 
     &.collapsing {
       width: 1px;
     }
+  }
+
+  td {
+    border-bottom: 1px solid var(--color-contrast-border);
+    vertical-align: middle;
   }
 
   &.active tbody > tr:hover {
@@ -51,13 +52,16 @@
     }
   }
 
-
   @media (max-width: $responsive-mobile-browser-width) {
     display: block;
     margin: auto $container-padding*-1;
     width: calc(100% + #{2*$container-padding});
 
-    thead, tbody, td, th {
+    thead, th {
+      display: none;
+    }
+
+    tbody, td {
       display: block;
       width: 100% !important;
       box-sizing: border-box;
@@ -68,26 +72,30 @@
       border: 1px solid var(--color-contrast-border);
       border-bottom: none;
       padding: 0.5em 0;
+
+      &:last-child {
+        border-bottom: 1px solid var(--color-contrast-border);
+      }
     }
 
-    tr:last-child {
-      border-bottom: 1px solid var(--color-contrast-border);
-    }
-
-    td, th {
+    td {
       text-align: left !important;
       border: none;
-      padding: 0.1em $space-standard!important;
-    }
+      padding: 0.1em $space-standard !important;
 
-    td::before {
-      content: attr(data-header);
-      color: var(--color-dimmed);
+      &:before {
+        content: attr(data-header);
+        color: var(--color-dimmed);
+      }
+
+      &:first-child {
+        border-top: 1px solid var(--color-contrast-border);
+      }
     }
 
     &.clear {
-      td, th {
-        padding: .1em $space-standard!important;
+      td {
+        padding: .1em $space-standard !important;
       }
     }
   }

@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import {throttle} from 'throttle-debounce'
-import {useDeepEffect} from '../state/state-hooks'
+import equal from 'react-fast-compare'
 import apiCall from '../api/explorer-api-call'
+import {useDeepEffect} from '../state/state-hooks'
 import {stringifyQuery} from '../state/navigation'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
@@ -19,9 +20,9 @@ const defaults = {
 export function useAssetList(params) {
     const [loading, setLoading] = useState(false),
         [cursor, setCursor] = useState(),
-        [assets, setAssets] = useState([]),
+        [assets, setAssets] = useState({data: [], params}),
         loadPage = throttle(1000, function () {
-            let endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery({...defaults, ...params, cursor})
+            const endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery({...defaults, ...params, cursor})
             setLoading(true)
             apiCall(endpoint)
                 .then(({_embedded}) => {
@@ -29,7 +30,15 @@ export function useAssetList(params) {
                     if (res.length) {
                         setCursor(res[res.length - 1].paging_token)
                     }
-                    setAssets(existing => [...existing, ...res])
+                    setAssets(existing => {
+                        let data = res
+                        if (equal(params, assets.params)) {
+                            data = [...existing.data, ...res]
+                        } else {
+                            setCursor(undefined)
+                        }
+                        return {data, params}
+                    })
                     setLoading(false)
                 })
                 .catch(e => console.error(e))
@@ -38,10 +47,8 @@ export function useAssetList(params) {
                 })
         })
     useDeepEffect(() => {
-        setCursor(undefined)
-        setAssets([])
         loadPage()
     }, [params])
 
-    return {assets, loadPage, loading}
+    return {assets: assets.data, loadPage, loading}
 }

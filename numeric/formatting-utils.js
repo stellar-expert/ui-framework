@@ -61,7 +61,7 @@ function safeParseBignumber(value) {
 
 export function formatWithPrecision(value, precision = 7, separator = ',') {
     //use 7 decimals if not specified
-    if (!(precision >= 0)) {
+    if (!(precision >= 0) || precision > 7) {
         precision = 7
     }
     return addDecimalsSeparators(safeParseBignumber(value).toFixed(precision), separator, true)
@@ -100,7 +100,7 @@ export function formatWithGrouping(value, group) {
     if (group >= 1) {
         value = Math.ceil(value / group) * group
     }
-    return addDecimalsSeparators(value.toFixed(precision), ',', true)
+    return formatWithPrecision(value, precision)
 }
 
 export function formatPrice(value, significantDigits = 4) {

@@ -6,7 +6,7 @@ import jsLang from 'highlight.js/lib/languages/javascript'
 import jsonLang from 'highlight.js/lib/languages/json'
 import htmlLang from 'highlight.js/lib/languages/xml'
 import plaintextLang from 'highlight.js/lib/languages/plaintext'
-import tomlLang from 'highlight.js/lib/languages/toml'
+import tomlLang from 'highlight.js/lib/languages/ini'
 import './code-block.scss'
 
 hljs.registerLanguage('js', jsLang)

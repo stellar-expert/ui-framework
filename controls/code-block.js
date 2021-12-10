@@ -6,12 +6,14 @@ import jsLang from 'highlight.js/lib/languages/javascript'
 import jsonLang from 'highlight.js/lib/languages/json'
 import htmlLang from 'highlight.js/lib/languages/xml'
 import plaintextLang from 'highlight.js/lib/languages/plaintext'
+import tomlLang from 'highlight.js/lib/languages/toml'
 import './code-block.scss'
 
 hljs.registerLanguage('js', jsLang)
 hljs.registerLanguage('json', jsonLang)
 hljs.registerLanguage('html', htmlLang)
 hljs.registerLanguage('plain', plaintextLang)
+hljs.registerLanguage('toml', tomlLang)
 
 export function CodeBlock({children, lang, className, style} ) {
     if (lang) {
@@ -24,7 +26,7 @@ export function CodeBlock({children, lang, className, style} ) {
 
 CodeBlock.propTypes = {
     children: PropTypes.string.isRequired,
-    lang: PropTypes.oneOf(['js', 'json', 'html', 'plain']),
+    lang: PropTypes.oneOf(['js', 'json', 'html', 'plain', 'toml']),
     className: PropTypes.string,
     style: PropTypes.object
 }

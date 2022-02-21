@@ -12,6 +12,11 @@ const defaults = {
     sort: 'rating'
 }
 
+function getCurrentCursor(data) {
+    if (!data || !data.length) return undefined
+    return data[data.length - 1].paging_token
+}
+
 /**
  *
  * @param {Object} params
@@ -19,23 +24,24 @@ const defaults = {
  */
 export function useAssetList(params) {
     const [loading, setLoading] = useState(false),
-        [cursor, setCursor] = useState(),
         [assets, setAssets] = useState({data: [], params}),
         loadPage = throttle(1000, function () {
-            const endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery({...defaults, ...params, cursor})
+            if (loading) return
+            const requestParams = {
+                ...defaults, ...params
+            }
+            if (equal(params, assets.params)) {
+                requestParams.cursor = getCurrentCursor(assets.data)
+            }
+            const endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery(requestParams)
             setLoading(true)
             apiCall(endpoint)
-                .then(({_embedded}) => {
-                    const res = _embedded.records
-                    if (res.length) {
-                        setCursor(res[res.length - 1].paging_token)
-                    }
+                .then(res => {
+                    const {records} = res._embedded
                     setAssets(existing => {
-                        let data = res
-                        if (equal(params, assets.params)) {
-                            data = [...existing.data, ...res]
-                        } else {
-                            setCursor(undefined)
+                        let data = records
+                        if (equal(params, existing.params)) {
+                            data = [...existing.data, ...records]
                         }
                         return {data, params}
                     })

@@ -21,13 +21,14 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, childr
 
     useEffect(() => {
         if (!queryParam) return
-        const stopListeningQueryChanges = navigation.listen(({query}) => selectTab(query[queryParam]))
+        const stopListeningQueryChanges = navigation.listen(({query}) => {
+            const tab = query[queryParam] || (tabs.find(t => t.isDefault) || tabs[0])?.name
+            selectTab(tab)
+        })
         return () => {
             stopListeningQueryChanges && stopListeningQueryChanges()
-            setSelectedTab(null)
         }
-    })
-
+    }, [tabs, queryParam])
 
     function findTabByName(tabName) {
         return tabs.find(t => t.name === tabName)
@@ -47,11 +48,11 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, childr
         if (onChange) {
             onChange(tabName, this)
         }
-        if (queryParam) {
-            navigation.updateQuery({[queryParam]: tab.isDefault ? undefined : tabName})
-        }
         if (selectedTab === undefined) {
             setSelectedTab(tabName)
+        }
+        if (queryParam) {
+            navigation.updateQuery({[queryParam]: tab.isDefault ? undefined : tabName})
         }
     }
 

@@ -50,6 +50,10 @@ export * from './asset/amount'
 export * from './asset/asset-descriptor'
 export * from './asset/asset-meta-hooks'
 export * from './asset/asset-list-hooks'
+//claimable-balance-related components
+export * from './claimable-balance/claimable-balance-claimants'
+export * from './claimable-balance/claim-condtions-xdr-parser'
+export * from './claimable-balance/claimable-balance-overlap'
 //liquidity-pool-related components
 export * from './liquidity-pool/liquidity-pool-id'
 export * from './liquidity-pool/liquidity-pool-calcualtion'

@@ -24,7 +24,7 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
 Amount.propTypes = {
     amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     asset: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(AssetDescriptor)]),
-    decimals: PropTypes.number,
+    decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.oneOf(['auto'])]),
     adjust: PropTypes.bool,
     round: PropTypes.bool,
     issuer: PropTypes.bool,

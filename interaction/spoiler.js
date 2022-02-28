@@ -1,16 +1,32 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
+import cn from 'classnames'
 import './spoiler.scss'
 
-export function Spoiler({expanded = false, showMore = 'Show more', showLess = 'Show less', micro, onChange, style, active}) {
-    const text = expanded ? showLess : showMore
-    return <span className="spoiler">
-        <a href="#" className={!active ? 'dimmed' : undefined} title={micro ? text : undefined} style={style}
-           onClick={e => onChange({expanded: !expanded})}>
-            {!micro && <span className="spoiler-text">{text}</span>}
-            <i className={`vtop icon ${expanded ? 'icon-less' : 'icon-more'}`}/>
-        </a>
-    </span>
+export function Spoiler({expanded, showMore = 'Show more', showLess = 'Show less', onChange, className, micro, style, active, children}) {
+    const [expandedState, setExpandedState] = useState(expanded || false)
+    useEffect(() => {
+        setExpandedState(expanded)
+    }, [expanded])
+
+    function toggle() {
+        setExpandedState(prevState => {
+            const newState = !prevState
+            setExpandedState(newState)
+            onChange && onChange({expanded: newState})
+        })
+    }
+
+    const text = expandedState ? showLess : showMore
+    return <>
+        <span className={cn('spoiler', className)}>
+            <a href="#" className={!active ? 'dimmed' : undefined} title={micro ? text : undefined} style={style} onClick={toggle}>
+                {!micro && <span className="spoiler-text">{text}</span>}
+                <i className={`vtop icon ${expandedState ? 'icon-less' : 'icon-more'}`}/>
+            </a>
+        </span>
+        {expandedState ? children : null}
+    </>
 }
 
 Spoiler.propTypes = {

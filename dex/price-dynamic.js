@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import {formatPrice} from '../numeric/formatting-utils'
+import {formatPrice} from '@stellar-expert/formatter'
 import './price-dynamic.scss'
 
 export function PriceDynamic({change, current, prev, standalone, allowZero}) {

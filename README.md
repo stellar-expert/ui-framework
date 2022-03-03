@@ -1,3 +1,3 @@
 # @stellar-expert/ui-framework
 
-### StellarExpert UI shared components library
+### StellarExpert shared UI components library

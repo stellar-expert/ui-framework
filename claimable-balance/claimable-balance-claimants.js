@@ -1,6 +1,6 @@
 import React from 'react'
+import {xdrParseClaimant} from '@stellar-expert/claimable-balance-utils'
 import {AccountAddress} from '../account/account-address'
-import {xdrParseClaimant} from './claim-condtions-xdr-parser'
 
 export function ClaimableBalanceClaimants({claimants}) {
     const parsed = claimants.map(xdrParseClaimant)

@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros} from '@stellar-expert/formatter'
 import {AssetLink} from './asset-link'
-import {AssetDescriptor, isAssetValid, isValidPoolId} from './asset-descriptor'
-import {formatCurrency, formatWithAutoPrecision, stripTrailingZeros} from '../numeric/formatting-utils'
+import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
 
 export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
     if (amount === undefined || amount === null) return null
@@ -12,7 +12,7 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
     if (round) {
         amount = Math.round(amount)
     }
-    const value = decimals === 'auto' ? formatWithAutoPrecision(amount) : formatCurrency(amount, decimals)
+    const value = decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals)
     return <span className="amount nowrap">
         {stripTrailingZeros(value)}
         {!!asset && <>

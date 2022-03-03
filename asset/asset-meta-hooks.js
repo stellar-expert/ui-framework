@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {AssetDescriptor, isValidPoolId} from './asset-descriptor'
+import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import apiCall from '../api/explorer-api-call'
 import {BatchInfoLoader} from '../api/batch-info-loader'
 import ClientCache from '../api/client-cache'

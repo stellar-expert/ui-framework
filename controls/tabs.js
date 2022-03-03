@@ -78,7 +78,7 @@ Tabs.propTypes = {
     tabs: PropTypes.arrayOf(PropTypes.shape({
         name: PropTypes.string.isRequired,
         render: PropTypes.func.isRequired,
-        title: PropTypes.string,
+        title: PropTypes.any,
         isDefault: PropTypes.bool
     })).isRequired,
     className: PropTypes.string,

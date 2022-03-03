@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {StrKey} from 'stellar-sdk'
+import {shortenString} from '@stellar-expert/formatter'
 import {AccountIdenticon} from './identicon'
 import {InfoTooltip} from '../controls/info-tooltip'
 import {useDirectory} from '../directory/directory-hooks'
-import {formatLongHex} from '../numeric/formatting-utils'
 import {parseMuxedAccount} from './muxed-account-parser'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
@@ -84,7 +84,7 @@ export function AccountAddress({account, chars = 8, name, link, style, className
     let innerStyle = !style ? undefined : style
 
     if (chars && chars !== 'all') {
-        address = formatLongHex(account, chars)
+        address = shortenString(account, chars)
     }
 
     const children = <>

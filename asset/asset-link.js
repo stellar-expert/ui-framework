@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
-import {AssetDescriptor} from './asset-descriptor'
+import {shortenString} from '@stellar-expert/formatter'
+import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {AccountAddress} from '../account/account-address'
 import {useAssetMeta} from './asset-meta-hooks'
 import {useDirectory} from '../directory/directory-hooks'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
-import {formatLongHex} from '../numeric/formatting-utils'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
 import './asset-link.scss'
 
@@ -57,7 +57,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                 </span>
                 </>
             } else {
-                children = <>{formatLongHex(asset.poolId)}</>
+                children = <>{shortenString(asset.poolId)}</>
             }
         } else {
             children = <>

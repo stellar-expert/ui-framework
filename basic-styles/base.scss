@@ -35,7 +35,7 @@ body {
 @include scrollbars(6px, var(--color-dimmed), var(--color-contrast-border));
 
 ::selection {
-  background-color: var(--color-alt-bg)!important;
+  background-color: transparentize($color-primary, 0.8) !important;
   color: var(--color-text);
 }
 

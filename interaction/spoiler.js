@@ -22,7 +22,7 @@ export function Spoiler({expanded, showMore = 'Show more', showLess = 'Show less
         <span className={cn('spoiler', className)}>
             <a href="#" className={!active ? 'dimmed' : undefined} title={micro ? text : undefined} style={style} onClick={toggle}>
                 {!micro && <span className="spoiler-text">{text}</span>}
-                <i className={`vtop icon ${expandedState ? 'icon-less' : 'icon-more'}`}/>
+                <i className={`icon ${expandedState ? 'icon-less' : 'icon-more'}`}/>
             </a>
         </span>
         {expandedState ? children : null}

@@ -1,7 +1,8 @@
+import './index.scss'
+
 window.explorerFrontendOrigin = window.explorerFrontendOrigin || 'https://stellar.expert'
 window.explorerApiOrigin = window.explorerApiOrigin || 'https://api.stellar.expert'
 
-import './basic-styles/index.scss'
 //state management and utils
 export * from './state/state-hooks'
 export * from './state/dynamic-module'
@@ -25,6 +26,7 @@ export * from './controls/code-block'
 export * from './controls/slider'
 export * from './controls/external-link'
 //interaction
+export * from './interaction/autofocus'
 export * from './interaction/block-select'
 export * from './interaction/copy-to-clipboard'
 export * from './interaction/spoiler'

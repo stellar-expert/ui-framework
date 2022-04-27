@@ -1,12 +1,8 @@
-import {useEffect, useRef} from 'react'
-
-export function useAutoFocusRef() {
-    const inputRef = useRef(null)
-    useEffect(() => {
-        const {current} = inputRef
-        if (current) {
-            setTimeout(() => current.focus(), 200)
+export function useAutoFocusRef(inputRef) {
+    if (!inputRef) return
+    setTimeout(() => {
+        if (document.body.contains(inputRef)) {
+            inputRef.focus()
         }
-    }, [])
-    return inputRef
+    }, 200)
 }

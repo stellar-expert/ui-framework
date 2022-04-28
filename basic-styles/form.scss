@@ -34,6 +34,18 @@ input[type='radio'] {
   filter: grayscale(100%);
 }
 
+input[type='text'].key {
+  letter-spacing: -0.05em;
+  font-size: 0.9em;
+  font-family: $font-face-mono;
+
+  &::placeholder {
+    letter-spacing: 0;
+    font-size: $font-size-base;
+    font-family: $font-face-primary;
+  }
+}
+
 .input-like {
   min-height: 4rem;
   height: auto;

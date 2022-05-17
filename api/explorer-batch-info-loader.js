@@ -1,10 +1,10 @@
 import {throttle} from 'throttle-debounce'
 
-export class BatchInfoLoader {
+export class ExplorerBatchInfoLoader {
     constructor(fetchCallback, processResponseCallback) {
         this.pendingRequests = {}
         this.requestsQueue = []
-        this.fetchDataFromServer = throttle(500, false, this.fetchDataFromServer, false)
+        this.fetchDataFromServer = throttle(500, this.fetchDataFromServer)
         this.fetchCallback = fetchCallback
         this.processResponseCallback = processResponseCallback
     }

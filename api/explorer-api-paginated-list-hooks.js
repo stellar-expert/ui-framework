@@ -1,10 +1,10 @@
 import {useRef} from 'react'
-import {parseQuery, stringifyQuery, navigation} from '../state/navigation'
 import isEqual from 'react-fast-compare'
-import apiCache from './api-cache'
-import fetchExplorerApi from './explorer-api-call'
-import {useDependantState} from '../state/state-hooks'
+import {parseQuery, stringifyQuery, navigation} from '@stellar-expert/navigation'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
+import {useDependantState} from '../state/state-hooks'
+import fetchExplorerApi from './explorer-api-call'
+import apiCache from './api-cache'
 
 function inverseOrder(order) {
     return order === 'desc' ? 'asc' : 'desc'
@@ -12,16 +12,16 @@ function inverseOrder(order) {
 
 class PaginatedListViewModel {
     /**
-     * Create new instance of PaginatedListViewModel.
-     * @param {string} endpoint - API endpoint.
-     * @param {object} [props] - Extra model params.
-     * @param {int} [props.ttl] - Cache ttl.
-     * @param {int} [props.limit] - Rows limit.
-     * @param {boolean} [props.autoReverseRecordsOrder] - Reverse order to match default grid order.
-     * @param {boolean} [props.autoLoadLastPage]
-     * @param {'asc'|'desc'} [props.defaultSortOrder]
-     * @param {Object} [props.defaultQueryParams] - Default query values - query params not set if default.
-     * @param {function} [props.dataProcessingCallback] - Callback called for the fetched data.
+     * Create new instance of PaginatedListViewModel
+     * @param {String} endpoint - API endpoint
+     * @param {Object} [props] - Extra model params
+     * @param {Number} [props.ttl] - Cache time-to-live period
+     * @param {Number} [props.limit] - Rows limit
+     * @param {Boolean} [props.autoReverseRecordsOrder] - Reverse order to match default grid order
+     * @param {Boolean} [props.autoLoadLastPage] - Whether to load last page flag
+     * @param {'asc'|'desc'} [props.defaultSortOrder] - Results sorting order
+     * @param {Object} [props.defaultQueryParams] - Default query values - query params not set if default
+     * @param {Function} [props.dataProcessingCallback] - Callback called for the fetched data
      */
     constructor(endpoint, props = {limit: 20}) {
         this.endpoint = endpoint
@@ -49,62 +49,111 @@ class PaginatedListViewModel {
     }
 
     /**
-     *
-     * @type {function}
+     * API endpoint
+     * @type {String}
      */
-    updateApiResponseData = null
-
     endpoint = ''
 
+    /**
+     * Batch size
+     * @type {Number}
+     */
     limit = 20
 
+    /**
+     * Time-to-live cache period (in seconds)
+     * @type {Number}
+     */
     ttl = 30
 
     /**
      *
-     * @type {function|object}
+     * @type {Function|Object}
      */
     query = null
 
     /**
-     * Automatically reverse records order/
-     * @type {boolean}
+     * Automatically reverse records order
+     * @type {Boolean}
      */
     autoReverseRecordsOrder = false
 
+    /**
+     * Sorting order
+     * @type {String}
+     */
     defaultSortOrder = 'desc'
 
     /**
-     * Load last meaningful page if now results returned from the server.
-     * @type {boolean}
+     * Load last meaningful page if now results returned from the server
+     * @type {Boolean}
      */
     autoLoadLastPage = true
 
     /**
-     *
-     * @type {function}
+     * Function used to process data retrieved from the server
+     * @type {Function}
      */
     dataProcessingCallback = null
+
     /**
-     *
-     * @type {function}
+     * @type {Function}
      */
     onError = null
 
+    /**
+     * Data received from server
+     * @type {Object}
+     */
     data
 
+    /**
+     * Response loaded flag
+     * @type {Boolean}
+     */
     loaded = false
 
+    /**
+     * Fetch-in-progress flag
+     * @type {Boolean}
+     */
     loading = false
 
+    /**
+     * Whether the next page is available
+     * @type {Boolean}
+     */
     canLoadNextPage = false
 
+    /**
+     * Whether the prev page is available
+     * @type {Boolean}
+     */
     canLoadPrevPage = false
 
-    nextCursor = undefined
+    /**
+     * Next page cursor
+     * @type {String}
+     */
+    nextCursor
 
-    prevCursor = undefined
+    /**
+     * Previous page cursor
+     * @type {String}
+     */
+    prevCursor
 
+    /**
+     * @private
+     * @type {Function}
+     */
+    updateApiResponseData = null
+
+    /**
+     * Load portion of data from the server
+     * @param page
+     * @return {Promise<ExplorerApiListResponse>}
+     */
     load(page) {
         const paginationParams = {skip: undefined},
             navCursor = page < 0 ? this.prevCursor : this.nextCursor
@@ -267,11 +316,11 @@ class PaginatedListViewModel {
 
 
 /**
- * @typedef {Object} APIListResponse
- * @property {Object[]} data
- * @property {Boolean} loaded
- * @property {Boolean} loading
- * @property {Function} load
+ * @typedef {Object} ExplorerApiListResponse
+ * @property {Object[]} data - Data retrieved from the server
+ * @property {Boolean} loaded - Response result loaded flag
+ * @property {Boolean} loading - Fetch-in-progress flag
+ * @property {Function} load - Load pgae function
  */
 
 /**
@@ -287,9 +336,9 @@ class PaginatedListViewModel {
  * @param {Object} [defaultQueryParams] - Default query values - query params not set if default.
  * @param {Boolean} [autoLoad] - Default query values - query params not set if default.
  * @param {Array} [dependencies] - Additional dependencies to track for state updates.
- * @return {APIListResponse}
+ * @return {ExplorerApiListResponse}
  */
-export function usePaginatedAPI(apiEndpoint,
+export function useExplorerPaginatedApi(apiEndpoint,
                          {
                              ttl = 30,
                              limit = 20,

@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
+import {navigation} from '@stellar-expert/navigation'
 import {useDependantState} from '../state/state-hooks'
-import {navigation} from '../state/navigation'
 import './tabs.scss'
 
 export function Tabs({tabs, selectedTab, queryParam, className, onChange, children}) {

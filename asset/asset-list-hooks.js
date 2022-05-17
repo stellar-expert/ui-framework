@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import {throttle} from 'throttle-debounce'
 import equal from 'react-fast-compare'
+import {stringifyQuery} from '@stellar-expert/navigation'
 import apiCall from '../api/explorer-api-call'
 import {useDeepEffect} from '../state/state-hooks'
-import {stringifyQuery} from '../state/navigation'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 const defaults = {

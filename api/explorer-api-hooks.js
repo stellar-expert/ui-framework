@@ -1,32 +1,47 @@
 import {useEffect, useState} from 'react'
 import isEqual from 'react-fast-compare'
-import apiCache from './api-cache'
-import fetchExplorerApi from './explorer-api-call'
-import {stringifyQuery} from '../state/navigation'
+import {stringifyQuery} from '@stellar-expert/navigation'
 import {addVisibilityChangeListener, isDocumentVisible} from '../state/page-visibility-helpers'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
+import fetchExplorerApi from './explorer-api-call'
+import apiCache from './api-cache'
 
-class APIResult {
+export class ExplorerApiResult {
     constructor(data, ts) {
         this.data = data
         this.fetchedAt = ts
     }
 
+    /**
+     * API response data
+     * @type {Object}
+     */
     data = null
 
+    /**
+     * Response timestamp
+     * @type {Number}
+     */
     fetchedAt = 0
 
+    /**
+     * Response result
+     * @return {Boolean}
+     */
     get loaded() {
         return !!this.data
     }
 
+    /**
+     * @private
+     */
     update(data) {
         this.data = data
     }
 }
 
 function buildAPIResult(data, ts) {
-    return new APIResult(data, ts)
+    return new ExplorerApiResult(data, ts)
 }
 
 function setupAutoRefresh(refreshInterval, fetchData) {
@@ -104,9 +119,9 @@ function fetchData(url, ttl, processResult) {
  * @param {Number} [refreshInterval] - Auto-refresh interval in seconds for dynamic data.
  * @param {Number} [ttl] - Cache time-to-live in seconds.
  * @param {Function} [processResult] - Callback to process a fetch result.
- * @return {APIResponse}
+ * @return {ExplorerApiResult}
  */
-export function useAPI(apiEndpoint, {refreshInterval, ttl = 60, processResult} = {}) {
+export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult} = {}) {
     const [apiResponseData, updateApiResponseData] = useState(() => buildAPIResult())
     useEffect(() => {
         let componentUnmounted = false
@@ -152,13 +167,6 @@ export function useAPI(apiEndpoint, {refreshInterval, ttl = 60, processResult} =
     return apiResponseData
 }
 
-
-/**
- * @typedef {Object} APIResponse
- * @property {Object} data
- * @property {Boolean} loaded
- * @property {Number} fetchedAt
- */
 
 /**
  * @typedef {Object} APIEndpointParams

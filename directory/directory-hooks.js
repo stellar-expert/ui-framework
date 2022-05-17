@@ -1,14 +1,14 @@
 import {useState} from 'react'
 import {StrKey} from 'stellar-sdk'
-import ClientCache from '../api/client-cache'
+import {stringifyQuery} from '@stellar-expert/navigation'
+import {InMemoryClientCache} from '@stellar-expert/client-cache'
 import {useDependantState} from '../state/state-hooks'
 import apiCall from '../api/explorer-api-call'
-import {BatchInfoLoader} from '../api/batch-info-loader'
-import {stringifyQuery} from '../state/navigation'
+import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 
-const cache = new ClientCache({prefix: 'dm:'})
+const cache = new InMemoryClientCache({})
 
-const loader = new BatchInfoLoader(batch => {
+const loader = new ExplorerBatchInfoLoader(batch => {
     return apiCall('directory' + stringifyQuery({address: batch}))
 }, entry => {
     cache.set(entry.address, entry)

@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {stringifyQuery} from '@stellar-expert/navigation'
+import {InMemoryClientCache} from '@stellar-expert/client-cache'
 import apiCall from '../api/explorer-api-call'
-import {BatchInfoLoader} from '../api/batch-info-loader'
-import ClientCache from '../api/client-cache'
-import {stringifyQuery} from '../state/navigation'
+import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
@@ -21,9 +21,9 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
  * @property {AssetBasicTomlInfo} toml_info
  */
 
-const cache = new ClientCache({prefix: 'am:'})
+const cache = new InMemoryClientCache()
 
-const loader = new BatchInfoLoader(batch => {
+const loader = new ExplorerBatchInfoLoader(batch => {
     return apiCall(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
 }, entry => {
     cache.set(entry.name, entry)

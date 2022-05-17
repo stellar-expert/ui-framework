@@ -92,7 +92,7 @@ export function Dropdown({
         e.stopPropagation()
     }
 
-    const scrollList = throttle(200, false, e => {
+    const scrollList = throttle(200, e => {
         if (onScroll) {
             const {target} = e,
                 pos = {position: target.scrollTop, rel: 'middle'}

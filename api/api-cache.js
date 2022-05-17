@@ -1,5 +1,5 @@
-import ClientCache from './client-cache'
+import {InMemoryClientCache} from '@stellar-expert/client-cache'
 
-const apiCache = new ClientCache({prefix: 'ac:'})
+const apiCache = new InMemoryClientCache({prefix: 'ac:'})
 
 export default apiCache

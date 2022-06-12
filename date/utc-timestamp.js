@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {formatDateUTC} from '@stellar-expert/formatter'
 import {BlockSelect} from '../interaction/block-select'

@@ -28,7 +28,7 @@
     "@stellar-expert/asset-descriptor": "github:stellar-expert/asset-descriptor",
     "@stellar-expert/claimable-balance-utils": "github:stellar-expert/claimable-balance-utils",
     "@stellar-expert/client-cache": "github:stellar-expert/client-cache",
-    "@stellar-expert/formatter": "github:stellar-expert/formatter#v1.1.0",
+    "@stellar-expert/formatter": "github:stellar-expert/formatter#v1.1.1",
     "@stellar-expert/navigation": "github:stellar-expert/navigation#v1.0.1",
     "highlight.js": "^11.5.1",
     "history": "^4.10.1",

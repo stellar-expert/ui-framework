@@ -148,9 +148,10 @@ export function fetchData(url, ttl, processResult) {
  */
 export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult} = {}) {
     const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
-    const [apiResponseData, updateApiResponseData] = useState(() => buildApiResult(endpointWithQuery))
+    const [apiResponseData, updateApiResponseData] = useState(buildApiResult(endpointWithQuery))
     useEffect(() => {
         let componentUnmounted = false
+        updateApiResponseData(buildApiResult(endpointWithQuery))
 
         if (!apiEndpoint) {
             updateApiResponseData(buildApiError(endpointWithQuery, 'Not found', 404))

@@ -7,16 +7,34 @@ import fetchExplorerApi from './explorer-api-call'
 import apiCache from './api-cache'
 
 export class ExplorerApiResult {
-    constructor(data, ts) {
+    constructor(apiEndpoint, data, ts) {
+        this.apiEndpoint = apiEndpoint
         this.data = data
         this.fetchedAt = ts
     }
+
+    /**
+     * Relative API URL
+     * @type {String}
+     */
+    apiEndpoint
 
     /**
      * API response data
      * @type {Object}
      */
     data = null
+
+    /**
+     * Response error if any
+     * @type {String}
+     */
+    error
+
+    /**
+     * @type {Number}
+     */
+    status = 200
 
     /**
      * Response timestamp
@@ -29,7 +47,7 @@ export class ExplorerApiResult {
      * @return {Boolean}
      */
     get loaded() {
-        return !!this.data
+        return !!this.data || !!this.error
     }
 
     /**
@@ -40,8 +58,15 @@ export class ExplorerApiResult {
     }
 }
 
-function buildAPIResult(data, ts) {
-    return new ExplorerApiResult(data, ts)
+function buildApiResult(apiEndpoint, data, ts) {
+    return new ExplorerApiResult(apiEndpoint, data, ts)
+}
+
+function buildApiError(apiEndpoint, error, status) {
+    const res = new ExplorerApiResult(apiEndpoint, null, Math.round(new Date().getTime() / 1000))
+    res.error = error
+    res.status = status
+    return res
 }
 
 function setupAutoRefresh(refreshInterval, fetchData) {
@@ -90,7 +115,7 @@ function setupAutoRefresh(refreshInterval, fetchData) {
 
 const currentRequests = {}
 
-function fetchData(url, ttl, processResult) {
+export function fetchData(url, ttl, processResult) {
     //try to retrieve data from the browser cache
     const fromCache = apiCache.get(url)
     //check if the cache is fresh enough
@@ -122,12 +147,13 @@ function fetchData(url, ttl, processResult) {
  * @return {ExplorerApiResult}
  */
 export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult} = {}) {
-    const [apiResponseData, updateApiResponseData] = useState(() => buildAPIResult())
+    const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
+    const [apiResponseData, updateApiResponseData] = useState(() => buildApiResult(endpointWithQuery))
     useEffect(() => {
         let componentUnmounted = false
 
         if (!apiEndpoint) {
-            updateApiResponseData({error: 'Not found', status: 404, loaded: true})
+            updateApiResponseData(buildApiError(endpointWithQuery, 'Not found', 404))
             return
         }
 
@@ -135,14 +161,12 @@ export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processR
             apiEndpoint = apiEndpoint.path + stringifyQuery(apiEndpoint.query)
         }
 
-        const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
-
         function load() {
             fetchData(endpointWithQuery, ttl, processResult)
                 .then(({data, ts}) => {
                     if (componentUnmounted) return
 
-                    const newData = buildAPIResult(data, ts)
+                    const newData = buildApiResult(endpointWithQuery, data, ts)
 
                     if (!isEqual(newData, apiResponseData)) {
                         updateApiResponseData(newData)
@@ -166,7 +190,6 @@ export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processR
 
     return apiResponseData
 }
-
 
 /**
  * @typedef {Object} APIEndpointParams

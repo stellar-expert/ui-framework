@@ -189,7 +189,7 @@ export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processR
             stopAutoRefresh()
         }
     }, [apiEndpoint])
-    if (apiResponseData.apiEndpoint !== apiEndpoint && !allowStaleDataTransition)
+    if (apiResponseData.apiEndpoint !== endpointWithQuery && !allowStaleDataTransition)
         return buildApiResult(endpointWithQuery) //return empty result on URL transition if allowStaleDataTransition not set
 
     return apiResponseData

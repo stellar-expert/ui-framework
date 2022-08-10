@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "private": true,
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
@@ -32,7 +32,7 @@
     "@stellar-expert/navigation": "github:stellar-expert/navigation#v1.0.1",
     "highlight.js": "^11.5.1",
     "history": "^4.10.1",
-    "react-copy-to-clipboard": "^4.3.1",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-datepicker": "^4.8.0",
     "react-timeago": "^6.2.1",
     "toml": "^3.0.0"

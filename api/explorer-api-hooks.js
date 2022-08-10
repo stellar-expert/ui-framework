@@ -144,9 +144,10 @@ export function fetchData(url, ttl, processResult) {
  * @param {Number} [refreshInterval] - Auto-refresh interval in seconds for dynamic data.
  * @param {Number} [ttl] - Cache time-to-live in seconds.
  * @param {Function} [processResult] - Callback to process a fetch result.
+ * @param {Boolean} [allowStaleDataTransition] - Allow stale data to be returned when the url changed and the new data has not been loaded yet.
  * @return {ExplorerApiResult}
  */
-export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult} = {}) {
+export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult, allowStaleDataTransition = false} = {}) {
     const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
     const [apiResponseData, updateApiResponseData] = useState(buildApiResult(endpointWithQuery))
     useEffect(() => {
@@ -188,6 +189,8 @@ export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processR
             stopAutoRefresh()
         }
     }, [apiEndpoint])
+    if (apiResponseData.apiEndpoint !== apiEndpoint && !allowStaleDataTransition)
+        return buildApiResult(endpointWithQuery) //return empty result on URL transition if allowStaleDataTransition not set
 
     return apiResponseData
 }

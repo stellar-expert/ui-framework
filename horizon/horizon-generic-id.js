@@ -17,8 +17,8 @@ import Bignumber from 'bignumber.js'
 export function parseStellarGenericId(id) {
     if (!/^\d{1,19}$/.test(id)) return {type: 'unknown'}
     let parsed = new Bignumber(id),
-        ledger = parsed.div(4294967296).floor(),
-        opOrder = parsed.modulo(4096)
+        ledger = parsed.idiv(4294967296),
+        opOrder = parsed.mod(4096)
 
     const res = {
         id,

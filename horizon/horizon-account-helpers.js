@@ -1,4 +1,4 @@
-import {applyListQueryParameters, initHorizon} from './horizon-client-helpers'
+import {applyListQueryParameters, loadAllHorizonRecords, initHorizon} from './horizon-client-helpers'
 
 /**
  * Retrieve account status from Horizon

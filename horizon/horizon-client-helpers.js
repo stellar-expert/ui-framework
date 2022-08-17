@@ -10,7 +10,7 @@ export function initHorizon() {
  * @param {CallBuilder} query
  * @return {Promise<Object[]>}
  */
-async function loadAllHorizonRecords(query) {
+export async function loadAllHorizonRecords(query) {
     let res = []
     let response = await query.call()
     while (true) {

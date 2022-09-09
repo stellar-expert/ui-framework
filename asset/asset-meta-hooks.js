@@ -44,9 +44,10 @@ function retrieveFromCache(asset) {
  * @return {AssetMeta}
  */
 export function useAssetMeta(asset) {
-    asset = AssetDescriptor.parse(asset).toFQAN()
+    asset = asset ? AssetDescriptor.parse(asset).toFQAN() : null
     const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
     useEffect(() => {
+        if (!asset) return
         const cached = retrieveFromCache(asset)
         setAssetInfo(cached)
         if (cached) return

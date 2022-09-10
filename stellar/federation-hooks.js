@@ -1,3 +1,4 @@
+import {FederationServer} from 'stellar-sdk'
 import {useDependantState} from '../state/state-hooks'
 
 /**

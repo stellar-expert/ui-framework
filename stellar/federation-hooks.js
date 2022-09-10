@@ -8,7 +8,7 @@ import {useDependantState} from '../state/state-hooks'
  */
 export function useResolvedFederationName(account) {
     const [federationName, setFederationName] = useDependantState(() => {
-        FederationServer.resolve(originalTerm)
+        FederationServer.resolve(account)
             .then(res => setFederationName(res.stellar_address || null))
         return null
     }, [account])

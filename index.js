@@ -15,8 +15,6 @@ export * from './state/theme'
 //explorer API bindings
 export * from './api/explorer-api-hooks'
 export * from './api/explorer-api-paginated-list-hooks'
-export * from './api/federation-resolver'
-export * from './api/federation-hooks'
 //Horizon API binding and utils
 export * from './horizon/horizon-generic-id'
 export * from './horizon/horizon-client-helpers'
@@ -28,7 +26,7 @@ export * from './horizon/horizon-account-helpers'
 export * from './horizon/horizon-orderbook-helpers'
 export * from './horizon/horizon-trades-helper'
 //TOML metadata
-export * from './toml/toml-api-hooks'
+export * from './stellar/federation-hooks'
 //basic UI controls
 export * from './controls/button'
 export * from './controls/button-group'

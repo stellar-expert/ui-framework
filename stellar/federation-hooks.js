@@ -10,6 +10,7 @@ export function useResolvedFederationName(account) {
     const [federationName, setFederationName] = useDependantState(() => {
         FederationServer.resolve(account)
             .then(res => setFederationName(res.stellar_address || null))
+            .catch(e => console.error(e))
         return null
     }, [account])
     return federationName

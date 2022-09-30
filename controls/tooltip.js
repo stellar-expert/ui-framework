@@ -1,18 +1,16 @@
 import React, {useState, useRef} from 'react'
-import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './tooltip.scss'
 
 /**
  * Compute tooltip position
- * @param {MouseEvent} e - Mouse event
+ * @param {EventTarget} target - Mouse hover target
  * @param {Element} node - Tooltip object
  * @param {'top'|'bottom'|'left'|'right'} desiredPlace - Desired tooltip place
  * @param {Object} offset
- * @return {{place: string, position: {top: number, left: number}}}
+ * @return {{place: String, position: {top: Number, left: Number}}}
  */
-function getTooltipPosition(e, node, desiredPlace, offset) {
-    const target = e.currentTarget
+function calculateTooltipPosition(target, node, desiredPlace, offset) {
     //dimensions of node and target
     const {width: tipWidth, height: tipHeight} = getBoundingRect(node),
         {width: targetWidth, height: targetHeight} = getBoundingRect(target)
@@ -45,15 +43,11 @@ function getTooltipPosition(e, node, desiredPlace, offset) {
             getTipOffsetBottom(p) > window.innerHeight //outside bottom
     }
 
-    function isInside(p) {
-        return !isOutside(p)
-    }
-
     let place
-    if (isInside(desiredPlace)) {
+    if (!isOutside(desiredPlace)) {
         place = desiredPlace
     } else {
-        const possiblePlacements = (['top', 'bottom', 'left', 'right']).filter(p => isInside(p))
+        const possiblePlacements = (['top', 'bottom', 'left', 'right']).filter(p => !isOutside(p))
         if (possiblePlacements.length > 0 && isOutside(desiredPlace)) {
             place = possiblePlacements[0]
         }
@@ -70,6 +64,10 @@ function getTooltipPosition(e, node, desiredPlace, offset) {
     }
 }
 
+/**
+ * @param {Element} node
+ * @return {PositionRect}
+ */
 function getBoundingRect(node) {
     const {width, height, top, left} = node.getBoundingClientRect()
     return {
@@ -80,21 +78,31 @@ function getBoundingRect(node) {
     }
 }
 
-function getMouseOffset(currentTarget) {
-    const {width, height, top, left} = getBoundingRect(currentTarget)
+/**
+ * @param {Element} element
+ * @return {{mouseX: Number, mouseY: Number}}
+ */
+function getMouseOffset(element) {
+    const {width, height, top, left} = getBoundingRect(element)
     return {
         mouseX: (left + (width / 2)) | 0,
         mouseY: (top + (height / 2)) | 0
     }
 }
 
+/**
+ * @param {Number} targetWidth
+ * @param {Number} targetHeight
+ * @param {Number} tipWidth
+ * @param {Number} tipHeight
+ *  */
 function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
     const notchSize = 6
     return {
         top: {
             l: -tipWidth / 2,
             r: tipWidth / 2,
-            t: -targetHeight / 2 + tipHeight + notchSize,
+            t: -targetHeight / 2 - tipHeight - notchSize,
             b: -targetHeight / 2
         },
         bottom: {
@@ -104,7 +112,7 @@ function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
             b: targetHeight / 2 + tipHeight
         },
         left: {
-            l: -tipWidth + targetWidth / 2,
+            l: -tipWidth - targetWidth / 2,
             r: -targetWidth / 2 + notchSize,
             t: -tipHeight / 2,
             b: tipHeight / 2
@@ -118,6 +126,10 @@ function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
     }
 }
 
+/**
+ * @param {PositionOffset} offset
+ * @return {{offsetX: Number, offsetY: Number}}
+ */
 function parseOffset(offset) {
     let offsetX = 0,
         offsetY = 0
@@ -138,7 +150,16 @@ function parseOffset(offset) {
     return {offsetX, offsetY}
 }
 
-export function Tooltip({desiredPlace = 'top', offset = {}, trigger, children, maxWidth = '20em', ...op}) {
+/**
+ * Tooltip component
+ * @param {any} trigger
+ * @param {PositionDescriptor} desiredPlace
+ * @param {PositionOffset} offset?
+ * @param {String} maxWidth?
+ * @param {any} children?
+ * @constructor
+ */
+export function Tooltip({trigger, desiredPlace = 'top', offset = {}, children, maxWidth = '20em', ...op}) {
     const [visible, setVisible] = useState(false),
         [place, setPlace] = useState('top'),
         [position, setPosition] = useState({top: 0, left: 0}),
@@ -146,7 +167,7 @@ export function Tooltip({desiredPlace = 'top', offset = {}, trigger, children, m
 
     function mouseEnter(e) {
         if (visible) return
-        const {place, position} = getTooltipPosition(e, content.current, desiredPlace, offset)
+        const {place, position} = calculateTooltipPosition(e.currentTarget, content.current, desiredPlace, offset)
         setVisible(true)
         setPosition(position)
         setPlace(place)
@@ -174,7 +195,20 @@ export function Tooltip({desiredPlace = 'top', offset = {}, trigger, children, m
     </div>)
 }
 
-Tooltip.propTypes = {
-    trigger: PropTypes.element.isRequired,
-    maxWidth: PropTypes.string
-}
+/**
+ * @typedef {'top'|'bottom'|'left'|'right'} PositionDescriptor
+ */
+/**
+ * @typedef {Object} PositionRect
+ * @property {Number} top - Top offset
+ * @property {Number} left - Left offset
+ * @property {Number} width - Element width
+ * @property {Number} height - Element height
+ */
+/**
+ * @typedef {Object} PositionOffset
+ * @property {Number} top? - Top offset
+ * @property {Number} bottom? - Bottom offset
+ * @property {Number} left? - Left offset
+ * @property {Number} right? - Right offset
+ */

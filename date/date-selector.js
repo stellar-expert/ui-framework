@@ -1,44 +1,39 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import DatePicker from 'react-datepicker'
-import './date-selector.scss'
+import React, {useEffect, useState} from 'react'
+import {debounce} from 'throttle-debounce'
+import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
 
-export function DateSelector({value, onChange, minDate, placeholder}) {
-    function selectDate(newDate) {
-        const d = newDate / 1000
-        if (value !== d && onChange) {
-            onChange(d)
-        }
+function trimIsoDateSeconds(date) {
+    if (typeof date === 'number') {
+        date = new Date(date)
     }
-
-    return <span>
-            <DatePicker onChange={selectDate}
-                        showTimeSelect
-                        selected={value && new Date(value * 1000) || null}
-                        closeOnScroll
-                        dateFormat="yyyy/MM/dd - HH:mm:ss"
-                        utcOffset={0}
-                        minDate={minDate}
-                        maxDate={new Date()}
-                        placeholderText={placeholder}/>
-        </span>
+    return date.toISOString().replace(/:\d{2}\.\d*Z/, '')
 }
 
-DateSelector.propTypes = {
-    /**
-     * Unix timestamp
-     */
-    value: PropTypes.number.isRequired,
-    /**
-     * Value change handler
-     */
-    onChange: PropTypes.func.isRequired,
-    /**
-     * Input placeholder
-     */
-    placeholder: PropTypes.string,
-    /**
-     * Minimum selectable value
-     */
-    minDate: PropTypes.instanceOf(Date)
+const minSelectableValue = trimIsoDateSeconds(new Date('2015-09-30T16:46:00Z'))
+
+/**
+ * @param {String} value
+ * @param {Function} onChange
+ * @constructor
+ */
+export default function DateSelector({value, onChange}) {
+    const [date, setDate] = useState(value ? trimIsoDateSeconds(normalizeDate(value)) : '')
+    useEffect(() => {
+        if (value) {
+            setDate(trimIsoDateSeconds(normalizeDate(value)))
+        } else {
+            setDate('')
+        }
+    }, [value])
+
+    const selectDate = debounce(400, function (newDate) {
+        if (value !== newDate) {
+            setDate(newDate)
+            onChange && onChange(toUnixTimestamp(normalizeDate(newDate)))
+        }
+    })
+
+    const max = trimIsoDateSeconds(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
+    return <input type="datetime-local" value={date} className="date-selector" step={60}
+                  min={minSelectableValue} max={max} onChange={e => selectDate(e.target.value)}/>
 }

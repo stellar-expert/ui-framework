@@ -63,7 +63,7 @@ function getAccountPredefinedDisplayName(address) {
 }
 
 function AccountDisplayName({type, address, name}) {
-    const predefined = getAccountPredefinedDisplayName()
+    const predefined = getAccountPredefinedDisplayName(address)
     let directoryInfo = useDirectory(!predefined && !name && isPublicKey(type) && address),
         warning
     if (name === false)

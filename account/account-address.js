@@ -57,10 +57,19 @@ function isPublicKey(type) {
     return type === 'muxed' || type === 'ed5519'
 }
 
+function getAccountPredefinedDisplayName(address) {
+    if (!window.predefinedAccountDisplayNames) return undefined
+    return window.predefinedAccountDisplayNames[address]
+}
+
 function AccountDisplayName({type, address, name}) {
-    let directoryInfo = useDirectory(!name && isPublicKey(type) && address),
+    const predefined = getAccountPredefinedDisplayName()
+    let directoryInfo = useDirectory(!predefined && !name && isPublicKey(type) && address),
         warning
-    if (name === false) return null
+    if (name === false)
+        return null
+    if (predefined)
+        return `[${predefined}] `
     if (directoryInfo) {
         name = directoryInfo.name
         if (directoryInfo.tags.includes('malicious')) {
@@ -76,25 +85,26 @@ function AccountDisplayName({type, address, name}) {
 
 }
 
-export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, ...otherProps}) {
+export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
     useStellarNetwork()
     let {type, address, muxedId} = decodeKeyType(account)
     if (!type) return null //failed to decode address type
 
     let innerStyle = !style ? undefined : style
 
+    let ed5519Address = address
     if (chars && chars !== 'all') {
         address = shortenString(account, chars)
     }
 
     const children = <>
         {prefix}
-        {icon !== false && <AccountIdenticon key="identicon" address={address}/>}
-        <AccountDisplayName type={type} address={address} name={name}/>
+        {icon !== false && ['ed5519', 'muxed'].includes(type) && <AccountIdenticon key="identicon" address={ed5519Address}/>}
+        <AccountDisplayName type={type} address={ed5519Address} name={name}/>
         <span className="account-pubkey" key="pubkey">{address}</span>
         {muxedId !== undefined && <InfoTooltip icon="icon-plus">
             Subaccount of a custodial account<br/>
-            <AccountAddress account={address} name={false} chars={12}/>
+            <AccountAddress account={ed5519Address} name={false} chars={12}/>
             <div className="dimmed text-tiny micro-space">Multiplexed id: {muxedId.toString()}</div>
         </InfoTooltip>}
         {suffix}
@@ -114,7 +124,7 @@ export function AccountAddress({account, chars = 8, name, link, style, className
         if (typeof link === 'string') {
             containerProps.href = link
         } else {
-            containerProps.href = formatExplorerLink('account', account)
+            containerProps.href = formatExplorerLink('account', account, network)
             if (window.origin !== explorerFrontendOrigin) {
                 containerProps.target = '_blank'
             }

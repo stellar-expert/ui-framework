@@ -12,9 +12,9 @@ import {useStellarNetwork} from '../state/stellar-network-hooks'
 import './account-address.scss'
 
 /**
- *
  * @param {String} key
- * @return {{address: String, type: ('muxed'|'ed5519'|'hash'|'tx'), [muxedId]: BigInt}|{error: Error}}
+ * @return {{address: String, type: ('muxed'|'ed25519'|'hash'|'tx'), [muxedId]: BigInt}|{error: Error}}
+ * @internal
  */
 function decodeKeyType(key) {
     try {
@@ -29,7 +29,7 @@ function decodeKeyType(key) {
                     error: new Error(`Invalid public key: ${key}`)
                 }
                 return {
-                    type: 'ed5519',
+                    type: 'ed25519',
                     address: key
                 }
             case 'X':
@@ -44,6 +44,14 @@ function decodeKeyType(key) {
                     type: 'tx',
                     address: key
                 }
+            case 'P':
+                const spayload = StrKey.decodeSignedPayload(key)
+                return {
+                    type: 'signedPayload',
+                    address: key,
+                    publicKey: StrKey.encodeEd25519PublicKey(spayload.slice(0, 32)),
+                    payload: spayload.slice(36, 36 + spayload.readUIntBE(32, 4)).toString('hex')
+                }
         }
     } catch (e) {
         console.error(e)
@@ -54,7 +62,7 @@ function decodeKeyType(key) {
 }
 
 function isPublicKey(type) {
-    return type === 'muxed' || type === 'ed5519'
+    return type === 'muxed' || type === 'ed25519'
 }
 
 function getAccountPredefinedDisplayName(address) {
@@ -87,25 +95,30 @@ function AccountDisplayName({type, address, name}) {
 
 export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
     useStellarNetwork()
-    let {type, address, muxedId} = decodeKeyType(account)
+    let {type, address, muxedId, publicKey, payload} = decodeKeyType(account)
     if (!type) return null //failed to decode address type
 
     let innerStyle = !style ? undefined : style
 
-    let ed5519Address = address
+    let ed25519Address = address
     if (chars && chars !== 'all') {
         address = shortenString(account, chars)
     }
 
     const children = <>
         {prefix}
-        {icon !== false && ['ed5519', 'muxed'].includes(type) && <AccountIdenticon key="identicon" address={ed5519Address}/>}
-        <AccountDisplayName type={type} address={ed5519Address} name={name}/>
-        <span className="account-pubkey" key="pubkey">{address}</span>
+        {icon !== false && isPublicKey(type) && <AccountIdenticon key="identicon" address={ed25519Address}/>}
+        <AccountDisplayName type={type} address={ed25519Address} name={name}/>
+        <span className="account-key">{address}</span>
         {muxedId !== undefined && <InfoTooltip icon="icon-plus">
             Subaccount of a custodial account<br/>
-            <AccountAddress account={ed5519Address} name={false} chars={12}/>
+            <AccountAddress account={ed25519Address} name={false} chars={12}/>
             <div className="dimmed text-tiny micro-space">Multiplexed id: {muxedId.toString()}</div>
+        </InfoTooltip>}
+        {payload !== undefined && <InfoTooltip icon="icon-plus">
+            ED25519 payload signer<br/>
+            <AccountAddress account={publicKey} name={false} chars={12}/>
+            <div className="dimmed text-tiny micro-space">Payload: {payload}</div>
         </InfoTooltip>}
         {suffix}
     </>

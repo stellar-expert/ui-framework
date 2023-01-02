@@ -56,6 +56,7 @@ export * from './ledger/ledger-entry-href-formatter'
 //account-related components
 export * from './account/identicon'
 export * from './account/account-address'
+export * from './account/signer-key'
 export * from './account/available-balance'
 export * from './account/muxed-account-parser'
 //asset-related components

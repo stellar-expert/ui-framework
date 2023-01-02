@@ -41,8 +41,7 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         if (asset.poolId) {
             if (meta) {
                 const [assetA, assetB] = meta.assets.map(a => AssetDescriptor.parse(a.asset))
-                children = <>
-                <span title={'Liquidity pool ' + asset.poolId} className="nowrap">
+                children = <span title={'Liquidity pool ' + asset.poolId} className="nowrap">
                     <span>
                         {icon !== false && <AssetIcon asset={assetA}/>}
                         {assetA.toCurrency()}
@@ -55,7 +54,6 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
                         {issuer === true && <AssetIssuer asset={assetB}/>}
                     </span>
                 </span>
-                </>
             } else {
                 children = <>{shortenString(asset.poolId)}</>
             }

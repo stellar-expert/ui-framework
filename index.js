@@ -61,6 +61,8 @@ export * from './account/available-balance'
 export * from './account/muxed-account-parser'
 //asset-related components
 export * from './asset/asset-link'
+export * from './asset/asset-issuer'
+export * from './asset/asset-icon'
 export * from './asset/amount'
 export * from './asset/asset-meta-hooks'
 export * from './asset/asset-list-hooks'

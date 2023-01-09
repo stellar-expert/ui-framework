@@ -3,31 +3,13 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {shortenString} from '@stellar-expert/formatter'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
-import {AccountAddress} from '../account/account-address'
-import {useAssetMeta} from './asset-meta-hooks'
 import {useDirectory} from '../directory/directory-hooks'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
+import {useAssetMeta} from './asset-meta-hooks'
+import {AssetIcon} from './asset-icon'
+import {AssetIssuer} from './asset-issuer'
 import './asset-link.scss'
-
-function AssetIcon({asset, style}) {
-    const meta = useAssetMeta(asset),
-        icon = meta?.toml_info?.image || meta?.toml_info?.orgLogo
-    if (asset.toString() === 'XLM') return <span className="asset-icon icon icon-stellar" style={style}/>
-    if (icon) return <span style={{...style, backgroundImage: `url('${icon}')`}} className="asset-icon"/>
-    return <span className="asset-icon icon icon-dot-circled" style={style}/>
-}
-
-function AssetIssuer({asset}) {
-    const meta = useAssetMeta(asset)
-    if (asset.isNative) return null
-    return <span className="asset-issuer">
-        <i className="icon icon-link"/>
-        {meta?.domain ?
-            <>{meta.domain}</> :
-            <><AccountAddress account={asset.issuer} link={false} chars={8} icon={false}/></>}
-    </span>
-}
 
 export function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
     if (!(asset instanceof AssetDescriptor))
@@ -60,8 +42,8 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         } else {
             children = <>
                 {directoryInfo && (directoryInfo.tags || []).includes('malicious') &&
-                <i className="icon icon-warning color-warning"
-                   title="Warning: reported for illicit or fraudulent activity"/>}
+                    <i className="icon icon-warning color-warning"
+                       title="Warning: reported for illicit or fraudulent activity"/>}
                 {icon !== false && <AssetIcon asset={asset}/>}
                 {asset.code}
                 {issuer !== false && <AssetIssuer asset={asset}/>}

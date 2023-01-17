@@ -11,13 +11,27 @@ import {AssetIcon} from './asset-icon'
 import {AssetIssuer} from './asset-issuer'
 import './asset-link.scss'
 
+/**
+ * Explorer asset link
+ * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
+ * @param {Boolean|String} link? - Reference link
+ * @param {Boolean} issuer? - Whether to show asset issuer
+ * @param {Boolean} icon? - Wheter to show asset icon
+ * @param {String} className? - Optional CSS class name
+ * @param {{}} style? - Optional CSS style
+ * @param {*} children? - Optional inner link text
+ * @constructor
+ */
 export function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
     if (!(asset instanceof AssetDescriptor))
         asset = AssetDescriptor.parse(asset)
-    const directoryInfo = useDirectory(asset?.issuer),
-        meta = useAssetMeta(asset)
+    const directoryInfo = useDirectory(asset?.issuer)
+    const    meta = useAssetMeta(asset)
     useStellarNetwork()
-    if (!asset) return null
+
+    if (!asset)
+        return null
+
     let children = innerText
     if (!innerText) {
         if (asset.poolId) {
@@ -57,7 +71,8 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         style,
         children
     }
-    if (link === false) return <span {...props}/>
+    if (link === false)
+        return <span {...props}/>
     if (typeof link === 'string') {
         props.href = link
     } else {
@@ -69,19 +84,4 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         }
     }
     return <a {...props}/>
-}
-
-AssetLink.defaultProps = {
-    link: true,
-    icon: true
-}
-
-AssetLink.propTypes = {
-    asset: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(AssetDescriptor)]).isRequired,
-    link: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-    issuer: PropTypes.bool,
-    icon: PropTypes.bool,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    children: PropTypes.any
 }

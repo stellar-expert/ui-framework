@@ -1,15 +1,15 @@
 import React, {useRef, useEffect} from 'react'
-import PropTypes from 'prop-types'
 import './identicon.scss'
 
 const DEFAULT_SIZE = 7
 const base32Alphabet = {};
+//map base32 alphabet
 ('ABCDEFGHIJKLMNOPQRSTUVWXYZ234567').split('').map((c, i) => base32Alphabet[c] = i)
 
 function decodeBase32(input) {
     const buf = []
-    let shift = 8,
-        carry = 0
+    let shift = 8
+    let carry = 0
 
     input.toUpperCase().split('').forEach(char => {
         const symbol = base32Alphabet[char] & 0xff
@@ -38,17 +38,19 @@ function decodeBase32(input) {
 
 /**
  * Draw Stellar address identicon on the given canvas
- * @param {HTMLCanvasElement|CanvasRenderingContext2D} canvas
- * @param {String} stellarAddress
- * @param {Number} [size]
- * @param {{top: Number, left: number}} [offset]
+ * @param {HTMLCanvasElement|CanvasRenderingContext2D} canvas - Canvas to render on
+ * @param {String} address - StrKey-encoded account address
+ * @param {Number} size? - Identicon size
+ * @param {{top: Number, left: number}} offset? - Drawing offset
  */
-export function drawIdenticon(canvas, stellarAddress, size = null, offset = null) {
-    if (!canvas || !stellarAddress) return
-    if (canvas?.getContext){
+export function drawIdenticon(canvas, address, size = null, offset = null) {
+    if (!canvas || !address)
+        return
+    if (canvas?.getContext) {
         canvas = canvas.getContext('2d')
     }
-    if (!(canvas instanceof CanvasRenderingContext2D) || !canvas.canvas.width) return
+    if (!(canvas instanceof CanvasRenderingContext2D) || !canvas.canvas.width)
+        return
     if (!offset) {
         offset = {top: 0, left: 0}
     }
@@ -56,15 +58,16 @@ export function drawIdenticon(canvas, stellarAddress, size = null, offset = null
         size = canvas.canvas.width
     }
     //take 16 meaningful bytes from the raw pub key
-    const decoded = decodeBase32(stellarAddress).slice(2, 16),
-        width = DEFAULT_SIZE,
-        height = DEFAULT_SIZE,
-        columns = Math.ceil(width / 2),
-        cellSize = size / width,
-        addressBytes = decoded.slice(1)
+    const decoded = decodeBase32(address).slice(2, 16)
+    const width = DEFAULT_SIZE
+    const height = DEFAULT_SIZE
+    const columns = Math.ceil(width / 2)
+    const cellSize = size / width
+    const addressBytes = decoded.slice(1)
 
     canvas.fillStyle = `hsl(${360 * decoded[0] / 256 | 0},58%,52%)`
     canvas.clearRect(offset.left, offset.top, size, size)
+
     for (let row = 0; row < height; row++) {
         for (let column = 0; column < columns; column++) {
             const position = column + row * columns,
@@ -77,6 +80,12 @@ export function drawIdenticon(canvas, stellarAddress, size = null, offset = null
     }
 }
 
+/**
+ * Renders account-specific identicon
+ * @param {String} address - StrKey-encoded account address
+ * @param {Number} size - Identicon size
+ * @constructor
+ */
 export function AccountIdenticon({address, size}) {
     const canvas = useRef(null)
     useEffect(() => drawIdenticon(canvas.current, address), [address])
@@ -93,10 +102,5 @@ export function AccountIdenticon({address, size}) {
             height: size
         }
     }
-
     return <canvas {...props}/>
-}
-
-AccountIdenticon.propTypes = {
-    address: PropTypes.string.isRequired
 }

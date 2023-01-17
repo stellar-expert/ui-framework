@@ -47,10 +47,10 @@ function decodeSigner(signer) {
 
 /**
  * Account signer key description
- * @param {Signer} signer
- * @param {String} name?
- * @param {String} className?
- * @param {Boolean} showWeight?
+ * @param {Signer} signer - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
+ * @param {String} name? - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
+ * @param {String} className? - Optional CSS class attribute
+ * @param {Boolean} showWeight? - Whether to display weight attribute
  * @constructor
  */
 export function SignerKey({signer, name, className, showWeight = true}) {
@@ -59,6 +59,6 @@ export function SignerKey({signer, name, className, showWeight = true}) {
     const {key, weight} = decodeSigner(signer)
     return <span className={className}>
         <AccountAddress account={key} name={name}/>
-        {!!showWeight && <span className="dimmed">&nbsp;(weight {weight})</span>}
+        {!!showWeight && <span className="dimmed text-tiny">&nbsp;(weight {weight})</span>}
     </span>
 }

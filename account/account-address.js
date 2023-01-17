@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {StrKey} from 'stellar-sdk'
 import {shortenString} from '@stellar-expert/formatter'
@@ -93,10 +92,26 @@ function AccountDisplayName({type, address, name}) {
 
 }
 
+/**
+ * Explorer link for Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
+ * @param {String} account - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
+ * @param {Number|'all'} chars? - Visible address characters count
+ * @param {Bool|String} name? - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
+ * @param {Bool|String} link? - Explicit link; if false, the component is rendered without a link
+ * @param {Boolean} icon? - Whether to show/hide account identicon
+ * @param {String} network? - Stellar network identifier
+ * @param {*} prefix? - Link prefix
+ * @param {*} suffix? - Link suffix
+ * @param {{}} style? - Optional CSS inline style
+ * @param {String} className? - Optional CSS class attribute
+ * @param {...*} otherProps? - Optional container parameters
+ * @constructor
+ */
 export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
     useStellarNetwork()
     let {type, address, muxedId, publicKey, payload} = decodeKeyType(account)
-    if (!type) return null //failed to decode address type
+    if (!type)
+        return null //failed to decode address type
 
     let innerStyle = !style ? undefined : style
 
@@ -145,43 +160,4 @@ export function AccountAddress({account, chars = 8, name, link, style, className
     }
 
     return React.createElement(renderAs, containerProps, children)
-}
-
-AccountAddress.propTypes = {
-    /**
-     * Account address
-     */
-    account: PropTypes.string.isRequired,
-    /**
-     * Explicit account name that overrides the name from Directory; if false, friendly name is ignored
-     */
-    name: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    /**
-     * Explicit link; if false, the component is rendered without a link
-     */
-    link: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    /**
-     * Visible address characters count
-     */
-    chars: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['all'])]),
-    /**
-     * Whether to show/hide account identicon
-     */
-    icon: PropTypes.bool,
-    /**
-     * Custom class attribute
-     */
-    className: PropTypes.string,
-    /**
-     * Additional inline styles
-     */
-    style: PropTypes.object,
-    /**
-     * Address link prefix
-     */
-    prefix: PropTypes.any,
-    /**
-     * Address link suffix
-     */
-    suffix: PropTypes.any
 }

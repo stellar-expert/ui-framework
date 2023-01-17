@@ -1,8 +1,15 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {useAssetMeta} from './asset-meta-hooks'
 
+/**
+ * Inline asset icon
+ * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
+ * @param {String} className? - Optional CSS class name
+ * @param {{}} style? - Optional CSS inline style
+ * @param {*} children? - Optional inner text
+ * @constructor
+ */
 export function AssetIcon({asset, className, style, children}) {
     const meta = useAssetMeta(asset)
     const icon = meta?.toml_info?.image || meta?.toml_info?.orgLogo
@@ -24,11 +31,4 @@ export function AssetIcon({asset, className, style, children}) {
     }
 
     return <span className={classes.join(' ')} style={style}>{children}</span>
-}
-
-AssetIcon.propTypes = {
-    asset: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(AssetDescriptor)]).isRequired,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    children: PropTypes.any
 }

@@ -39,6 +39,7 @@ function decodeSigner(signer) {
         } else if (signer.ed25519SignedPayload) {
             key = StrKey.encodeSignedPayload(signer.ed25519SignedPayload)
         }
+        weight = signer.weight
     }
     if (!key)
         throw new Error('Unknown signer type: ' + JSON.stringify(signer))

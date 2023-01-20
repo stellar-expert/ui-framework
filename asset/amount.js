@@ -1,5 +1,5 @@
 import React from 'react'
-import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros} from '@stellar-expert/formatter'
+import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros, denominate} from '@stellar-expert/formatter'
 import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
 import {AssetLink} from './asset-link'
 import Bignumber from 'bignumber.js'

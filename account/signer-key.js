@@ -60,6 +60,6 @@ export function SignerKey({signer, name, className, showWeight = true}) {
     const {key, weight} = decodeSigner(signer)
     return <span className={className}>
         <AccountAddress account={key} name={name}/>
-        {!!showWeight && <span className="dimmed text-tiny">&nbsp;(weight {weight})</span>}
+        {!!showWeight && <span className="dimmed text-tiny">&nbsp;(weight={weight})</span>}
     </span>
 }

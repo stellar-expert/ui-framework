@@ -69,7 +69,7 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, right,
     const s = selectedTab || internallySelectedTab
     const tabToRender = tabs.find(({name}) => name === s) || tabs[0]
 
-    return <div className={cn(tabs, {'inline-right': right}, className)}>
+    return <div className={cn('tabs', className, {'inline-right': right})}>
         <div className="tabs-header">
             <div>
                 {tabs.map(({name, title}) => <a href="#" key={name} onClick={() => selectTab(name)}

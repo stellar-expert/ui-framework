@@ -28,4 +28,17 @@
       }
     }
   }
+
+  &.inline-right {
+    margin-top: -3.6em;
+
+    .tabs-header {
+      justify-content: right;
+      border-bottom: none;
+    }
+
+    .selected {
+      border-bottom: none;
+    }
+  }
 }

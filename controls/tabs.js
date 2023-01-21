@@ -1,11 +1,21 @@
 import React, {useEffect} from 'react'
-import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {navigation} from '@stellar-expert/navigation'
 import {useDependantState} from '../state/state-hooks'
 import './tabs.scss'
 
-export function Tabs({tabs, selectedTab, queryParam, className, onChange, children}) {
+/**
+ * Tabs control
+ * @param {TabDescriptor[]} tabs - Tabs list
+ * @param {String} selectedTab? - Currently selected tab
+ * @param {Function} onChange? - Handler for tabChanged event
+ * @param {String} queryParam? - Associated query param name
+ * @param {String} className? - Optional CSS class name
+ * @param {Boolean} right? - Inline tabs to the right within the header
+ * @param {*} children? - Additional content to render in the tabs header
+ * @constructor
+ */
+export function Tabs({tabs, selectedTab, queryParam, className, onChange, right, children}) {
     const [internallySelectedTab, setSelectedTab] = useDependantState(() => {
         //return the props-derived tab name if available
         if (selectedTab) return selectedTab
@@ -56,10 +66,10 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, childr
         }
     }
 
-    const s = selectedTab || internallySelectedTab,
-        tabToRender = tabs.find(({name}) => name === s) || tabs[0]
+    const s = selectedTab || internallySelectedTab
+    const tabToRender = tabs.find(({name}) => name === s) || tabs[0]
 
-    return <div className={`tabs${className ? ' ' + className : ''}`}>
+    return <div className={cn(tabs, {'inline-right': right}, className)}>
         <div className="tabs-header">
             <div>
                 {tabs.map(({name, title}) => <a href="#" key={name} onClick={() => selectTab(name)}
@@ -68,21 +78,16 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, childr
             </div>
             {children}
         </div>
-        <div className="tabs-body">
+        {!!tabToRender.render && <div className="tabs-body">
             {tabToRender.render()}
-        </div>
+        </div>}
     </div>
 }
 
-Tabs.propTypes = {
-    tabs: PropTypes.arrayOf(PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        render: PropTypes.func.isRequired,
-        title: PropTypes.any,
-        isDefault: PropTypes.bool
-    })).isRequired,
-    className: PropTypes.string,
-    onChange: PropTypes.func,
-    selectedTab: PropTypes.string,
-    queryParam: PropTypes.string
-}
+/**
+ * @typedef {{}} TabDescriptor
+ * @property {String} name - Unique table name
+ * @property {String} title? - Optional display name (if differs from tab name)
+ * @property {Function} render? - Render callback
+ * @property {Boolean} isDefault? - Whether this tab should be displayed by default
+ */

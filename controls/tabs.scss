@@ -2,8 +2,7 @@
 
 .tabs {
   .tabs-header {
-    border-bottom: 1px solid var(--color-contrast-border);
-    margin: 1em 0;
+    margin-top: 1em;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
@@ -52,10 +51,12 @@
   }
 
   &.inline-right {
-    margin-top: -3.6em;
-
     .tabs-header {
       justify-content: right;
     }
+  }
+
+  > hr.flare {
+    margin-top: 0;
   }
 }

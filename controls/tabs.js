@@ -78,6 +78,7 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, right,
             </div>
             {children}
         </div>
+        <hr className="flare"/>
         {!!tabToRender.render && <div className="tabs-body">
             {tabToRender.render()}
         </div>}

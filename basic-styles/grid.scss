@@ -235,7 +235,31 @@
 .segment {
   background: var(--color-alt-bg);
   border: 1px solid rgba(0, 0, 0, 0.05);
-  padding: $space-micro $space-standard;
+  padding: $space-standard;
+  position: relative;
+
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    background: var(--color-bg);
+    height: 3rem;
+    width: 1.2rem;
+    transform: skew(-20deg);
+  }
+
+  &:before {
+    left: -0.7rem;
+    top: -1px;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  &:after {
+    right: -0.7rem;
+    bottom: -1px;
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+  }
 }
 
 .card {

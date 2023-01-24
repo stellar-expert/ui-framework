@@ -12,33 +12,37 @@
 
   & > button,
   & > .button {
-    border-radius: 0;
+    + .button {
+      margin-left: -0.76em;
 
-    &:first-child {
-      border-radius: $border-radius-input 0 0 $border-radius-input;
+      &.small {
+        margin-left: -0.96em;
+      }
+
+      &:before {
+        border-left: 2px solid var(--color-primary);
+      }
     }
 
-    &:last-child {
-      border-radius: 0 $border-radius-input $border-radius-input 0;
+    &.selected {
+      &.disabled,
+      &[disabled] {
+        cursor: pointer;
+        color: var(--color-text);
+        opacity: 1;
+
+        &:before {
+          background: var(--color-primary);
+        }
+      }
     }
 
-    &:not(:last-child) {
-      border-right-color: var(--color-primary);
+    &:not(:last-child) {;
       margin-right: 0;
     }
   }
 
-  & > * > button,
-  & > * > .button {
-    border-radius: 0;
-  }
-
-  & > :first-child > .button {
-    border-radius: $border-radius-input 0 0 $border-radius-input;
-  }
-
   & > :not(:last-child) > .button {
-    border-right-color: var(--color-primary);
     margin-right: 0;
   }
 }

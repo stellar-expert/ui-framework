@@ -16,7 +16,7 @@
 :root[data-theme=day] {
   --color-bg: #fff;
   --color-dashboard-bg: #f5f5f5;
-  --color-alt-bg: #D4EEF7;
+  --color-alt-bg: #f2fcff;
   --color-text: #333;
   --color-contrast-border: #d8dadb;
   --color-border-shadow: rgba(189, 191, 192, .1);
@@ -24,9 +24,9 @@
 }
 
 :root[data-theme=night] {
-  --color-bg: #2e3638;
+  --color-bg: #1b414a;
   --color-dashboard-bg: #272c2e;
-  --color-alt-bg: #224048;
+  --color-alt-bg: #12363f;
   --color-text: #eee;
   --color-contrast-border: #535759;
   --color-border-shadow: rgba(176, 185, 189, 0.1);

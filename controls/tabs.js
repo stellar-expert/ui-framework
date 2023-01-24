@@ -73,7 +73,7 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, right,
         <div className="tabs-header">
             <div>
                 {tabs.map(({name, title}) => <a href="#" key={name} onClick={() => selectTab(name)}
-                                                className={cn('tabs-item', {selected: s === name})}>
+                                                className={cn('tabs-item', 'condensed', {selected: s === name})}>
                     {title || name}</a>)}
             </div>
             {children}

@@ -1,22 +1,24 @@
-input:not([type='checkbox']):not([type=radio],[type=range]),
+input:not([type=checkbox],[type=radio],[type=range]),
 textarea,
 select,
 .input-like {
   appearance: none;
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-contrast-border);
-  border-radius: $border-radius-input;
+  background-color: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-contrast-border) !important;
   box-shadow: none;
   box-sizing: inherit;
   height: 4rem;
   font-size: $font-size-base;
   font-family: $font-face-primary;
   color: var(--color-text);
-  padding: 0.6rem 1rem;
+  padding: 0.6rem;
   width: 100%;
+  transition: border-bottom-color 0.2s;
 
   &:focus {
-    border-color: var(--color-highlight);
+    background-color: var(--color-alt-bg) !important;
+    border-bottom-color: var(--color-highlight) !important;
     outline: 0;
   }
 }
@@ -32,6 +34,14 @@ input[type='radio'] {
   display: inline;
   margin-left: 0;
   filter: grayscale(100%);
+}
+
+input[type=checkbox] {
+  vertical-align: bottom;
+  position: relative;
+  top: -0.3em;
+  padding: 0;
+  margin: 0;
 }
 
 input[type='text'].key {
@@ -73,5 +83,5 @@ legend {
 }
 
 ::placeholder {
-  color: var(--color-contrast-border);
+  color: var(--color-dimmed);
 }

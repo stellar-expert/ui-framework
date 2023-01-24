@@ -6,6 +6,7 @@ $button-spacing: 0.5rem;
 button {
   border: none;
   color: var(--color-bg);
+  background: none;
   cursor: pointer;
   display: inline-block;
   font-size: $font-size-base;

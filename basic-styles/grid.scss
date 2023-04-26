@@ -225,11 +225,32 @@
   justify-content: center;
 }
 
+.block {
+  display: block;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
 .flex-row {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+.flex-column {
+  display: flex!important;
+  flex-direction: column;
+}
+
+.h-100 {
+  height: 100%;
 }
 
 .segment {

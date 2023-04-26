@@ -5,6 +5,6 @@
 }
 
 @keyframes highlighter {
-  from {background-color: var(--color-alt-bg);}
+  from {background-color: transparentize($color-primary, 0.5);}
   to {background-color: transparent;}
 }

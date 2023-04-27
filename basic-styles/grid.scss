@@ -237,6 +237,11 @@
   display: inline-block;
 }
 
+.inline-overflow {
+  display: inline-flex;
+  max-width: 100%;
+}
+
 .flex-row {
   display: flex;
   justify-content: space-between;

@@ -22,7 +22,7 @@ function select(target) {
     sel.addRange(range)
 }
 
-export function BlockSelect({as = 'span', children, title, className, wrap, nowrap, inline, style, ...op}) {
+export function BlockSelect({as = 'span', children, title, className, wrap, inline, style, ...op}) {
     const props = {
         className: cn('block-select', className),
         onFocus: e => select(e.target),

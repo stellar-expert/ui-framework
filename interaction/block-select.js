@@ -34,7 +34,7 @@ export function BlockSelect({as = 'span', children, title, className, wrap, inli
     if (wrap) {
         props.style = {...props.style, whiteSpace: 'normal', overflow: 'visible'}
     }
-    if (nowrap) {
+    if (wrap === false) {
         props.style = {...props.style, whiteSpace: 'nowrap', overflow: 'hidden'}
     }
     if (inline){

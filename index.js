@@ -46,6 +46,7 @@ export * from './interaction/spoiler'
 export * from './interaction/theme-selector'
 export * from './interaction/inline-progress'
 export * from './interaction/responsive'
+export * from './interaction/qr-code'
 //date components
 export * from './date/utc-timestamp'
 export * from './date/elapsed-time'

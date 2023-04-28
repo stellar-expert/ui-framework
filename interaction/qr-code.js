@@ -1,6 +1,15 @@
 import React from 'react'
 import QR from 'qrcode.react'
 
+/**
+ * QrCode renderer
+ * @param {String} value - Value to encode
+ * @param {String} [caption] - Additional caption under QR code
+ * @param {Number} [size] - Width|height fo the rendered QR code image
+ * @param {String} [embeddedImage] - Optional logo to render in the center of QR code
+ * @param {Number} [embeddedSize] - Embeded logo size (by default 10% of QR code size)
+ * @return {JSX.Element}
+ */
 export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}) {
     const foreground = useMemo(() => getComputedStyle(document.documentElement).getPropertyValue('--color-primary'))
     const containerRef = useRef()
@@ -14,6 +23,9 @@ export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}
 function embedImage(src, size, qrSize) {
     if (!image)
         return undefined
+    if (!size) {
+        size = qrSize * 0.1
+    }
     return {
         src,
         height: size,

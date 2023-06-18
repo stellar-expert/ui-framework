@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, {useCallback, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {throttle} from 'throttle-debounce'
@@ -24,7 +24,7 @@ function DropdownOption({option, isSelected, select, style}) {
         title = value
     }
 
-    function selectOption(e) {
+    const selectOption = useCallback(function (e) {
         if (option.disabled) {
             e.stopPropagation()
             return
@@ -33,7 +33,7 @@ function DropdownOption({option, isSelected, select, style}) {
             e.preventDefault()
         }
         select(option)
-    }
+    }, [select, option])
 
     return <li className="dd-list-item" key={value || href} onClick={selectOption} style={style}>
         <a href={href || '#'} className={cn({className, selected: isSelected})}>{title}</a>
@@ -53,44 +53,49 @@ export function Dropdown({
                              hideSelected,
                              header,
                              footer,
+                             expanded,
                              onScroll,
                              onOpen,
                              onClose,
                              maxHeight = '35em'
                          }) {
-    const [listOpen, updateListOpen] = useState(false),
-        [selectedValue, updateSelectedValue] = useDependantState(() => {
-            document.addEventListener('click', collapseDropdown)
-            return value
-        }, [value], () => {
-            document.removeEventListener('click', collapseDropdown)
-        }),
-        list = useRef(null)
+    const [listOpen, updateListOpen] = useState(!!expanded)
+    const collapseDropdown = useCallback(function () {
+        updateListOpen(open => {
+            if (!open)
+                return false
+            onClose?.call(this, this)
+            return false
+        })
+    }, [onClose])
+    const [selectedValue, updateSelectedValue] = useDependantState(() => {
+        if (listOpen) {
+            setTimeout(() => {
+                document.addEventListener('click', collapseDropdown)
+            }, 200)
+        }
+        return value
+    }, [value, listOpen], () => {
+        document.removeEventListener('click', collapseDropdown)
+    })
+    const list = useRef(null)
 
-    function collapseDropdown() {
-        updateListOpen(false)
-        onOpen?.call(this, this)
-    }
-
-    function toggleList(e) {
+    const toggleList = useCallback(function toggleList(e) {
         e && e.nativeEvent.stopImmediatePropagation()
         updateListOpen(prevState => {
-            if (disabled) return false;
+            if (disabled)
+                return false;
             (prevState ? onClose : onOpen)?.call(this, this)
             return !prevState
         })
-    }
+    }, [disabled, onClose, onOpen])
 
-    function select(option) {
+    const select = useCallback(function (option) {
         collapseDropdown()
         if (disabled) return
         onChange && onChange(option.value || option)
         updateSelectedValue(option)
-    }
-
-    function preventClosing(e) {
-        e.stopPropagation()
-    }
+    }, [collapseDropdown, onChange])
 
     const scrollList = throttle(200, e => {
         if (onScroll) {
@@ -104,16 +109,20 @@ export function Dropdown({
         }
     })
 
-    let {option: selectedItem, isDefault} = getSelectedOption([value, selectedValue], options),
-        listStyle = {maxHeight: `min(70vh, ${maxHeight})`},
-        listClass
+    let {option: selectedItem, isDefault} = getSelectedOption([value, selectedValue], options)
+    let listStyle = {maxHeight: `min(70vh, ${maxHeight})`}
+    let listClass
 
 
     if (listOpen) {
-        const rect = list.current.getBoundingClientRect()
-        if (window.innerWidth - rect.right < 0 && rect.left - rect.width >= 0) {
-            listClass = 'align-right'
-        }
+        setTimeout(() => {
+            if (!list.current)
+                return
+            const rect = list.current.getBoundingClientRect()
+            if (window.innerWidth - rect.right < 0 && rect.left - rect.width >= 0) {
+                listClass = 'align-right'
+            }
+        }, 200)
     }
 
     const ddTitle = title || selectedItem?.title || selectedItem?.value || selectedItem
@@ -133,9 +142,9 @@ export function Dropdown({
                     if (option === '-') return <li className="dd-list-item" key={i + '-'}>
                         <hr className="flare"/>
                     </li>
-                    const key = option.value || option.href || option,
-                        isSelected = !isDefault && option === selectedItem,
-                        style = isSelected && hideSelected ? {display: 'none'} : {}
+                    const key = option.value || option.href || option
+                    const isSelected = !isDefault && option === selectedItem
+                    const style = isSelected && hideSelected ? {display: 'none'} : {}
                     return <DropdownOption {...{key, option, select, isSelected, style}} />
                 })}
             </ul>
@@ -145,6 +154,10 @@ export function Dropdown({
             </>}
         </div>
     </div>
+}
+
+function preventClosing(e) {
+    e.stopPropagation()
 }
 
 Dropdown.defaultProps = {
@@ -216,6 +229,10 @@ Dropdown.propTypes = {
      * Optional dropdown list footer
      */
     footer: PropTypes.any,
+    /**
+     * Initially collapsed or open
+     */
+    expanded: PropTypes.bool,
     /**
      * List scroll handler - fires only if the options list has overflow
      */

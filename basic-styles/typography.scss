@@ -55,8 +55,12 @@ code {
   font-size: 0.75*$font-size-base !important;
 }
 
-.condensed {
-  letter-spacing: -0.045em;
+.text-large {
+  font-size: 1.125*$font-size-base !important;
+}
+
+.text-huge {
+  font-size: 1.25*$font-size-base !important;
 }
 
 .text-left {
@@ -73,6 +77,10 @@ code {
 
 .text-justify {
   text-align: justify !important;
+}
+
+.condensed {
+  letter-spacing: -0.045em;
 }
 
 .nowrap {

@@ -13,17 +13,23 @@
       font-weight: normal;
       line-height: 2.6;
       display: inline-block;
-      font-size: 1.6rem;
+      font-size: $font-size-base;
       text-decoration: none;
       padding: 0 0.8em;
       position: relative;
+      text-align: center;
+      min-width: 4em;
+
+      @media (max-width: $responsive-mobile-browser-width) {
+        font-size: 0.9*$font-size-base;
+        min-width: 3.5em;
+      }
 
       &:before {
         content: '';
         display: block;
         background: var(--color-highlight);
         position: absolute;
-        z-index: -1;
         left: 0;
         right: 0;
         height: 100%;
@@ -46,6 +52,10 @@
         &:before {
           background: var(--color-primary);
         }
+      }
+
+      .tabs-item-text {
+        position: relative;
       }
     }
   }

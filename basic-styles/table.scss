@@ -58,8 +58,8 @@
 
   @media (max-width: $responsive-mobile-browser-width) {
     display: block;
-    margin: auto $container-padding*-1;
-    width: calc(100% + #{2*$container-padding});
+    margin: auto $container-padding/2*-1;
+    width: calc(100% + #{$container-padding});
 
     thead, th {
       display: none;
@@ -78,7 +78,7 @@
     td {
       text-align: left !important;
       border: none;
-      padding: 0.1em $space-standard !important;
+      padding: 0.1em $space-micro !important;
 
       &:before {
         content: attr(data-header);
@@ -87,17 +87,17 @@
 
       &:first-child {
         border-top: 1px solid var(--color-contrast-border);
-        padding-top: $container-padding!important;
+        padding-top: $container-padding !important;
       }
 
       &:last-child {
-        padding-bottom: $container-padding!important;
+        padding-bottom: $container-padding !important;
       }
     }
 
     &.clear {
       td {
-        padding: .1em $space-standard !important;
+        padding: .1em $space-micro !important;
       }
     }
   }

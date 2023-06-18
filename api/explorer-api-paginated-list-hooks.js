@@ -249,7 +249,7 @@ class PaginatedListViewModel {
         this.canLoadNextPage = true //this.nextCursor && this.nextCursor !== self.href && records.length >= this.limit
         this.canLoadPrevPage = true //this.prevCursor && this.prevCursor !== self.href
         const selfQuery = parseQuery(self.href.split('?')[1])
-        if ((selfQuery.order === inverseOrder(this.defaultSortOrder)) === this.autoReverseRecordsOrder) {
+        if ((selfQuery.order === inverseOrder(this.defaultSortOrder))) {
             this.prevCursor = next ? next.href : null
             this.nextCursor = prev ? prev.href : null
             if (!selfQuery.cursor) {

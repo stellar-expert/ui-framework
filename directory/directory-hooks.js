@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {StrKey} from 'stellar-sdk'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {InMemoryClientCache} from '@stellar-expert/client-cache'
@@ -46,21 +46,28 @@ export async function getDirectoryEntry(address, options) {
  */
 export function useDirectory(address, options) {
     const {forceRefresh = false} = options || {}
-    const [directoryInfo, setDirectoryInfo] = useDependantState(() => {
-        if (!address || !StrKey.isValidEd25519PublicKey(address)) return null
-        let info = null
-        //try to load from the shared cache
+    const [directoryInfo, setDirectoryInfo] = useState(null)
+    let unloaded = false
+    useEffect(function () {
+        if (!address || !StrKey.isValidEd25519PublicKey(address))
+            return
         if (!forceRefresh) {
             const cachedEntry = cache.get(address)
             if (cachedEntry && !cachedEntry.isStale) {
-                info = cachedEntry.data
-                if (!cachedEntry.isExpired) return info//everything is up to date - no need to re-fetch
+                if (!cachedEntry.isExpired)
+                    return setDirectoryInfo(cachedEntry.data) //everything is up to date - no need to re-fetch
             }
         }
         //load from the server
         loader.loadEntry(address)
-            .then(di => setDirectoryInfo(di))
-        return info
+            .then(di => {
+                if (!unloaded) {
+                    setDirectoryInfo(di)
+                }
+            })
+        return () => {
+            unloaded = true
+        }
     }, [address, forceRefresh])
     return directoryInfo
 }

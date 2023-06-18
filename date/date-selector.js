@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {debounce} from 'throttle-debounce'
 import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
 
@@ -16,7 +16,7 @@ const minSelectableValue = trimIsoDateSeconds(new Date('2015-09-30T16:46:00Z'))
  * @param {Function} onChange
  * @constructor
  */
-export default function DateSelector({value, onChange}) {
+export function DateSelector({value, onChange, ref, ...otherProps}) {
     const [date, setDate] = useState(value ? trimIsoDateSeconds(normalizeDate(value)) : '')
     useEffect(() => {
         if (value) {
@@ -26,14 +26,17 @@ export default function DateSelector({value, onChange}) {
         }
     }, [value])
 
-    const selectDate = debounce(400, function (newDate) {
+    const selectDate = useCallback(debounce(400, function (newDate) {
         if (value !== newDate) {
             setDate(newDate)
-            onChange && onChange(toUnixTimestamp(normalizeDate(newDate)))
+            if (onChange) {
+                onChange(toUnixTimestamp(normalizeDate(newDate)))
+            }
         }
-    })
+    }), [onChange, value])
 
     const max = trimIsoDateSeconds(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
-    return <input type="datetime-local" value={date} className="date-selector" step={60}
-                  min={minSelectableValue} max={max} onChange={e => selectDate(e.target.value)}/>
+    return <input type="datetime-local" value={date} className="date-selector condensed" step={60} ref={ref}
+                  min={minSelectableValue} max={max} onChange={e => selectDate(e.target.value)}
+                  style={{width: '11em', overflow: 'hidden'}} {...otherProps}/>
 }

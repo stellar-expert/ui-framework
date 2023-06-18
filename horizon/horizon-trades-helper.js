@@ -44,6 +44,7 @@ export function streamTrades(cursor, onNewTrade) {
     return initHorizon().trades()
         .order('asc')
         .cursor(cursor || 'now')
+        .limit(200)
         .stream({onmessage: op => onNewTrade(op)})
 }
 

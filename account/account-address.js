@@ -95,16 +95,16 @@ function AccountDisplayName({type, address, name}) {
 /**
  * Explorer link for Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
  * @param {String} account - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
- * @param {Number|'all'} chars? - Visible address characters count
- * @param {Bool|String} name? - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
- * @param {Bool|String} link? - Explicit link; if false, the component is rendered without a link
- * @param {Boolean} icon? - Whether to show/hide account identicon
- * @param {String} network? - Stellar network identifier
- * @param {*} prefix? - Link prefix
- * @param {*} suffix? - Link suffix
- * @param {{}} style? - Optional CSS inline style
- * @param {String} className? - Optional CSS class attribute
- * @param {...*} otherProps? - Optional container parameters
+ * @param {Number|'all'} [chars] - Visible address characters count
+ * @param {Bool|String} [name] - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
+ * @param {Bool|String} [link] - Explicit link; if false, the component is rendered without a link
+ * @param {Boolean} [icon] - Whether to show/hide account identicon
+ * @param {String} [network] - Stellar network identifier
+ * @param {*} [prefix] - Link prefix
+ * @param {*} [suffix] - Link suffix
+ * @param {{}} [style] - Optional CSS inline style
+ * @param {String} [className] - Optional CSS class attribute
+ * @param {...*} [otherProps] - Optional container parameters
  * @constructor
  */
 export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {

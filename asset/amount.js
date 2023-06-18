@@ -18,15 +18,25 @@ import Bignumber from 'bignumber.js'
 export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
     if (amount === undefined || amount === null) return null
     if (adjust === true) {
-        amount = denominate(amount)
+        try {
+            amount = denominate(amount)
+        } catch (e) {
+            console.error(e)
+            return null
+        }
     }
     if (round) {
-        const v = new Bignumber(amount)
+        const v = new Bignumber(amount.toString())
         amount = (round === 'floor' ? v.round() : v.floor()).toString()
     }
-    const value = decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals)
+    try {
+        amount = stripTrailingZeros(decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals))
+    } catch (e) {
+        console.error(e)
+        return null
+    }
     return <span className="amount nowrap condensed">
-        {stripTrailingZeros(value)}
+        {amount}
         {!!asset && <>
             {' '}{isAssetValid(asset) || isValidPoolId(asset) ? <AssetLink asset={asset} icon={icon} issuer={issuer}/> : asset.toString()}
         </>}

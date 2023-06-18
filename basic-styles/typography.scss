@@ -158,7 +158,7 @@ hr {
     max-width: 90vw;
     height: 1;
     border-bottom: 1px solid;
-    border-image: linear-gradient(to right, var(--color-bg) 2%, var(--color-highlight) 15%, var(--color-highlight) 85%, var(--color-bg) 98%);
+    border-image: linear-gradient(to right, transparent 2%, var(--color-highlight) 15%, var(--color-highlight) 85%, transparent 98%);
     border-image-slice: 1;
 
     &.double-space {

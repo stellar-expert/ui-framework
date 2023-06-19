@@ -174,6 +174,9 @@ export default class TxMatcher {
                 default:
                     throw new Error('Unsupported op type: ' + op.type)
             }
+            if (!matchingProps.account) {
+                matchingProps.account = new Set()
+            }
             if (!matchingProps.account.has(op.source)) {
                 matchingProps.account.add(op.source)
             }

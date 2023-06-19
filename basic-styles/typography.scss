@@ -164,7 +164,7 @@ hr {
     margin: 1rem auto;
     width: 100%;
     max-width: 90vw;
-    height: 1;
+    height: 0;
     border-bottom: 1px solid;
     border-image: linear-gradient(to right, transparent 2%, var(--color-highlight) 15%, var(--color-highlight) 85%, transparent 98%);
     border-image-slice: 1;

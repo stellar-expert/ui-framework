@@ -4,6 +4,7 @@
   display: inline-block;
   position: relative;
   padding-right: 0.3em;
+  z-index: 1000;
 
   &.reset {
     //reset styles

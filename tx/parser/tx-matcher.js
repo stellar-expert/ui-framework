@@ -106,7 +106,7 @@ export default class TxMatcher {
                     break
                 case 'inflation':
                     if (od.successful) {
-                        const payouts = op.effects.filter(e => e.type === 'accountCredited').map(e => e.account)
+                        const payouts = op.effects.filter(e => e.type === 'accountCredited').map(e => e.source)
                         if (payouts.length) {
                             matchingProps.account = new Set(payouts)
                             matchingProps.destination = new Set(payouts)

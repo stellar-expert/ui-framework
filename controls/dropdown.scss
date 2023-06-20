@@ -83,14 +83,14 @@
 
     &.visible {
       visibility: visible;
-    }
-
-    hr {
-      margin: 0.5em 0;
 
       > ul {
         height: auto;
       }
+    }
+
+    hr {
+      margin: 0.5em 0;
     }
   }
 

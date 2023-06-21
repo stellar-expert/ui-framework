@@ -287,8 +287,13 @@ export default class TxMatcher {
                                 }
                                 if (e.offer) {
                                     offers.push(e.offer)
-                                    if (!skipUnrelated && !matchingProps.account.has(e.seller)) {
-                                        matchingProps.account.add(e.seller)
+                                    if (!skipUnrelated) {
+                                        if (!matchingProps.account) {
+                                            matchingProps.account = new Set()
+                                        }
+                                        if (!matchingProps.account.has(e.seller)) {
+                                            matchingProps.account.add(e.seller)
+                                        }
                                     }
                                 }
                             }

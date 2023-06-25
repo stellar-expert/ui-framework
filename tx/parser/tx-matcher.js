@@ -114,13 +114,17 @@ export default class TxMatcher {
                     }
                     break
                 case 'setOptions':
+                    matchingProps.account = new Set()
                     if (!skipUnrelated) {
                         const optionsRelated = [op.inflationDest, op.signer?.key].filter(acc => !!acc)
                         if (optionsRelated.length) {
-                            matchingProps.account = new Set(optionsRelated)
-                            matchingProps.destination = new Set(optionsRelated)
+                            matchingProps.account.add(optionsRelated)
                         }
                     }
+                    for (const e of (op.effects || []))
+                        if (e.prevSponsor) {
+                            matchingProps.account.add(e.prevSponsor)
+                        }
                     break
                 case 'allowTrust':
                 case 'setTrustLineFlags':

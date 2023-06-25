@@ -12,7 +12,7 @@ import TxMatcher from './tx-matcher'
  * @property {Boolean} isEphemeral - True if transaction has not been submitted or rejected
  * @property {Boolean} unmatched - Whether transaction matches context and filter
  * @property {Boolean} [successful] - Whether the transaction has been executed successfully or failed during execution
- * @property {{}[]} [txEffects] - Transaction-level effects (fee charges)
+ * @property {{}[]} [effects] - Transaction-level effects (including fee charges)
  * @property {String} [createdAt] - Ledger application timestamp
  */
 
@@ -41,8 +41,7 @@ import TxMatcher from './tx-matcher'
  * @return {ParsedTxDetails}
  */
 export function parseTxDetails({network, txEnvelope, result, meta, context, createdAt, skipUnrelated}) {
-    const {tx, fee, operations, isEphemeral, failed} = parseTxOperationsMeta({network, tx: txEnvelope, meta, result})
-    //const txEffects = effects.filter(e => contextType === 'none' || contextType === 'asset' && context === 'XLM' || contextType === 'account' && context === e.source)
+    const {tx, effects, operations, isEphemeral, failed} = parseTxOperationsMeta({network, tx: txEnvelope, meta, result})
     const txHash = tx.hash().toString('hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)
     const parsedOps = OperationDescriptor.parseOperations(operations, txHash, isEphemeral, !isEphemeral && !failed)
@@ -54,7 +53,10 @@ export function parseTxDetails({network, txEnvelope, result, meta, context, crea
         txHash,
         context,
         isEphemeral,
-        unmatched: !parsedOps.length// && !txEffects.length,
+        unmatched: !parsedOps.length
+    }
+    if (!isEphemeral) {
+        res.effects = effects
     }
     if (createdAt) {
         res.createdAt = createdAt

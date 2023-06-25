@@ -39,25 +39,29 @@ Display context
     - Effects related to the current account
  */
 
+function TxChargedFee({parsedTx, compact}) {
+    if (parsedTx.isEphemeral || !parsedTx.context?.account)
+        return null
+    const fee = parsedTx.effects.find(e => e.type === 'feeCharged')
+    if (!fee || !parsedTx.context.account.includes(fee.source))
+        return null
+    return <div className="op-container">
+        <div className="op-layout">
+            <OpIcon op="feeCharge"/>
+            <TxFeeEffect feeEffect={fee} compact={compact}/>
+            {!!compact && !parsedTx.isEphemeral && <TxFeeAccountingChanges amount={fee.charged}/>}
+        </div>
+    </div>
+}
+
 /**
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
- * @param {OpFilterContext} [context] - View context
  * @param {Boolean} [showFees] - Whether to display transaction fees
  * @param {Boolean} [compact] - Compact view (without fee charges and accounting changes effects)
  */
-export function TxOperationsList({parsedTx, context, showFees = false, compact = false}) {
-    const showFeeCharges = !compact && showFees &&
-        (context?.account?.includes(parsedTx.tx.source) || context?.account?.includes(parsedTx.tx.innerTransaction?.source))
-    return <div className="condensed">
-        {showFeeCharges && parsedTx.txEffects
-            .filter(e => !context?.account || context.account.includes(e.source))
-            .map((e, i) => <div className="op-container">
-                <div className="op-layout">
-                    <OpIcon op="feeCharge"/>
-                    <TxFeeEffect key={parsedTx.txHash + i} feeEffect={e} compact={compact}/>
-                    {!!compact && !parsedTx.isEphemeral && <TxFeeAccountingChanges amount={e.charged}/>}
-                </div>
-            </div>)}
+export function TxOperationsList({parsedTx, showFees = true, compact = false}) {
+        return <div className="condensed">
+        {showFees && <TxChargedFee {...{parsedTx, context, compact}}/>}
         {parsedTx.operations.map(op => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
             <div className="op-layout">
                 <OpIcon op={op}/>

@@ -24,10 +24,6 @@ export default class OperationDescriptor {
      * @readonly
      */
     successful
-    /**
-     * @type {ParsedTxDetails} - Reference to the parent parsed tx container
-     */
-    tx
 
     /**
      * Prepare descriptors for transaction operations

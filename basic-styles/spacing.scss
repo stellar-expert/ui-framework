@@ -12,12 +12,16 @@ table {
   margin-bottom: $space-micro;
 }
 
+.space {
+  margin-top: $space-standard;
+}
+
 .micro-space {
   margin-top: $space-micro;
 }
 
-.space {
-  margin-top: $space-standard;
+.nano-space {
+  margin-top: $space-nano;
 }
 
 .double-space {

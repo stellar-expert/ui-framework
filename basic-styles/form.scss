@@ -73,13 +73,13 @@ label,
 legend {
   display: block;
   font-size: $font-size-base;
-  margin-bottom: $space-micro/2;
+  margin-bottom: $space-nano;
 }
 
 .label-inline {
   display: inline-block;
   font-weight: normal;
-  margin-left: $space-micro/2;
+  margin-left: $space-nano;
 }
 
 ::placeholder {

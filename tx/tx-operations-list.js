@@ -61,7 +61,7 @@ function TxChargedFee({parsedTx, compact}) {
  */
 export function TxOperationsList({parsedTx, showFees = true, compact = false}) {
         return <div className="condensed">
-        {showFees && <TxChargedFee {...{parsedTx, context, compact}}/>}
+        {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
         {parsedTx.operations.map(op => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
             <div className="op-layout">
                 <OpIcon op={op}/>

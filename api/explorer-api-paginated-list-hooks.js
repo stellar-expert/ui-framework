@@ -32,6 +32,7 @@ class PaginatedListViewModel {
         this.query = props.query
         this.dataProcessingCallback = props.dataProcessingCallback
         this.defaultSortOrder = props.defaultSortOrder
+        this.updateLocation = props.updateLocation
         if (props.autoReverseRecordsOrder !== undefined) {
             this.autoReverseRecordsOrder = props.autoReverseRecordsOrder
         }
@@ -151,7 +152,7 @@ class PaginatedListViewModel {
 
     /**
      * Load portion of data from the server
-     * @param page
+     * @param {1|-1} page
      * @return {Promise<ExplorerApiListResponse>}
      */
     load(page) {
@@ -167,26 +168,33 @@ class PaginatedListViewModel {
                 order: navigation.query.order
             })
         }
-        if (Math.abs(page) >= 2) {
-            paginationParams.skip = this.limit * (Math.floor(Math.abs(page)) - 1)
-        }
         //const externalQueryParams = typeof this.query === 'function' ? this.query() : this.query
         //prepare query params
         const queryParams = Object.assign({}, this.defaultQueryParams, this.query, paginationParams, {limit: this.limit})
         return this.loadPage(queryParams)
     }
 
+    /**
+     * Reverse order and load the page
+     * @param queryParams
+     * @return {Promise<ExplorerApiListResponse>}
+     * @private
+     */
     async loadLastPage(queryParams) {
         const {order} = queryParams,
             overrides = {
                 order: inverseOrder(order),
-                cursor: undefined,
-                skip: undefined
+                cursor: undefined
             }
 
         return this.loadPage(Object.assign({}, queryParams, overrides))
     }
 
+    /**
+     * Load data page from the server
+     * @param {{}} queryParams
+     * @private
+     */
     async loadPage(queryParams) {
         this.loaded = false
         this.loading = true
@@ -209,6 +217,13 @@ class PaginatedListViewModel {
         }
     }
 
+    /**
+     * Retrieve and convert data from the API response
+     * @param {String} endpointWithQuery
+     * @param {{}} data
+     * @param {{}} queryParams
+     * @private
+     */
     processResponseData(endpointWithQuery, data, queryParams) {
         if (data.error) {
             console.error(e)
@@ -245,6 +260,13 @@ class PaginatedListViewModel {
         return res
     }
 
+    /**
+     * Update naviagtion links retrieved from the response
+     * @param {String} self
+     * @param {String} next
+     * @param {String} prev
+     * @private
+     */
     updateNav({self, next, prev}) {
         this.canLoadNextPage = true //this.nextCursor && this.nextCursor !== self.href && records.length >= this.limit
         this.canLoadPrevPage = true //this.prevCursor && this.prevCursor !== self.href
@@ -274,8 +296,16 @@ class PaginatedListViewModel {
         }
     }
 
+    /**
+     * Update location query string
+     * @param {{}} queryParams
+     * @private
+     */
     updateQuery(queryParams) {
-        const paramsToSet = {}
+        const {updateLocation} = this
+        if (!updateLocation)
+            return
+        let paramsToSet = {}
         for (let key in queryParams)
             if (queryParams.hasOwnProperty(key)) {
                 if (key === 'limit') continue
@@ -286,9 +316,16 @@ class PaginatedListViewModel {
                 }
                 paramsToSet[key] = value
             }
+        if (typeof updateLocation === 'function') {
+            paramsToSet = updateLocation(paramsToSet)
+        }
         navigation.updateQuery(paramsToSet)
     }
 
+    /**
+     * Convert model to a plain object representation
+     * @return {{loaded: Boolean, data: ({}[]), load: function, reset: function loading: Boolean, canLoadNextPage: Boolean, canLoadPrevPage: Boolean}}
+     */
     toJSON() {
         return {
             data: this.data || [],
@@ -301,6 +338,9 @@ class PaginatedListViewModel {
         }
     }
 
+    /**
+     * Reset model to the initial state
+     */
     reset() {
         this.data = []
         this.loaded = false
@@ -319,8 +359,9 @@ class PaginatedListViewModel {
  * @typedef {Object} ExplorerApiListResponse
  * @property {Object[]} data - Data retrieved from the server
  * @property {Boolean} loaded - Response result loaded flag
- * @property {Boolean} loading - Fetch-in-progress flag
  * @property {Function} load - Load pgae function
+ * @property {Boolean} canLoadPrevPage - Whether the prev page is available
+ * @property {Boolean} canLoadNextPage - Whether the next page is available
  */
 
 /**
@@ -335,22 +376,24 @@ class PaginatedListViewModel {
  * @param {Function} [dataProcessingCallback] - Callback called for the fetched data.
  * @param {Object} [defaultQueryParams] - Default query values - query params not set if default.
  * @param {Boolean} [autoLoad] - Default query values - query params not set if default.
+ * @param {Boolean} [updateLocation] - Automatically update browser query string on navigation.
  * @param {Array} [dependencies] - Additional dependencies to track for state updates.
  * @return {ExplorerApiListResponse}
  */
 export function useExplorerPaginatedApi(apiEndpoint,
-                         {
-                             ttl = 30,
-                             limit = 20,
-                             autoReverseRecordsOrder = false,
-                             defaultSortOrder = 'desc',
-                             autoLoadLastPage = true,
-                             includeNetwork = true,
-                             defaultQueryParams = {},
-                             dataProcessingCallback,
-                             autoLoad = true
-                         } = {},
-                         dependencies = []) {
+                                        {
+                                            ttl = 30,
+                                            limit = 20,
+                                            autoReverseRecordsOrder = false,
+                                            defaultSortOrder = 'desc',
+                                            autoLoadLastPage = true,
+                                            includeNetwork = true,
+                                            defaultQueryParams = {},
+                                            dataProcessingCallback,
+                                            autoLoad = true,
+                                            updateLocation = true
+                                        } = {},
+                                        dependencies = []) {
     if (!apiEndpoint)
         throw new Error(`Invalid API endpoint: ${apiEndpoint}`)
     const pinRef = useRef(null)
@@ -375,7 +418,8 @@ export function useExplorerPaginatedApi(apiEndpoint,
             autoLoadLastPage,
             autoReverseRecordsOrder,
             defaultSortOrder,
-            defaultQueryParams
+            defaultQueryParams,
+            updateLocation
         })
         pinRef.current = res
         if (autoLoad) {

@@ -15,7 +15,7 @@ export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}
     const containerRef = useRef()
     return <div className="text-center" ref={containerRef}>
         <QR value={value} size={256} level="Q" includeMargin imageSettings={embedImage(embeddedImage, embeddedSize, size)}
-            fgColor={foreground} style={{width: size + 'px', display: 'block', margin: 'auto'}}/>
+            fgColor={foreground} style={{width: size + 'px', height: size + 'px', display: 'block', margin: 'auto'}}/>
         {!!caption && <div className="text-small dimmed condensed word-break">{caption}</div>}
     </div>
 }

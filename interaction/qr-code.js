@@ -21,7 +21,7 @@ export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}
 }
 
 function embedImage(src, size, qrSize) {
-    if (!image)
+    if (!src)
         return undefined
     if (!size) {
         size = qrSize * 0.1

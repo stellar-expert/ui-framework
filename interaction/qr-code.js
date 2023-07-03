@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useMemo, useRef} from 'react'
 import QR from 'qrcode.react'
 
 /**

@@ -46,8 +46,10 @@ input[type=checkbox] {
 
 input[type='text'].key {
   letter-spacing: -0.05em;
-  font-size: 0.9em;
   font-family: $font-face-mono;
+  @media (max-width: 519px) {
+    font-size: 0.9em;
+  }
 
   &::placeholder {
     letter-spacing: 0;

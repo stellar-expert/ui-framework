@@ -1,5 +1,3 @@
-import Bignumber from 'bignumber.js'
-
 /**
  * @typedef {Object} ParsedStellarId
  * @property {('unknown'|'ledger'|'transaction'|'operation')} type - Parsed id type
@@ -16,22 +14,23 @@ import Bignumber from 'bignumber.js'
  */
 export function parseStellarGenericId(id) {
     if (!/^\d{1,19}$/.test(id)) return {type: 'unknown'}
-    let parsed = new Bignumber(id),
-        ledger = parsed.dividedToIntegerBy(4294967296),
-        opOrder = parsed.mod(4096)
-
+    const parsed = BigInt(id)
     const res = {
         id,
-        type: 'unknown',
-        ledger: ledger.toNumber()
+        type: 'unknown'
     }
-
-    if (opOrder > 0) {
-        res.type = 'operation'
-        res.tx = parsed.minus(opOrder).toString()
-        res.operationOrder = opOrder.toNumber()
-    } else if (ledger.eq(id)) {
+    if (parsed < 4294967296n) {
         res.type = 'ledger'
+        res.ledger = Number(parsed)
+        return res
+    }
+    const ledger = parsed / 4294967296n
+    const opOrder = parsed % 4096n
+    res.ledger = Number(ledger)
+    if (opOrder > 0n) {
+        res.type = 'operation'
+        res.tx = (parsed - opOrder).toString()
+        res.operationOrder = Number(opOrder)
     } else {
         res.type = 'transaction'
         res.tx = parsed.toString()

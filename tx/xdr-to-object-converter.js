@@ -1,5 +1,4 @@
 import {xdr, StrKey} from 'stellar-sdk'
-import BigNumber from 'bignumber.js'
 
 export const XDR_TYPE = Symbol('XDR_TYPE')
 
@@ -63,7 +62,7 @@ const predefinedKeys = {
 
 function convertAtomicValue(object, key) {
     if (predefinedKeys.amount.includes(key)) {
-        return new BigNumber(object)
+        return BigInt(object)
     }
 
     if (predefinedKeys.hint.includes(key))

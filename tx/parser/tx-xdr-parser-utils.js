@@ -1,5 +1,4 @@
 import {StrKey} from 'stellar-sdk'
-import Bignumber from 'bignumber.js'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 
 /**
@@ -31,15 +30,15 @@ export function xdrParseAccountAddress(accountId, muxedAccountsSupported = false
     throw new TypeError(`Failed to identify and parse account address: ${accountId}`)
 }
 
-
 /**
- * Parse XDR-encoded int64 to BSON Long.
+ * Parse XDR-encoded Uint64 to BSON Long.
  * @param {{low:Number, high:Number}} value - XDR-encoded int64.
  * @return {String}
  */
 export function xdrParseLong(value) {
-    if (!value) return '0'
-    return new Bignumber(value.high).mul(new Bignumber(4294967295)).add(value.low).toString()
+    if (!value)
+        return '0'
+    return ((BigInt(value.high) << 32n) | BigInt(value.low >>> 0)).toString()
 }
 
 /**

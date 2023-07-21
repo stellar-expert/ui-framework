@@ -1,5 +1,3 @@
-import Bignumber from 'bignumber.js'
-
 const manageOfferOpTypes = ['manageSellOffer', 'manageBuyOffer', 'createPassiveSellOffer']
 
 /**

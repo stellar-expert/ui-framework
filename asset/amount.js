@@ -2,7 +2,6 @@ import React from 'react'
 import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros, denominate} from '@stellar-expert/formatter'
 import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
 import {AssetLink} from './asset-link'
-import Bignumber from 'bignumber.js'
 
 /**
  * Formatted tokens amount
@@ -26,8 +25,17 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
         }
     }
     if (round) {
-        const v = new Bignumber(amount.toString())
-        amount = (round === 'floor' ? v.round() : v.floor()).toString()
+        let [int, fract] = (typeof amount === 'number' ? amount.toFixed(7) : amount).split('.')
+        if (fract > 0) {
+            int = parseFloat(int)
+            fract = parseFloat('0.' + fract)
+            if (amount < 0) {
+                fract *= -1
+            }
+
+            const rounded = round === 'floor' ? Math.floor(fract) : Math.round(fract)
+            amount = int + rounded
+        }
     }
     try {
         amount = stripTrailingZeros(decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals))

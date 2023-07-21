@@ -1,4 +1,4 @@
-import Bignumber from 'bignumber.js'
+import {toStroops, fromStroops} from '@stellar-expert/formatter'
 
 /**
  * Calculate available balance for a given account balance trustline
@@ -8,14 +8,14 @@ import Bignumber from 'bignumber.js'
  * @return {String}
  */
 export function calculateAvailableBalance(account, balance, additionalReserves = null) {
-    let available = new Bignumber(balance.balance).minus(new Bignumber(balance.selling_liabilities))
+    let available = toStroops(balance.balance) - toStroops(balance.selling_liabilities || 0)
     if (balance.asset_type === 'native') {
         const reserves = 2 + account.subentry_count + account.num_sponsoring - account.num_sponsored
-        available = available.minus(new Bignumber(reserves).times(new Bignumber(0.5)))
+        available = available - (BigInt(reserves) * 5000000n)
         //TODO: fetch base_reserve from the Horizon
     }
     if (additionalReserves !== null) {
-        available = available.minus(new Bignumber(additionalReserves))
+        available = available - toStroops(additionalReserves)
     }
-    return available.toString()
+    return fromStroops(available)
 }

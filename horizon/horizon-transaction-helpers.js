@@ -1,5 +1,4 @@
-import Bignumber from 'bignumber.js'
-import {parseStellarGenericId} from '@stellar-expert/ui-framework'
+import {parseStellarGenericId} from '../horizon/horizon-generic-id'
 import {initHorizon, applyListQueryParameters} from './horizon-client-helpers'
 
 /**
@@ -13,9 +12,10 @@ export function loadTransaction(txHashOrId) {
             .call()
 
     if (/^\d+$/.test(txHashOrId)) { //treat as generic tx id
-        let {type, tx} = parseStellarGenericId(txHashOrId)
-        if (type !== 'transaction') return Promise.reject(new Error('Invalid transaction id: ' + id))
-        let cursor = new Bignumber(tx).minus(1).toString()
+        const {type, tx} = parseStellarGenericId(txHashOrId)
+        if (type !== 'transaction')
+            return Promise.reject(new Error('Invalid transaction id: ' + id))
+        const cursor = (BigInt(tx) - 1n).toString()
         return loadTransactions({cursor, order: 'asc', limit: 1, includeFailed: true})
             .then(res => res[0])
     }

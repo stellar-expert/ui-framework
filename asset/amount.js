@@ -1,5 +1,5 @@
 import React from 'react'
-import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros, denominate} from '@stellar-expert/formatter'
+import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros, fromStroops} from '@stellar-expert/formatter'
 import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
 import {AssetLink} from './asset-link'
 
@@ -15,10 +15,11 @@ import {AssetLink} from './asset-link'
  * @constructor
  */
 export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
-    if (amount === undefined || amount === null) return null
+    if (amount === undefined || amount === null)
+        return null
     if (adjust === true) {
         try {
-            amount = denominate(amount)
+            amount = fromStroops(amount)
         } catch (e) {
             console.error(e)
             return null

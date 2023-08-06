@@ -106,11 +106,11 @@ function PathPaymentDescriptionView({op, compact}) {
             {!isSwap && <> to <AccountAddress account={destination}/></>}
             <OpSourceAccount op={op}/>
         </>
-    if (sendMax > 0) {
-        src = effects.find(e => e.type === 'accountDebited')?.amount || sendMax
+    if (sendMax !== undefined) {
+        src = effects.find(e => e.source === destination && e.type === 'accountDebited')?.amount || sendMax
     }
-    if (destMin > 0) {
-        dst = effects.find(e => e.type === 'accountCredited')?.amount || destMin
+    if (destMin !== undefined) {
+        dst = effects.find(e => e.source === destination && e.type === 'accountCredited')?.amount || destMin
     }
     return <>
         <OpSourceAccount op={op}/> {isSwap ? 'swapped ' : 'sent '}

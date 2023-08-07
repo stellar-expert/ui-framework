@@ -1,4 +1,5 @@
-import React, {useCallback, useRef, useState} from 'react'
+import React, {useCallback, useMemo, useRef, useState} from 'react'
+import {createPortal} from 'react-dom'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {throttle} from 'throttle-debounce'
@@ -40,6 +41,16 @@ function DropdownOption({option, isSelected, select, style}) {
     </li>
 }
 
+function getListPosition(header, solo) {
+    if (solo)
+        return undefined
+    const rect = header.getBoundingClientRect()
+    return {
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX
+    }
+}
+
 export function Dropdown({
                              options,
                              title,
@@ -59,6 +70,8 @@ export function Dropdown({
                              onClose,
                              maxHeight = '35em'
                          }) {
+    const headerRef = useRef()
+    const listRef = useRef()
     const [listOpen, updateListOpen] = useState(!!expanded)
     const collapseDropdown = useCallback(function () {
         updateListOpen(open => {
@@ -78,7 +91,6 @@ export function Dropdown({
     }, [value, listOpen], () => {
         document.removeEventListener('click', collapseDropdown)
     })
-    const list = useRef(null)
 
     const toggleList = useCallback(function toggleList(e) {
         e && e.nativeEvent.stopImmediatePropagation()
@@ -97,17 +109,17 @@ export function Dropdown({
         updateSelectedValue(option)
     }, [collapseDropdown, onChange])
 
-    const scrollList = throttle(200, e => {
-        if (onScroll) {
-            const {target} = e,
-                pos = {position: target.scrollTop, rel: 'middle'}
-            if (target.scrollTop === 0)
-                return onScroll({...pos, rel: 'top'})
-            if (Math.ceil(target.scrollHeight - target.scrollTop - 8) < target.clientHeight)
-                return onScroll({...pos, rel: 'bottom'})
-            onScroll(pos)
-        }
-    })
+    const scrollList = useMemo(() => throttle(200, e => {
+        if (!onScroll)
+            return
+        const {target} = e
+        const pos = {position: target.scrollTop, rel: 'middle'}
+        if (target.scrollTop === 0)
+            return onScroll({...pos, rel: 'top'})
+        if (Math.ceil(target.scrollHeight - target.scrollTop - 8) < target.clientHeight)
+            return onScroll({...pos, rel: 'bottom'})
+        onScroll(pos)
+    }), [onScroll])
 
     let {option: selectedItem, isDefault} = getSelectedOption([value, selectedValue], options)
     let listStyle = {maxHeight: `min(70vh, ${maxHeight})`}
@@ -116,9 +128,9 @@ export function Dropdown({
 
     if (listOpen) {
         setTimeout(() => {
-            if (!list.current)
+            if (!listRef.current)
                 return
-            const rect = list.current.getBoundingClientRect()
+            const rect = listRef.current.getBoundingClientRect()
             if (window.innerWidth - rect.right < 0 && rect.left - rect.width >= 0) {
                 listClass = 'align-right'
             }
@@ -127,32 +139,35 @@ export function Dropdown({
 
     const ddTitle = title || selectedItem?.title || selectedItem?.value || selectedItem
 
-    return <div className={cn('dd-wrapper', {disabled, solo}, className)} title={hint}>
-        <a href="#" className="dd-header" onClick={toggleList}>
+    return <div className={cn('dd-wrapper', {disabled}, className)} title={hint}>
+        <a href="#" className="dd-header" onClick={toggleList} ref={headerRef}>
             {ddTitle}{!!showToggle && <span className={cn('dd-toggle', {visible: listOpen})}/>}
         </a>
-        {!!listOpen && <div className="backdrop"/>}
-        <div className={cn('dd-list', listClass, {visible: listOpen && !disabled})} ref={list}>
-            {!!header && <>
-                <div className="dd-list-header" onClick={preventClosing}>{header}</div>
-                <hr/>
-            </>}
-            <ul onScroll={scrollList} style={listStyle}>
-                {options.filter(opt => !opt.hidden).map((option, i) => {
-                    if (option === '-') return <li className="dd-list-item" key={i + '-'}>
-                        <hr className="flare"/>
-                    </li>
-                    const key = option.value || option.href || option
-                    const isSelected = !isDefault && option === selectedItem
-                    const style = isSelected && hideSelected ? {display: 'none'} : {}
-                    return <DropdownOption {...{key, option, select, isSelected, style}} />
-                })}
-            </ul>
-            {!!footer && <>
-                <hr/>
-                <div className="dd-list-footer" onClick={preventClosing}>{footer}</div>
-            </>}
-        </div>
+        {!!listOpen && createPortal(<>
+            <div className={cn('dd-backdrop', {solo})}/>
+            <div className={cn('dd-list', listClass, {solo, visible: listOpen && !disabled})}
+                 style={getListPosition(headerRef.current, solo)} ref={listRef}>
+                {!!header && <>
+                    <div className="dd-list-header" onClick={preventClosing}>{header}</div>
+                    <hr/>
+                </>}
+                <ul onScroll={scrollList} style={listStyle}>
+                    {options.filter(opt => !opt.hidden).map((option, i) => {
+                        if (option === '-') return <li className="dd-list-item" key={i + '-'}>
+                            <hr className="flare"/>
+                        </li>
+                        const key = option.value || option.href || option
+                        const isSelected = !isDefault && option === selectedItem
+                        const style = isSelected && hideSelected ? {display: 'none'} : {}
+                        return <DropdownOption {...{key, option, select, isSelected, style}} />
+                    })}
+                </ul>
+                {!!footer && <>
+                    <hr/>
+                    <div className="dd-list-footer" onClick={preventClosing}>{footer}</div>
+                </>}
+            </div>
+        </>, document.body)}
     </div>
 }
 

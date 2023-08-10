@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.6.11",
+  "version": "1.6.12",
   "private": true,
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
@@ -28,7 +28,7 @@
     "@stellar-expert/asset-descriptor": "github:stellar-expert/asset-descriptor",
     "@stellar-expert/claimable-balance-utils": "github:stellar-expert/claimable-balance-utils",
     "@stellar-expert/client-cache": "github:stellar-expert/client-cache",
-    "@stellar-expert/formatter": "github:stellar-expert/formatter#v2.0.1",
+    "@stellar-expert/formatter": "github:stellar-expert/formatter#v2.1.0",
     "@stellar-expert/navigation": "github:stellar-expert/navigation#v1.0.2",
     "@stellar-expert/tx-meta-effects-parser": "github:stellar-expert/tx-meta-effects-parser#v4.11.0",
     "highlight.js": "^11.8.0",

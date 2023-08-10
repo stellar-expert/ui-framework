@@ -221,7 +221,7 @@ Dropdown.propTypes = {
     /**
      * Title to display instead of the selected value if needed
      */
-    title: PropTypes.string,
+    title: PropTypes.any,
     /**
      * OnChange handler
      */
@@ -277,5 +277,5 @@ Dropdown.propTypes = {
     /**
      * Maximum dropdown list height
      */
-    maxHeight: PropTypes.bool
+    maxHeight: PropTypes.string
 }

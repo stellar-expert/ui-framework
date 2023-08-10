@@ -1,3 +1,4 @@
+import {LiquidityPoolAsset} from 'stellar-sdk'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {TypeFilterMatcher} from './type-filter-matcher'
 
@@ -210,17 +211,21 @@ export default class TxMatcher {
                 case 'revokeSignerSponsorship':
                 case 'revokeSponsorship':
                     if (op.asset) {
-                        const a = AssetDescriptor.parse(op.asset).toFQAN()
-                        matchingProps.asset = new Set([a])
-                        matchingProps.src_asset = new Set([a])
-                        matchingProps.dest_asset = new Set([a])
+                        const a = [AssetDescriptor.parse(op.asset).toFQAN()]
+                        matchingProps.asset = new Set(a)
+                        matchingProps.src_asset = new Set(a)
+                        matchingProps.dest_asset = new Set(a)
                     }
                     break
                 case 'changeTrust': {
-                    const a = AssetDescriptor.parse(op.line).toFQAN()
-                    matchingProps.asset = new Set([a])
-                    matchingProps.src_asset = new Set([a])
-                    matchingProps.dest_asset = new Set([a])
+                    const a = [AssetDescriptor.parse(op.line).toFQAN()]
+                    matchingProps.dest_asset = new Set(a)
+                    if (op.line instanceof LiquidityPoolAsset) {
+                        a.push(AssetDescriptor.parse(op.line.assetA).toFQAN())
+                        a.push(AssetDescriptor.parse(op.line.assetB).toFQAN())
+                    }
+                    matchingProps.asset = new Set(a)
+                    matchingProps.src_asset = new Set(a)
                 }
                     break
                 case 'pathPaymentStrictSend':

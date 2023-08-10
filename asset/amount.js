@@ -39,7 +39,7 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
         }
     }
     try {
-        amount = stripTrailingZeros(decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals))
+        amount = decimals === 'auto' ? formatWithAutoPrecision(amount) : formatWithPrecision(amount, decimals)
     } catch (e) {
         console.error(e)
         return null

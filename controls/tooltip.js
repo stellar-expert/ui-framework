@@ -159,7 +159,7 @@ function parseOffset(offset) {
  * @param {any} children?
  * @constructor
  */
-export function Tooltip({trigger, desiredPlace = 'top', offset = {}, children, maxWidth = '20em', ...op}) {
+export const Tooltip = React.memo(function Tooltip({trigger, desiredPlace = 'top', offset = {}, children, maxWidth = '20em', ...op}) {
     const [visible, setVisible] = useState(false),
         [place, setPlace] = useState('top'),
         [position, setPosition] = useState({top: 0, left: 0}),
@@ -193,7 +193,7 @@ export function Tooltip({trigger, desiredPlace = 'top', offset = {}, children, m
             <div className="tooltip-content">{children}</div>
         </div>
     </div>)
-}
+})
 
 /**
  * @typedef {'top'|'bottom'|'left'|'right'} PositionDescriptor

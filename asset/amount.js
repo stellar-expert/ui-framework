@@ -14,7 +14,7 @@ import {AssetLink} from './asset-link'
  * @param {Boolean} icon? - Wheter to show asset icon
  * @constructor
  */
-export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
+export const Amount = React.memo(function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
     if (amount === undefined || amount === null)
         return null
     if (adjust === true) {
@@ -50,4 +50,4 @@ export function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
             {' '}{isAssetValid(asset) || isValidPoolId(asset) ? <AssetLink asset={asset} icon={icon} issuer={issuer}/> : asset.toString()}
         </>}
     </span>
-}
+})

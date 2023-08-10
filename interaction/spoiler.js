@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './spoiler.scss'
 
-export function Spoiler({expanded, showMore = 'Show more', showLess = 'Show less', onChange, className, micro, style, active, children}) {
+export const Spoiler = React.memo(function Spoiler({expanded, showMore = 'Show more', showLess = 'Show less', onChange, className, micro, style, active, children}) {
     const [expandedState, setExpandedState] = useState(expanded || false)
     useEffect(() => {
         setExpandedState(expanded)
@@ -27,7 +27,7 @@ export function Spoiler({expanded, showMore = 'Show more', showLess = 'Show less
         </span>
         {expandedState ? children : null}
     </>
-}
+})
 
 Spoiler.propTypes = {
     expanded: PropTypes.bool,

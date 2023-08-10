@@ -772,11 +772,11 @@ const typeMapping = {
  * @param {Boolean} compact?
  * @constructor
  */
-export function OpDescriptionView({op, compact = false}) {
+export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {
     const render = typeMapping[op.operation.type]
     if (!render) {
         console.warn(`No operation text type mapping for operation ${op.operation.type}`)
         return null
     }
     return React.createElement(render, {op, compact})
-}
+})

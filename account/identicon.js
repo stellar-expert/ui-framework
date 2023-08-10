@@ -86,7 +86,7 @@ export function drawIdenticon(canvas, address, size = null, offset = null) {
  * @param {Number} size - Identicon size
  * @constructor
  */
-export function AccountIdenticon({address, size}) {
+export const AccountIdenticon = React.memo(function AccountIdenticon({address, size}) {
     const canvas = useRef(null)
     useEffect(() => drawIdenticon(canvas.current, address), [address])
 
@@ -103,4 +103,4 @@ export function AccountIdenticon({address, size}) {
         }
     }
     return <canvas {...props}/>
-}
+})

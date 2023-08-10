@@ -10,7 +10,7 @@ import {useAssetMeta} from './asset-meta-hooks'
  * @param {*} children? - Optional inner text
  * @constructor
  */
-export function AssetIcon({asset, className, style, children}) {
+export const AssetIcon = React.memo(function AssetIcon({asset, className, style, children}) {
     const meta = useAssetMeta(asset)
     const icon = meta?.toml_info?.image || meta?.toml_info?.orgLogo
     const classes = ['asset-icon']
@@ -31,4 +31,4 @@ export function AssetIcon({asset, className, style, children}) {
     }
 
     return <span className={classes.join(' ')} style={style}>{children}</span>
-}
+})

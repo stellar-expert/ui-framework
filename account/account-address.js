@@ -107,7 +107,7 @@ function AccountDisplayName({type, address, name}) {
  * @param {...*} [otherProps] - Optional container parameters
  * @constructor
  */
-export function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
+export const AccountAddress = React.memo(function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
     useStellarNetwork()
     let {type, address, muxedId, publicKey, payload} = decodeKeyType(account)
     if (!type)
@@ -160,4 +160,4 @@ export function AccountAddress({account, chars = 8, name, link, style, className
     }
 
     return React.createElement(renderAs, containerProps, children)
-}
+})

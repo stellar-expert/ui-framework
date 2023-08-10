@@ -39,7 +39,7 @@ Display context
     - Effects related to the current account
  */
 
-function TxChargedFee({parsedTx, compact}) {
+const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
     if (parsedTx.isEphemeral || !parsedTx.context?.account)
         return null
     const fee = parsedTx.effects.find(e => e.type === 'feeCharged')
@@ -52,15 +52,15 @@ function TxChargedFee({parsedTx, compact}) {
             {!!compact && !parsedTx.isEphemeral && <TxFeeAccountingChanges amount={fee.charged}/>}
         </div>
     </div>
-}
+})
 
 /**
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
  * @param {Boolean} [showFees] - Whether to display transaction fees
  * @param {Boolean} [compact] - Compact view (without fee charges and accounting changes effects)
  */
-export function TxOperationsList({parsedTx, showFees = true, compact = false}) {
-        return <div className="condensed">
+export const TxOperationsList = React.memo(function TxOperationsList({parsedTx, showFees = true, compact = false}) {
+    return <div className="condensed">
         {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
         {parsedTx.operations.map(op => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
             <div className="op-layout">
@@ -73,4 +73,4 @@ export function TxOperationsList({parsedTx, showFees = true, compact = false}) {
             <OpEffectsView effects={op.effects}/>
         </div>)}
     </div>
-}
+})

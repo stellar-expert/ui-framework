@@ -54,7 +54,7 @@ function decodeSigner(signer) {
  * @param {Boolean} showWeight? - Whether to display weight attribute
  * @constructor
  */
-export function SignerKey({signer, name, className, showWeight = true}) {
+export const SignerKey = React.memo(function SignerKey({signer, name, className, showWeight = true}) {
     if (!signer)
         return null
     const {key, weight} = decodeSigner(signer)
@@ -62,4 +62,4 @@ export function SignerKey({signer, name, className, showWeight = true}) {
         <AccountAddress account={key} name={name}/>
         {!!showWeight && <span className="dimmed text-tiny">&nbsp;(weight={weight})</span>}
     </span>
-}
+})

@@ -22,7 +22,7 @@ function select(target) {
     sel.addRange(range)
 }
 
-export function BlockSelect({as = 'span', children, title, className, wrap, inline, style, ...op}) {
+export const BlockSelect = React.memo(function BlockSelect({as = 'span', children, title, className, wrap, inline, style, ...op}) {
     const props = {
         className: cn('block-select', className),
         onFocus: e => select(e.target),
@@ -37,11 +37,11 @@ export function BlockSelect({as = 'span', children, title, className, wrap, inli
     if (wrap === false) {
         props.style = {...props.style, whiteSpace: 'nowrap', overflow: 'hidden'}
     }
-    if (inline){
+    if (inline) {
         props.style = {...props.style, display: 'inline'}
     }
     return React.createElement(as, props, children)
-}
+})
 
 BlockSelect.propTypes = {
     children: PropTypes.any.isRequired,

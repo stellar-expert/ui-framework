@@ -11,7 +11,7 @@ const timeUnits = {
     year: 'y'
 }
 
-export function ElapsedTime({ts, className, suffix}) {
+export const ElapsedTime = React.memo(function ElapsedTime({ts, className, suffix}) {
     const then = Date.parse(ts)
     return <span className={className}>
         <TimeAgo date={ts} formatter={(v, unit) => `${v}${timeUnits[unit]}`} now={function () {
@@ -19,4 +19,4 @@ export function ElapsedTime({ts, className, suffix}) {
             return then > now ? then : now
         }}/>{suffix}
     </span>
-}
+})

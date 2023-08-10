@@ -22,7 +22,7 @@ import './asset-link.scss'
  * @param {*} children? - Optional inner link text
  * @constructor
  */
-export function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
+export const AssetLink = React.memo(function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
     if (!(asset instanceof AssetDescriptor))
         asset = AssetDescriptor.parse(asset)
     const directoryInfo = useDirectory(asset?.issuer)
@@ -84,4 +84,4 @@ export function AssetLink({asset, link, issuer, icon, className, style, children
         }
     }
     return <a {...props}/>
-}
+})

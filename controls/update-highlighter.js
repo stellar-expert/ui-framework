@@ -4,7 +4,7 @@ import cn from 'classnames'
 import {useDependantState} from '../state/state-hooks'
 import './update-highlighter.scss'
 
-export function UpdateHighlighter({children}) {
+export const UpdateHighlighter = React.memo(function UpdateHighlighter({children}) {
     const timerRef = useRef(0)
     const [active, setActiveState] = useDependantState(() => {
         //reset the timer in case if previous animation wasn't finished yet
@@ -21,7 +21,7 @@ export function UpdateHighlighter({children}) {
     }, [children])
 
     return <span className={cn({highlighter: active})}>{children}</span>
-}
+})
 
 UpdateHighlighter.propTypes = {
     children: PropTypes.any.isRequired

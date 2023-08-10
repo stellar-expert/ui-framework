@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './button-group.scss'
 
-export function ButtonGroup({inline, children, ...otherProps}) {
-    if (inline) return <span className="button-group" {...otherProps}>{children}</span>
+export const ButtonGroup = React.memo(function ButtonGroup({inline, children, ...otherProps}) {
+    if (inline)
+        return <span className="button-group" {...otherProps}>{children}</span>
     return <div className="button-group" {...otherProps}>{children}</div>
-}
+})
 
 ButtonGroup.propTypes = {
     /**

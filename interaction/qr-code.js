@@ -10,7 +10,7 @@ import QR from 'qrcode.react'
  * @param {Number} [embeddedSize] - Embeded logo size (by default 10% of QR code size)
  * @return {JSX.Element}
  */
-export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}) {
+export const QrCode = React.memo(function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}) {
     const foreground = useMemo(() => getComputedStyle(document.documentElement).getPropertyValue('--color-primary'))
     const containerRef = useRef()
     return <div className="text-center" ref={containerRef}>
@@ -18,7 +18,7 @@ export function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}
             fgColor={foreground} style={{width: size + 'px', height: size + 'px', display: 'block', margin: 'auto'}}/>
         {!!caption && <div className="text-small dimmed condensed word-break">{caption}</div>}
     </div>
-}
+})
 
 function embedImage(src, size, qrSize) {
     if (!src)

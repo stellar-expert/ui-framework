@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './button.scss'
 
-export function Button({href, onClick, block, outline, clear, stackable, small, disabled, className, children, ...op}) {
+export const Button = React.memo(function Button({href, onClick, block, outline, clear, stackable, small, disabled, className, children, ...op}) {
     const c = cn('button', {
         small,
         disabled,
@@ -24,7 +24,7 @@ export function Button({href, onClick, block, outline, clear, stackable, small, 
         props.disabled = true
     }
     return <button {...props}>{children}</button>
-}
+})
 
 Button.propTypes = {
     /**

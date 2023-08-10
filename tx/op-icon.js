@@ -49,7 +49,7 @@ const opIconMapping = {
  * @param {OperationDescriptor|'feeCharge'} op - Operation descriptor
  * @constructor
  */
-export function OpIcon({op}) {
+export const OpIcon = React.memo(function OpIcon({op}) {
     let type
     if (op === 'feeCharge') {
         type = 'feeCharge'
@@ -87,4 +87,4 @@ export function OpIcon({op}) {
     return <div className="op-icon">
         <i className={`icon-${icon}`}/>
     </div>
-}
+})

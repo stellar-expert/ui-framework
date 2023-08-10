@@ -4,7 +4,7 @@ import cn from 'classnames'
 import {formatPrice} from '@stellar-expert/formatter'
 import './price-dynamic.scss'
 
-export function PriceDynamic({change, current, prev, standalone, allowZero}) {
+export const PriceDynamic = React.memo(function PriceDynamic({change, current, prev, standalone, allowZero}) {
     if (change === undefined) {
         if (current === prev || !prev || !current) {
             change = 0
@@ -12,11 +12,11 @@ export function PriceDynamic({change, current, prev, standalone, allowZero}) {
             change = 100 * (current - prev) / prev
         }
     }
-    if (Math.abs(change) > 10000) return null
+    if (Math.abs(change) > 10000)
+        return null
     change = formatPrice(Math.abs(change), 2) + '%'
-    if (change === '0%') {
-        if (!allowZero) return null
-    }
+    if (change === '0%' && !allowZero)
+        return null
     let direction
     if (parseInt(change) > 0) {
         direction = 'positive'
@@ -24,8 +24,16 @@ export function PriceDynamic({change, current, prev, standalone, allowZero}) {
     if (parseInt(change) < 0) {
         direction = 'negative'
     }
-    const className = cn('price-change', direction, {standalone})
+    const className = cn('price-change', getChangeDirection(change), {standalone})
     return <span className={className} aria-label={` (${change})`}>{change}</span>
+})
+
+function getChangeDirection(change) {
+    change = parseInt(change, 10)
+    if (change > 0)
+        return 'positive'
+    if (change < 0)
+        return 'negative'
 }
 
 PriceDynamic.propTypes = {

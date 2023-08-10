@@ -15,14 +15,14 @@ hljs.registerLanguage('html', htmlLang)
 hljs.registerLanguage('plain', plaintextLang)
 hljs.registerLanguage('toml', tomlLang)
 
-export function CodeBlock({children, lang, className, style} ) {
+export const CodeBlock = React.memo(function CodeBlock({children, lang, className, style}) {
     if (lang) {
         lang = lang.split(',')
     }
-    const languageFilter = lang || ['js', 'json'],
-        highlighted = hljs.highlightAuto(children, languageFilter)
+    const languageFilter = lang || ['js', 'json']
+    const highlighted = hljs.highlightAuto(children, languageFilter)
     return <pre dangerouslySetInnerHTML={{__html: highlighted.value}} className={cn('hljs', className)} style={style}/>
-}
+})
 
 CodeBlock.propTypes = {
     children: PropTypes.string.isRequired,

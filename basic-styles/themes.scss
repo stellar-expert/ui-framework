@@ -1,13 +1,10 @@
 :root {
   --color-primary: #{$color-primary};
-  --color-highlight: #08B5E5;
+  --color-highlight: #08b5e5;
   --color-dimmed: #999;
-  --color-alert: #{$color-alert};
-  --color-alert-bg: #{transparentize($color-alert, 0.8)};
-  --color-success: #{$color-success};
-  --color-success-bg: #{transparentize($color-success, 0.8)};
-  --color-warning: #{$color-warning};
-  --color-warning-bg: #{transparentize($color-warning, 0.8)};
+  --color-alert: #dc3545;
+  --color-success: #28a745;
+  --color-warning: #b27100;
   --color-price-up: #00ba00;
   --color-price-down: #df0000;
   --color-modal-bg: rgba(0, 0, 0, .2);
@@ -22,6 +19,9 @@
   --color-contrast-border: #d8dadb;
   --color-border-shadow: rgba(189, 191, 192, .1);
   --color-backdrop: rgba(0, 0, 0, .35);
+  --color-alert-bg: #f4d5d8;
+  --color-warning-bg: #ebdbbf;
+  --color-success-bg: #d0ecd6;
 }
 
 :root[data-theme=night] {
@@ -33,6 +33,9 @@
   --color-contrast-border: #535759;
   --color-border-shadow: rgba(176, 185, 189, 0.1);
   --color-backdrop: rgba(0, 0, 0, 0.25);
+  --color-alert-bg: #553d49;
+  --color-warning-bg: #484f34;
+  --color-success-bg: #1b5340;
 }
 
 .color-primary {

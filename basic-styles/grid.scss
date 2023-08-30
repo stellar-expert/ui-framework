@@ -296,6 +296,49 @@
     margin-top: -0.2em;
     padding-left: $space-micro;
   }
+
+  &.segment-inline {
+    &:before, &:after {
+      clip-path: polygon(0.6rem 0, 100% 0, 100% calc(100% - 1.6rem), calc(100% - 0.6rem) 100%, 0 100%, 0 1.6rem);
+    }
+  }
+
+  &.success {
+    background: none;
+
+    &:before {
+      background: var(--color-success-bg);
+    }
+    &:after {
+      background: var(--color-success);
+      opacity: 0.7;
+    }
+  }
+
+  &.warning {
+    background: none;
+
+    &:before {
+      background: var(--color-warning-bg);
+    }
+    &:after {
+      background: var(--color-warning);
+      opacity: 0.7;
+    }
+  }
+
+
+  &.error {
+    background: none;
+
+    &:before {
+      background: var(--color-alert-bg);
+    }
+    &:after {
+      background: var(--color-alert);
+      opacity: 0.7;
+    }
+  }
 }
 
 .column > .segment {

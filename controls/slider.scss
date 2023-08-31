@@ -1,12 +1,13 @@
-@use "../basic-styles/variables";
-
 .slider {
   .categories {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    font-size: 0.85*$font-size-base;
+    line-height: 2em;
 
     option {
+      padding: 0;
       text-align: center;
 
       &:first-child {

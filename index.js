@@ -38,6 +38,7 @@ export * from './controls/dropdown'
 export * from './controls/code-block'
 export * from './controls/slider'
 export * from './controls/external-link'
+export * from './toast/toast-notifications-block'
 export * from './errors/error-boundary'
 //interaction
 export * from './interaction/autofocus'

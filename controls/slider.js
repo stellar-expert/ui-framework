@@ -12,13 +12,9 @@ export function Slider({value, categroies, onChange, min = 0, max = 100, step = 
     }, [change])
 
     return <div className="slider dimmed text-small" {...otherProps}>
-        <div>
-            <input type="range" min={min} max={max} step={step} value={inputValue} onChange={onSlide}/>
-            {categroies && <datalist className="categories">
-                {categroies.map((category, index) =>
-                    <option key={category} value={index + category} label={category} className="dimmed condensed text-tiny"/>
-                )}
-            </datalist>}
-        </div>
+        {categroies && <datalist className="categories dimmed condensed">
+            {categroies.map((category, index) => <option key={index + category} value={category} label={category}/>)}
+        </datalist>}
+        <input type="range" min={min} max={max} step={step} value={inputValue} onChange={onSlide}/>
     </div>
 }

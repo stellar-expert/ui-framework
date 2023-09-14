@@ -64,7 +64,6 @@
 
     > div {
       color: var(--color-text);
-      word-break: break-all;
       @media (max-width: $responsive-mobile-browser-width) {
         font-size: 0.85em;
       }

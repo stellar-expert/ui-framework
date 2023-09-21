@@ -262,7 +262,7 @@
 }
 
 .segment {
-  padding: $space-standard;
+  padding: 2rem 3rem;
   position: relative;
   z-index: 0;
 
@@ -294,7 +294,6 @@
 
   & > h3 {
     margin-top: -0.2em;
-    padding-left: $space-micro;
   }
 
   &.segment-inline {

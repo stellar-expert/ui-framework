@@ -1,77 +1,28 @@
 import React from 'react'
 import cn from 'classnames'
-import {StrKey} from 'stellar-sdk'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountIdenticon} from './identicon'
 import {InfoTooltip} from '../controls/info-tooltip'
 import {useDirectory} from '../directory/directory-hooks'
-import {parseMuxedAccount} from './muxed-account-parser'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
+import {decodeKeyType} from '../stellar/key-type'
 import './account-address.scss'
 
-/**
- * @param {String} key
- * @return {{address: String, type: ('muxed'|'ed25519'|'hash'|'tx'), [muxedId]: BigInt}|{error: Error}}
- * @internal
- */
-function decodeKeyType(key) {
-    try {
-        switch (key.substr(0, 1)) {
-            case 'M':
-                return {
-                    type: 'muxed',
-                    ...parseMuxedAccount(key)
-                }
-            case 'G':
-                if (!StrKey.isValidEd25519PublicKey(key)) return {
-                    error: new Error(`Invalid public key: ${key}`)
-                }
-                return {
-                    type: 'ed25519',
-                    address: key
-                }
-            case 'X':
-                StrKey.decodeSha256Hash(key)
-                return {
-                    type: 'hash',
-                    address: key
-                }
-            case 'T':
-                StrKey.decodePreAuthTx(key)
-                return {
-                    type: 'tx',
-                    address: key
-                }
-            case 'P':
-                const spayload = StrKey.decodeSignedPayload(key)
-                return {
-                    type: 'signedPayload',
-                    address: key,
-                    publicKey: StrKey.encodeEd25519PublicKey(spayload.slice(0, 32)),
-                    payload: spayload.slice(36, 36 + spayload.readUIntBE(32, 4)).toString('hex')
-                }
-        }
-    } catch (e) {
-        console.error(e)
-        return {
-            error: e
-        }
-    }
-}
 
-function isPublicKey(type) {
-    return type === 'muxed' || type === 'ed25519'
+function isPublicKeyOrContract(type) {
+    return type === 'ed25519' || type === 'contract' || type === 'muxed'
 }
 
 function getAccountPredefinedDisplayName(address) {
-    if (!window.predefinedAccountDisplayNames) return undefined
+    if (!window.predefinedAccountDisplayNames)
+        return undefined
     return window.predefinedAccountDisplayNames[address]
 }
 
 function AccountDisplayName({type, address, name}) {
     const predefined = getAccountPredefinedDisplayName(address)
-    let directoryInfo = useDirectory(!predefined && !name && isPublicKey(type) && address),
+    let directoryInfo = useDirectory(!predefined && !name && isPublicKeyOrContract(type) && address),
         warning
     if (name === false)
         return null
@@ -107,11 +58,24 @@ function AccountDisplayName({type, address, name}) {
  * @param {...*} [otherProps] - Optional container parameters
  * @constructor
  */
-export const AccountAddress = React.memo(function AccountAddress({account, chars = 8, name, link, style, className, icon, prefix, suffix, network, ...otherProps}) {
+export const AccountAddress = React.memo(function AccountAddress({
+                                                                     account,
+                                                                     chars = 8,
+                                                                     name,
+                                                                     link,
+                                                                     style,
+                                                                     className,
+                                                                     icon,
+                                                                     prefix,
+                                                                     suffix,
+                                                                     network,
+                                                                     ...otherProps
+                                                                 }) {
     useStellarNetwork()
-    let {type, address, muxedId, publicKey, payload} = decodeKeyType(account)
-    if (!type)
+    const keyType = decodeKeyType(account)
+    if (!keyType)
         return null //failed to decode address type
+    let {type, address, muxedId, publicKey, payload} = keyType
 
     let innerStyle = !style ? undefined : style
 
@@ -122,7 +86,7 @@ export const AccountAddress = React.memo(function AccountAddress({account, chars
 
     const children = <>
         {prefix}
-        {icon !== false && isPublicKey(type) && <AccountIdenticon key="identicon" address={ed25519Address}/>}
+        {icon !== false && isPublicKeyOrContract(type) && <AccountIdenticon key="identicon" address={ed25519Address}/>}
         <AccountDisplayName type={type} address={ed25519Address} name={name}/>
         <span className="account-key">{address}</span>
         {muxedId !== undefined && <InfoTooltip icon="icon-plus">
@@ -147,12 +111,12 @@ export const AccountAddress = React.memo(function AccountAddress({account, chars
     }
     let renderAs = 'span'
 
-    if (link !== false && isPublicKey(type)) {
+    if (link !== false && isPublicKeyOrContract(type)) {
         renderAs = 'a'
         if (typeof link === 'string') {
             containerProps.href = link
         } else {
-            containerProps.href = formatExplorerLink('account', account, network)
+            containerProps.href = formatExplorerLink(type === 'contract' ? 'contract' : 'account', account, network)
             if (window.origin !== explorerFrontendOrigin) {
                 containerProps.target = '_blank'
             }

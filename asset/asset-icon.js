@@ -5,9 +5,9 @@ import {useAssetMeta} from './asset-meta-hooks'
 /**
  * Inline asset icon
  * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
- * @param {String} className? - Optional CSS class name
- * @param {{}} style? - Optional CSS inline style
- * @param {*} children? - Optional inner text
+ * @param {String} [className] - Optional CSS class name
+ * @param {{}} [style] - Optional CSS inline style
+ * @param {*} [children] - Optional inner text
  * @constructor
  */
 export const AssetIcon = React.memo(function AssetIcon({asset, className, style, children}) {

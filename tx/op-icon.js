@@ -41,7 +41,10 @@ const opIconMapping = {
     clawbackClaimableBalance: 'icon-ok',
     setTrustLineFlags: 'trustline-flags',
     liquidityPoolDeposit: 'droplet',
-    liquidityPoolWithdraw: 'droplet-half'
+    liquidityPoolWithdraw: 'droplet-half',
+    invokeHostFunction: 'flash',
+    bumpFootprintExpiration: 'upload',
+    restoreFootprint: 'upload'
 }
 
 /**

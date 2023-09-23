@@ -22,7 +22,10 @@ const operatinTypeMap = {
     clawbackClaimableBalance: 20,
     setTrustLineFlags: 21,
     liquidityPoolDeposit: 22,
-    liquidityPoolWithdraw: 23
+    liquidityPoolWithdraw: 23,
+    invokeHostFunction: 24,
+    bumpFootprintExpiration: 25,
+    restoreFootprint: 26
 }
 
 export class TypeFilterMatcher {
@@ -110,6 +113,12 @@ export class TypeFilterMatcher {
                     operatinTypeMap.endSponsoringFutureReserves,
                     operatinTypeMap.revokeSponsorship,
                     operatinTypeMap.setTrustLineFlags
+                ]
+            case 'contracts':
+                return [
+                    operatinTypeMap.invokeHostFunction,
+                    operatinTypeMap.bumpFootprintExpiration,
+                    operatinTypeMap.restoreFootprint
                 ]
             default:
                 return [parseInt(filter, 10)]

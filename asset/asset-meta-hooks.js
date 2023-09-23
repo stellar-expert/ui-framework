@@ -27,15 +27,27 @@ const loader = new ExplorerBatchInfoLoader(batch => {
     return apiCall(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
 }, entry => {
     cache.set(entry.name, entry)
-    return {key: entry.name, info: entry}
+    return {
+        key: entry.name,
+        info: entry
+    }
 })
 
 function retrieveFromCache(asset) {
     //try to load from the shared cache
     const cachedEntry = cache.get(asset)
     if (cachedEntry && !cachedEntry.isStale) {
-        if (!cachedEntry.isExpired) return cachedEntry.data//everything is up to date - no need to re-fetch
+        if (!cachedEntry.isExpired)
+            return cachedEntry.data//everything is up to date - no need to re-fetch
     }
+}
+
+function normalizeAssetName(asset) {
+    if (!asset)
+        return null
+    if (typeof asset === 'string' && asset.length === 56)
+        return asset //contract id
+    return AssetDescriptor.parse(asset).toFQAN()
 }
 
 /**
@@ -44,13 +56,15 @@ function retrieveFromCache(asset) {
  * @return {AssetMeta}
  */
 export function useAssetMeta(asset) {
-    asset = asset ? AssetDescriptor.parse(asset).toFQAN() : null
+    asset = normalizeAssetName(asset)
     const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
     useEffect(() => {
-        if (!asset) return
+        if (!asset)
+            return
         const cached = retrieveFromCache(asset)
         setAssetInfo(cached)
-        if (cached) return
+        if (cached)
+            return
         let unloaded = false
         //load from the server
         loader.loadEntry(asset)

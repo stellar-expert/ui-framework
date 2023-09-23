@@ -54,7 +54,7 @@ ${navigator.userAgent}`
         if (errorBoundaryErrorDetails === false)
             return null
         if (errorBoundaryErrorDetails === true) {
-            return <div className="error space text-small" style={{overflow: 'auto', maxWidth: '100%'}}>
+            return <div className="error space text-small" style={{overflow: 'auto', maxWidth: '100%', padding: '1rem 2rem'}}>
                 <BlockSelect as="div">
                     <div className="micro-space">{text}</div>
                     <div className="text-tiny">

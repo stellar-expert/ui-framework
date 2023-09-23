@@ -1,5 +1,4 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import cn from 'classnames'
 import {shortenString} from '@stellar-expert/formatter'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
@@ -14,20 +13,21 @@ import './asset-link.scss'
 /**
  * Explorer asset link
  * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
- * @param {Boolean|String} link? - Reference link
- * @param {Boolean} issuer? - Whether to show asset issuer
- * @param {Boolean} icon? - Wheter to show asset icon
- * @param {String} className? - Optional CSS class name
- * @param {{}} style? - Optional CSS style
- * @param {*} children? - Optional inner link text
+ * @param {Boolean|String} [link] - Reference link
+ * @param {Boolean} [issuer] - Whether to show asset issuer
+ * @param {Boolean} [icon] - Wheter to show asset icon
+ * @param {String} [className] - Optional CSS class name
+ * @param {{}} [style] - Optional CSS style
+ * @param {*} [children] - Optional inner link text
  * @constructor
  */
 export const AssetLink = React.memo(function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
-    if (!(asset instanceof AssetDescriptor))
+    if (!(asset instanceof AssetDescriptor) && !(typeof asset === 'string' && asset.length === 56)) {
         asset = AssetDescriptor.parse(asset)
-    const directoryInfo = useDirectory(asset?.issuer)
-    const    meta = useAssetMeta(asset)
+    }
     useStellarNetwork()
+    const directoryInfo = useDirectory(asset?.issuer)
+    const meta = useAssetMeta(asset)
 
     if (!asset)
         return null
@@ -59,7 +59,7 @@ export const AssetLink = React.memo(function AssetLink({asset, link, issuer, ico
                     <i className="icon icon-warning color-warning"
                        title="Warning: reported for illicit or fraudulent activity"/>}
                 {icon !== false && <AssetIcon asset={asset}/>}
-                {asset.code}
+                {!!asset.code && asset.code}
                 {issuer !== false && <AssetIssuer asset={asset}/>}
             </>
         }

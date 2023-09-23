@@ -61,7 +61,6 @@ export * from './account/identicon'
 export * from './account/account-address'
 export * from './account/signer-key'
 export * from './account/available-balance'
-export * from './account/muxed-account-parser'
 //asset-related components
 export * from './asset/asset-link'
 export * from './asset/asset-issuer'
@@ -81,4 +80,5 @@ export * from './tx/tx-operations-list'
 export * from './tx/parser/tx-details-parser'
 export * from './tx/tx-list-hooks'
 //Stellar-specific utils
+export * from './stellar/key-type'
 export * from './stellar/signature-hint-utils'

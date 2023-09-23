@@ -10,10 +10,10 @@ import {useAssetMeta} from './asset-meta-hooks'
  */
 export const AssetIssuer = React.memo(function AssetIssuer({asset}) {
     let meta = useAssetMeta(asset)
-    asset = AssetDescriptor.parse(asset)
-    if (asset.isNative) {
+    if (asset==='XLM' || asset.isNative) {
         meta = {domain: 'stellar.org'}
     }
+    asset = AssetDescriptor.parse(asset)
     return <span className="asset-issuer condensed">
         {meta?.domain ?
             <>{meta.domain}</> :

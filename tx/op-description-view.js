@@ -1,7 +1,8 @@
 import React from 'react'
-import {AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag} from 'stellar-sdk'
+import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag, scValToBigInt} from 'stellar-sdk'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
-import {formatPrice, formatWithAutoPrecision} from '@stellar-expert/formatter'
+import {formatPrice, formatWithAutoPrecision, shortenString} from '@stellar-expert/formatter'
+import {xdrParserUtils, contractPreimageEncoder} from '@stellar-expert/tx-meta-effects-parser'
 import {AccountAddress} from '../account/account-address'
 import {AccountIdenticon} from '../account/identicon'
 import {SignerKey} from '../account/signer-key'
@@ -11,7 +12,9 @@ import {useAssetMeta} from '../asset/asset-meta-hooks'
 import {OfferLink} from '../ledger/ledger-entry-link'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {ClaimableBalanceClaimants} from '../claimable-balance/claimable-balance-claimants'
+import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
+import {ScVal} from '../contract/sc-val'
 
 function formatBalanceId(balance) {
     return `${balance.substr(8, 4)}…${balance.substr(-4)}`
@@ -733,6 +736,119 @@ function WithdrawLiquidityDescriptionView({op, compact}) {
     </>
 }
 
+/**
+ * Type: 24
+ * @param {OperationDescriptor} op
+ * @param {Boolean} compact
+ * @constructor
+ */
+function InvokeHostFunctionView({op, compact}) {
+    const {func} = op.operation
+    const value = func.value()
+    switch (func.arm()) {
+        case 'invokeContract':
+            const invocation = <>
+                <AccountAddress account={xdrParserUtils.xdrParseScVal(value.contractAddress())}/>{' '}
+                <code>{value.functionName().toString()}(<ScVal value={value.args()}/>)</code>
+            </>
+            if (op.isEphemeral)
+                return <>
+                    <b>Invoke contract</b> {invocation}<OpSourceAccount op={op}/>
+                </>
+            return <>
+                <OpSourceAccount op={op}/> invoked contract {invocation}
+            </>
+            break
+        case 'wasm':
+            const wasmCode = value.toString('base64')
+            const codeReference = <>
+                <code title={wasmCode}>{shortenString(value.toString('base64'), 16)}</code>
+                <CopyToClipboard text={wasmCode}/>
+            </>
+            if (op.isEphemeral)
+                return <>
+                    <b>Upload contract code</b> {codeReference}<OpSourceAccount op={op}/>
+                </>
+            return <>
+                <OpSourceAccount op={op}/> uploaded contract code {codeReference}
+            </>
+            break
+        case 'createContract':
+            const preimage = value.contractIdPreimage()
+            const executable = value.executable()
+            const executableType = executable.switch().name
+            const contract = contractPreimageEncoder.contractIdFromPreimage(preimage, Networks[network.toUpperCase()])
+            let contractProps
+            switch (executableType) {
+                case 'contractExecutableWasm':
+                    const wasmHash = executable.wasmHash().toString('hex')
+                    contractProps = <>
+                        WASM code <code title={wasmCode}>{shortenString(value.toString('base64'), 16)}</code>
+                        <CopyToClipboard text={wasmCode}/>
+                    </>
+                    break
+                case 'contractExecutableToken':
+                    const preimageParams = preimage.value()
+                    switch (preimage.switch().name) {
+                        case 'contractIdPreimageFromAddress':
+                            const issuerAddress = xdrParserUtils.xdrParseAccountAddress(preimageParams.address().value())
+                            const salt = preimageParams.salt().toString('base64')
+                            contractProps = <>address <AccountAddress account={issuerAddress}/> with salt {salt}</>
+                            break
+                        case 'contractIdPreimageFromAsset':
+                            contractProps = <>asset <AssetLink asset={xdrParserUtils.xdrParseAsset(issuerAddress)}/></>
+                            break
+                    }
+                    break
+            }
+            if (op.isEphemeral)
+                return <>
+                    <b>Create contract</b> from {codeReference}<OpSourceAccount op={op}/>
+                </>
+            return <>
+                <OpSourceAccount op={op}/> created contract from {codeReference}
+            </>
+            break
+        default:
+            return <>Unknown invocation type</>
+    }
+}
+
+/**
+ * Type: 25
+ * @param {OperationDescriptor} op
+ * @param {Boolean} compact
+ * @constructor
+ */
+function BumpFootprintExpirationView({op}) {
+    const {ledgersToExpire} = op.operation
+    if (op.isEphemeral)
+        return <>
+            <b>Bump state expiration</b> for {ledgersToExpire} ledgers
+            <OpSourceAccount op={op}/>
+        </>
+    return <>
+        <OpSourceAccount op={op}/> bumped state expiration for {ledgersToExpire} ledgers
+    </>
+}
+
+/**
+ * Type: 26
+ * @param {OperationDescriptor} op
+ * @param {Boolean} compact
+ * @constructor
+ */
+function RestorFootprintView({op}) {
+    const {ledgersToExpire} = op.operation
+    if (op.isEphemeral)
+        return <>
+            <b>Restore state</b><OpSourceAccount op={op}/>
+        </>
+    return <>
+        <OpSourceAccount op={op}/> restored state
+    </>
+}
+
 const typeMapping = {
     createAccount: CreateAccountDescriptionView,
     payment: PaymentDescriptionView,
@@ -763,7 +879,10 @@ const typeMapping = {
     clawbackClaimableBalance: ClawbackClaimableBalanceDescriptionView,
     setTrustLineFlags: SetTrustLineFlagsDescriptionView,
     liquidityPoolDeposit: DepositLiquidityDescriptionView,
-    liquidityPoolWithdraw: WithdrawLiquidityDescriptionView
+    liquidityPoolWithdraw: WithdrawLiquidityDescriptionView,
+    invokeHostFunction: InvokeHostFunctionView,
+    bumpFootprintExpiration: BumpFootprintExpirationView,
+    restoreFootprint: 26
 }
 
 /**

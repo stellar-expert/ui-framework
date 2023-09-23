@@ -163,6 +163,18 @@ export default class TxMatcher {
                     matchingProps.account = new Set([op.from])
                     matchingProps.destination = new Set([op.from])
                     break
+                case 'invokeHostFunction':
+                    matchingProps.account = new Set()
+                    for (const effect of op.effects) {
+                        matchingProps.account.add(effect.source)
+                        if (effect.issuer !== undefined) {
+                            matchingProps.account.add(effect.issuer)
+                        }
+                        if (effect.contract !== undefined) {
+                            matchingProps.account.add(effect.contract)
+                        }
+                    }
+                    break
                 case 'liquidityPoolDeposit':
                 case 'liquidityPoolWithdraw':
                 case 'claimClaimableBalance':
@@ -174,6 +186,8 @@ export default class TxMatcher {
                 case 'bumpSequence':
                 case 'endSponsoringFutureReserves':
                 case 'clawbackClaimableBalance':
+                case 'bumpFootprintExpiration':
+                case 'restoreFootprint':
                     matchingProps.account = new Set()
                     break
                 default:
@@ -261,7 +275,20 @@ export default class TxMatcher {
                         const assets = poolUpdatedEffect.reserves.map(r => AssetDescriptor.parse(r.asset).toFQAN())
                         matchingProps.asset = new Set(assets)
                         matchingProps.src_asset = new Set(assets)
-                        matchingProps.dest_asset = new Set(assets)
+                        matchingProps.dest_asset = new Set(assets)``
+                    }
+                    break
+                case 'invokeHostFunction':
+                    matchingProps.asset = new Set()
+                    matchingProps.src_asset = new Set()
+                    matchingProps.dest_asset = new Set()
+                    const assets = new Set()
+                    for (const effect of op.effects) {
+                        if (effect.asset !== undefined) {
+                            matchingProps.asset.add(effect.asset)
+                            matchingProps.src_asset.add(effect.asset)
+                            matchingProps.dest_asset.add(effect.asset)
+                        }
                     }
                     break
             }

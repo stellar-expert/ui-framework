@@ -2,7 +2,6 @@ import {useEffect, useState} from 'react'
 import {StrKey} from 'stellar-sdk'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {InMemoryClientCache} from '@stellar-expert/client-cache'
-import {useDependantState} from '../state/state-hooks'
 import apiCall from '../api/explorer-api-call'
 import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 
@@ -49,7 +48,7 @@ export function useDirectory(address, options) {
     const [directoryInfo, setDirectoryInfo] = useState(null)
     let unloaded = false
     useEffect(function () {
-        if (!address || !StrKey.isValidEd25519PublicKey(address))
+        if (!address || !(StrKey.isValidEd25519PublicKey(address) || StrKey.isValidContract(address)))
             return
         if (!forceRefresh) {
             const cachedEntry = cache.get(address)

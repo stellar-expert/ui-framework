@@ -743,6 +743,7 @@ function WithdrawLiquidityDescriptionView({op, compact}) {
  * @constructor
  */
 function InvokeHostFunctionView({op, compact}) {
+    const network = useStellarNetwork()
     const {func} = op.operation
     const value = func.value()
     switch (func.arm()) {
@@ -783,8 +784,8 @@ function InvokeHostFunctionView({op, compact}) {
                 case 'contractExecutableWasm':
                     const wasmHash = executable.wasmHash().toString('hex')
                     contractProps = <>
-                        WASM code <code title={wasmCode}>{shortenString(value.toString('base64'), 16)}</code>
-                        <CopyToClipboard text={wasmCode}/>
+                        WASM code <code title={wasmHash}>{shortenString(wasmHash, 16)}</code>
+                        <CopyToClipboard text={wasmHash}/>
                     </>
                     break
                 case 'contractExecutableToken':
@@ -796,17 +797,17 @@ function InvokeHostFunctionView({op, compact}) {
                             contractProps = <>address <AccountAddress account={issuerAddress}/> with salt {salt}</>
                             break
                         case 'contractIdPreimageFromAsset':
-                            contractProps = <>asset <AssetLink asset={xdrParserUtils.xdrParseAsset(issuerAddress)}/></>
+                            contractProps = <>asset <AssetLink asset={xdrParserUtils.xdrParseAsset(preimageParams)}/></>
                             break
                     }
                     break
             }
             if (op.isEphemeral)
                 return <>
-                    <b>Create contract</b> from {codeReference}<OpSourceAccount op={op}/>
+                    <b>Create contract</b> from {contractProps}<OpSourceAccount op={op}/>
                 </>
             return <>
-                <OpSourceAccount op={op}/> created contract from {codeReference}
+                <OpSourceAccount op={op}/> created contract from {contractProps}
             </>
             break
         default:
@@ -838,7 +839,7 @@ function BumpFootprintExpirationView({op}) {
  * @param {Boolean} compact
  * @constructor
  */
-function RestorFootprintView({op}) {
+function RestoreFootprintView({op}) {
     const {ledgersToExpire} = op.operation
     if (op.isEphemeral)
         return <>
@@ -882,7 +883,7 @@ const typeMapping = {
     liquidityPoolWithdraw: WithdrawLiquidityDescriptionView,
     invokeHostFunction: InvokeHostFunctionView,
     bumpFootprintExpiration: BumpFootprintExpirationView,
-    restoreFootprint: 26
+    restoreFootprint: RestoreFootprintView
 }
 
 /**

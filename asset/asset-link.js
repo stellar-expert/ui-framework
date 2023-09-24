@@ -9,6 +9,7 @@ import {useAssetMeta} from './asset-meta-hooks'
 import {AssetIcon} from './asset-icon'
 import {AssetIssuer} from './asset-issuer'
 import './asset-link.scss'
+import {AccountAddress} from '../account/account-address'
 
 /**
  * Explorer asset link
@@ -22,7 +23,7 @@ import './asset-link.scss'
  * @constructor
  */
 export const AssetLink = React.memo(function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
-    if (!(asset instanceof AssetDescriptor) && !(typeof asset === 'string' && asset.length === 56)) {
+    if (!(asset instanceof AssetDescriptor)) {
         asset = AssetDescriptor.parse(asset)
     }
     useStellarNetwork()
@@ -60,6 +61,7 @@ export const AssetLink = React.memo(function AssetLink({asset, link, issuer, ico
                        title="Warning: reported for illicit or fraudulent activity"/>}
                 {icon !== false && <AssetIcon asset={asset}/>}
                 {!!asset.code && asset.code}
+                {!!asset.isContract && <AccountAddress account={asset.contract} chars={8} link={false} icon={false}/>}
                 {issuer !== false && <AssetIssuer asset={asset}/>}
             </>
         }

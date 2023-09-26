@@ -1,26 +1,26 @@
 //fonts
-$font-face-primary: ClearSans, sans-serif;
-$font-face-header: 'Roboto Condensed', Arial, Helvetica, sans-serif;
-$font-face-mono: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+$font-face-primary: ClearSans, sans-serif !default;
+$font-face-header: 'Roboto Condensed', Arial, Helvetica, sans-serif !default;
+$font-face-mono: Consolas, 'Liberation Mono', Menlo, Courier, monospace !default;
 
-$font-size-base: 1.6rem;
-$font-weight-base: 300;
-$font-line-height-base: 1.4285;
-$header-letter-spacing: -0.02em;
+$font-size-base: 1.6rem !default;
+$font-weight-base: 300 !default;
+$font-line-height-base: 1.4285 !default;
+$header-letter-spacing: -0.02em !default;
 
 //borders
-$border-radius-input: 0.3rem;
+$border-radius-input: 0.3rem !default;
 
 //spacing
-$space-standard: 2rem;
-$space-micro: 1rem;
-$space-nano: 0.5rem;
-$space-double: 4rem;
+$space-standard: 2rem !default;
+$space-micro: 1rem !default;
+$space-nano: 0.5rem !default;
+$space-double: 4rem !default;
 
-$container-padding: $space-standard;
+$container-padding: $space-standard !default;
 
 //responsive breakpoints
 $responsive-mobile-browser-width: 992px;
 
 //basic color
-$color-primary: #0691B7;
+$color-primary: #0691B7 !default;

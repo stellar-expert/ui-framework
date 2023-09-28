@@ -117,7 +117,10 @@ function PathPaymentDescriptionView({op, compact}) {
         const debitedEffect = effects.find(e => e.source === source && e.type === 'accountDebited' && e.asset === sendAssetId)
         if (debitedEffect) {
             src = fromStroops(debitedEffect.amount)
-        }
+        } /*else if (source===destination) {
+            const creditedEffect = effects.find(e => e.source === source && e.type === 'accountCredited' && e.asset === sendAssetId)
+            //succcessful arbitrage trades will add yield accountCredited effect
+        }*/
     }
     if (destMin !== undefined) {
         const destAssetId = destAsset.toString()

@@ -2,9 +2,12 @@ import React from 'react'
 import {Amount} from '../asset/amount'
 
 export default function TxFeeEffect({feeEffect, compact}) {
-    const {charged, feeBid, feeBump} = feeEffect
-    const fee = feeBid || charged
+    const {charged, bid, bump} = feeEffect
+    if (charged)
+        return <div>
+            <Amount amount={charged} asset="XLM" issuer={!compact}/> transaction {!!bump && 'bump'} fee charged
+        </div>
     return <div>
-        <Amount amount={fee} asset="XLM" issuer={!compact}/> transaction {!!feeBump && 'bump'} fee charged
+        Charge transaction {!!bump && 'bump'} fee <Amount amount={bid} asset="XLM" issuer={!compact}/>
     </div>
 }

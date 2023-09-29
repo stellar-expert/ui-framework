@@ -72,7 +72,7 @@ ${navigator.userAgent}`
             return this.props.children
         const {title = 'Unhandled error occurred', wrapper, ...otherProps} = this.props
         if (wrapper)
-            return React.createElement(wrapper, {children: this.renderError(), ...otherProps})
+            return React.createElement(wrapper, {...otherProps}, this.renderError())
         return <div className="segment blank">
             <h3 className="color-danger">{title}</h3>
             <hr className="flare"/>

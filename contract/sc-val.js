@@ -16,7 +16,7 @@ export function ScVal({value, nested = false}) {
             return <>[{value._value.map((v, i) => <>{i > 0 && ', '}<ScVal value={v} nested/></>)}]</>
         case 'map':
             return <>&#123;
-                {value._value.map((kv, i) => <>{i > 0 && ', '}<ScVal value={kv.key()} nested/>: <ScVal value={kv.value()} nested/></>)}
+                {value._value.map((kv, i) => <>{i > 0 && ', '}<ScVal value={kv.key()} nested/>: <ScVal value={kv.val()} nested/></>)}
                 &#125;</>
         case 'b':
             return <>value._value<ScValType type="bool"/></>

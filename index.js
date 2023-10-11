@@ -8,7 +8,6 @@ window.horizonOrigin = window.horizonOrigin || 'https://horizon.stellar.org'
 export * from './module/dynamic-module'
 //state management and utils
 export * from './state/state-hooks'
-export * from './state/dynamic-module'
 export * from './state/on-screen-hooks'
 export * from './state/stellar-network-hooks'
 export * from './state/screen-orientation-hooks'

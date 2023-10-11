@@ -4,6 +4,8 @@ window.explorerFrontendOrigin = window.explorerFrontendOrigin || 'https://stella
 window.explorerApiOrigin = window.explorerApiOrigin || 'https://api.stellar.expert'
 window.horizonOrigin = window.horizonOrigin || 'https://horizon.stellar.org'
 
+//modules
+export * from './module/dynamic-module'
 //state management and utils
 export * from './state/state-hooks'
 export * from './state/dynamic-module'

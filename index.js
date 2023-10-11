@@ -13,6 +13,7 @@ export * from './state/stellar-network-hooks'
 export * from './state/screen-orientation-hooks'
 export * from './state/page-visibility-helpers'
 export * from './state/theme'
+export * from './meta/page-meta-tags'
 //explorer API bindings
 export * from './api/explorer-api-hooks'
 export * from './api/explorer-api-paginated-list-hooks'

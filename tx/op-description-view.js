@@ -709,7 +709,7 @@ function SetTrustLineFlagsDescriptionView({op, compact}) {
 function DepositLiquidityDescriptionView({op, compact}) {
     const {liquidityPoolId, maxAmountA, maxAmountB, minPrice, maxPrice} = op.operation
     const meta = useAssetMeta(liquidityPoolId)
-    const [assetA, assetB] = meta?.assets || ['tokens A', 'tokens B']
+    const [assetA, assetB] = meta?.assets.map(a => a.asset) || ['tokens A', 'tokens B']
     const depositInfo = <>
         <Amount asset={assetA} amount={maxAmountA} issuer={!compact}/> and {' '}
         <Amount asset={assetB} amount={maxAmountB} issuer={!compact}/> to the pool{' '}
@@ -734,7 +734,7 @@ function DepositLiquidityDescriptionView({op, compact}) {
 function WithdrawLiquidityDescriptionView({op, compact}) {
     const {liquidityPoolId, amount, minAmountA, minAmountB} = op.operation
     const meta = useAssetMeta(liquidityPoolId)
-    const [assetA, assetB] = meta?.assets || ['tokens A', 'tokens B']
+    const [assetA, assetB] = meta?.assets.map(a => a.asset) || ['tokens A', 'tokens B']
     const withdrawInfo = <>
         {formatWithAutoPrecision(amount)} shares from the pool <AssetLink asset={liquidityPoolId} issuer={!compact}/>{' '}
         {!compact && <span className="dimmed">

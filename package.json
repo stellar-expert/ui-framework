@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.7.9",
+  "version": "1.8.0",
   "private": true,
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
@@ -21,12 +21,12 @@
     "react": ">=17",
     "react-dom": ">=17",
     "react-fast-compare": ">=3",
-    "stellar-sdk": "11.0.0-beta.3",
+    "stellar-base": "10.0.0-beta.3",
     "throttle-debounce": ">=5.0.0"
   },
   "dependencies": {
-    "@stellar-expert/asset-descriptor": "github:stellar-expert/asset-descriptor#v1.2.1",
-    "@stellar-expert/claimable-balance-utils": "github:stellar-expert/claimable-balance-utils#v1.2.0",
+    "@stellar-expert/asset-descriptor": "github:stellar-expert/asset-descriptor#v1.2.3",
+    "@stellar-expert/claimable-balance-utils": "github:stellar-expert/claimable-balance-utils#v1.3.0",
     "@stellar-expert/client-cache": "github:stellar-expert/client-cache",
     "@stellar-expert/formatter": "github:stellar-expert/formatter#v2.2.0",
     "@stellar-expert/navigation": "github:stellar-expert/navigation#v1.0.2",

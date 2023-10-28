@@ -1,4 +1,4 @@
-import {StrKey} from 'stellar-sdk'
+import {StrKey} from 'stellar-base'
 
 /**
  * @param {String} key

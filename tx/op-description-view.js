@@ -1,5 +1,5 @@
 import React from 'react'
-import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag} from 'stellar-sdk'
+import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag} from 'stellar-base'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {formatPrice, formatWithAutoPrecision, fromStroops, shortenString} from '@stellar-expert/formatter'
 import {xdrParserUtils, contractPreimageEncoder} from '@stellar-expert/tx-meta-effects-parser'

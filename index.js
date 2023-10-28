@@ -27,8 +27,6 @@ export * from './horizon/horizon-effect-helpers'
 export * from './horizon/horizon-account-helpers'
 export * from './horizon/horizon-orderbook-helpers'
 export * from './horizon/horizon-trades-helper'
-//TOML metadata
-export * from './stellar/federation-hooks'
 //basic UI controls
 export * from './controls/button'
 export * from './controls/button-group'

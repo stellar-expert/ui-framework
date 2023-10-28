@@ -1,5 +1,5 @@
 import React from 'react'
-import {scValToBigInt} from 'stellar-sdk'
+import {scValToBigInt} from 'stellar-base'
 import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'

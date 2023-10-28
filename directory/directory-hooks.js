@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {StrKey} from 'stellar-sdk'
+import {StrKey} from 'stellar-base'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {InMemoryClientCache} from '@stellar-expert/client-cache'
 import apiCall from '../api/explorer-api-call'

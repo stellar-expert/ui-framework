@@ -1,4 +1,4 @@
-import {Server} from 'stellar-base'
+import {Server} from 'stellar-sdk'
 
 export function initHorizon() {
     return new Server(window.horizonOrigin)

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag} from 'stellar-base'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
-import {formatPrice, formatWithAutoPrecision, fromStroops, shortenString} from '@stellar-expert/formatter'
+import {formatPrice, formatWithAutoPrecision, fromStroops, toStroops, shortenString} from '@stellar-expert/formatter'
 import {xdrParserUtils, contractPreimageEncoder} from '@stellar-expert/tx-meta-effects-parser'
 import {AccountAddress} from '../account/account-address'
 import {AccountIdenticon} from '../account/identicon'
@@ -98,6 +98,8 @@ function PathPaymentDescriptionView({op, compact}) {
     let dst = destAmount || destMin
     sendAsset = AssetDescriptor.parse(sendAsset)
     destAsset = AssetDescriptor.parse(destAsset)
+    const sendAssetId = sendAsset.toFQAN()
+    const destAssetId = destAsset.toFQAN()
     const pathData = <>
         <i className="icon icon-shuffle color-primary"/>{' '}
         {!compact && path.map((asset, i) => <span key={i + '-' + asset.toString()}>
@@ -113,20 +115,27 @@ function PathPaymentDescriptionView({op, compact}) {
             <OpSourceAccount op={op}/>
         </>
     if (sendMax !== undefined) {
-        const sendAssetId = sendAsset.toString()
-        const debitedEffect = effects.find(e => e.source === source && e.type === 'accountDebited' && e.asset === sendAssetId)
-        if (debitedEffect) {
-            src = fromStroops(debitedEffect.amount)
-        } /*else if (source===destination) {
-            const creditedEffect = effects.find(e => e.source === source && e.type === 'accountCredited' && e.asset === sendAssetId)
-            //succcessful arbitrage trades will add yield accountCredited effect
-        }*/
+        if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
+            const changeEffect = effects.find(e => e.source === source && e.asset === sendAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
+            const change = BigInt(changeEffect.amount)
+            src = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? -change : change))
+        } else {
+            const debitedEffect = effects.find(e => e.source === source && e.type === 'accountDebited' && e.asset === sendAssetId)
+            if (debitedEffect) {
+                src = fromStroops(debitedEffect.amount)
+            }
+        }
     }
     if (destMin !== undefined) {
-        const destAssetId = destAsset.toString()
-        const creditedEffect = effects.find(e => e.source === destination && e.type === 'accountCredited' && e.asset === destAssetId)
-        if (creditedEffect) {
-            dst = fromStroops(creditedEffect.amount)
+        if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
+            const changeEffect = effects.find(e => e.source === source && e.asset === destAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
+            const change = BigInt(changeEffect.amount)
+            dst = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
+        } else {
+            const creditedEffect = effects.find(e => e.source === destination && e.type === 'accountCredited' && e.asset === destAssetId)
+            if (creditedEffect) {
+                dst = fromStroops(creditedEffect.amount)
+            }
         }
     }
     return <>

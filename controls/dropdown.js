@@ -104,7 +104,7 @@ export const Dropdown = React.memo(function Dropdown({
         <a href="#" className="dd-header" onClick={toggleList} ref={headerRef}>
             {ddTitle}{!!showToggle && <span className={cn('dd-toggle', {visible: listOpen})}/>}
         </a>
-        {!!listOpen && createPortal(<>
+        {!!listOpen && createPortal(<div className={className}>
             <div className={cn('dd-backdrop', {solo})}/>
             <div className={cn('dd-list', {solo, visible: listOpen && !disabled, 'align-right': alignRigth})}
                  style={getListPosition(headerRef.current, solo)} ref={listRef}>
@@ -128,7 +128,7 @@ export const Dropdown = React.memo(function Dropdown({
                     <div className="dd-list-footer" onClick={preventClosing}>{footer}</div>
                 </>}
             </div>
-        </>, document.body)}
+        </div>, document.body)}
     </div>
 })
 

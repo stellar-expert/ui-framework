@@ -1,5 +1,5 @@
 import React from 'react'
-import {scValToBigInt} from 'stellar-base'
+import {xdr, scValToBigInt} from 'stellar-base'
 import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
@@ -9,14 +9,18 @@ export function ScVal({value, nested = false}) {
         return <code className="sc-val"><ScVal value={value} nested/></code>
     if (!value)
         return 'void'
+    if (typeof value === 'string') {
+        value = xdr.ScVal.fromXDR(value, 'base64')
+    }
     if (value instanceof Array)
-        return <>[{value.map((v, i) => <>{i > 0 && ', '}<ScVal value={v} nested/></>)}]</>
+        return <>[{value.map((v, i) => <React.Fragment key={i}>{i > 0 && ', '}<ScVal value={v} nested/></React.Fragment>)}]</>
     switch (value._arm) {
         case 'vec':
-            return <>[{value._value.map((v, i) => <>{i > 0 && ', '}<ScVal value={v} nested/></>)}]</>
+            return <>[{value._value.map((v, i) => <React.Fragment key={i}>{i > 0 && ', '}<ScVal value={v} nested/></React.Fragment>)}]</>
         case 'map':
             return <>&#123;
-                {value._value.map((kv, i) => <>{i > 0 && ', '}<ScVal value={kv.key()} nested/>: <ScVal value={kv.val()} nested/></>)}
+                {value._value.map((kv, i) =>
+                    <React.Fragment key={i}>{i > 0 && ', '}<ScVal value={kv.key()} nested/>: <ScVal value={kv.val()} nested/></React.Fragment>)}
                 &#125;</>
         case 'b':
             return <>value._value<ScValType type="bool"/></>

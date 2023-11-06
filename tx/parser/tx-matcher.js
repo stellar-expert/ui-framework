@@ -275,7 +275,7 @@ export default class TxMatcher {
                         const assets = poolUpdatedEffect.reserves.map(r => AssetDescriptor.parse(r.asset).toFQAN())
                         matchingProps.asset = new Set(assets)
                         matchingProps.src_asset = new Set(assets)
-                        matchingProps.dest_asset = new Set(assets)``
+                        matchingProps.dest_asset = new Set(assets)
                     }
                     break
                 case 'invokeHostFunction':

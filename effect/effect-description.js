@@ -176,18 +176,18 @@ export function EffectDescription({effect}) {
         case 'liquidityPoolDeposited':
             return <>
                 <span className="nowrap">
-                <Amount asset={effect.reserves[0].asset} amount={effect.reserves[0].amount} adjust/>{' '}
-                    and <Amount asset={effect.reserves[1].asset} amount={effect.reserves[1].amount} adjust/></span> deposited to
+                <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
+                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/></span> deposited to
                 liquidity <span className="nowrap">pool <AssetLink asset={effect.pool}/></span> <i className="icon icon-shuffle"/>{' '}
-                <span className="nowrap">{formatWithAutoPrecision(effect.shares_received)} pool shares</span>
+                <span className="nowrap">{formatWithAutoPrecision(effect.shares)} pool shares</span>
             </>
-        case 'liquidity_pool_withdrew':
+        case 'liquidityPoolWithdrew':
             return <>
                 Liquidity pool <AssetLink asset={effect.pool}/> created
-                {formatWithAutoPrecision(effect.shares_redeemed)} pool shares <i className="icon icon-shuffle"/>{' '}
+                {formatWithAutoPrecision(effect.shares)} pool shares <i className="icon icon-shuffle"/>{' '}
                 <span className="nowrap">
-                <Amount asset={effect.reserves[0].asset} amount={effect.reserves[0].amount} adjust/>{' '}
-                    and <Amount asset={effect.reserves[1].asset} amount={effect.reserves[1].amount} adjust/></span> withdrawn from{' '}
+                <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
+                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/></span> withdrawn from{' '}
                 <span className="nowrap"><AssetLink asset={effect.pool}/> pool</span>
             </>
         case 'liquidityPoolCreated':
@@ -200,7 +200,7 @@ export function EffectDescription({effect}) {
                 <span className="nowrap">{formatWithAutoPrecision(effect.shares)} pool shares</span>,{' '}
                 <span className="nowrap">{effect.accounts} accounts</span></>
         case 'liquidityPoolRemoved':
-            return <>Liquidity pool <AssetLink asset={effect.liquidity_pool_id}/> removed</>
+            return <>Liquidity pool <AssetLink asset={effect.pool}/> removed</>
         case 'inflation':
             return <>Inflation distribution initialized</>
         case 'contractCodeUploaded':

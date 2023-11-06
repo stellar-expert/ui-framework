@@ -47,3 +47,13 @@ OfferLink.propTypes = {
     network: PropTypes.string,
     children: PropTypes.any
 }
+
+export const PoolLink = React.memo(function PoolLink({pool, network, children}) {
+    return React.createElement(LedgerEntryLink, {type: 'pool', id: pool, network, children})
+})
+
+PoolLink.propTypes = {
+    pool: PropTypes.string.isRequired,
+    network: PropTypes.string,
+    children: PropTypes.any
+}

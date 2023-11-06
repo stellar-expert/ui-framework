@@ -208,9 +208,10 @@ export function EffectDescription({effect}) {
         case 'contractCreated':
             return <>Contract <AccountAddress account={effect.contract}/> created <ContractDetails effect={effect}/></>
         case 'contractInvoked':
-            return <>{effect.depth && <i className="icon-level-down" style={{paddingLeft: (effect.depth * 2) + 'em'}}/>}
+            return <>{effect.depth > 0 &&
+                <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
                 Contract <AccountAddress account={effect.contract}/>{' '} function <code>{effect.function}</code> invoked
-                with arguments <ScVal value={effect.rawArgs}/></>
+                {!!effect.rawArgs && <> with arguments <ScVal value={effect.rawArgs}/></>}</>
         case 'contractEvent':
             return <>Contract <AccountAddress account={effect.contract}/> raised event <ScVal value={effect.rawTopics}/>{' '}
                 with data <ScVal value={effect.rawData}/></>

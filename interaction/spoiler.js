@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './spoiler.scss'
@@ -9,13 +9,13 @@ export const Spoiler = React.memo(function Spoiler({expanded, showMore = 'Show m
         setExpandedState(expanded)
     }, [expanded])
 
-    function toggle() {
+    const toggle = useCallback(() => {
         setExpandedState(prevState => {
             const newState = !prevState
             setExpandedState(newState)
             onChange && onChange({expanded: newState})
         })
-    }
+    }, [onChange])
 
     const text = expandedState ? showLess : showMore
     return <>

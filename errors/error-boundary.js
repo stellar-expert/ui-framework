@@ -12,7 +12,6 @@ export class ErrorBoundary extends React.Component {
     componentDidCatch(e, errorInfo) {
         e.componentStack = errorInfo?.componentStack
         console.error(e)
-        console.log(nav)
         this.setState({lastError: e, url: window.location.href}, () => {
             const stopListening = nav.history.listen((location) => {
                 if (this.state.url !== window.location.href) {

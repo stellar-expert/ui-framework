@@ -187,7 +187,7 @@ function ManageOfferDescriptionView({op, compact}) {
             <Amount amount={buyAmount} asset={buying} issuer={!compact}/> :
             <AssetLink asset={buying} issuer={!compact}/>}{' '}
         at <span className="nowrap">
-            {formatWithAutoPrecision(price)} {AssetDescriptor.parse(buying).toCurrency()}/{AssetDescriptor.parse(selling).toCurrency()}
+            {formatWithAutoPrecision(parseFloat(price))} {AssetDescriptor.parse(buying).toCurrency()}/{AssetDescriptor.parse(selling).toCurrency()}
         </span>
     </>
     if (op.isEphemeral) {
@@ -912,7 +912,7 @@ const typeMapping = {
 /**
  * Text description of a tx operation
  * @param {OperationDescriptor} op
- * @param {Boolean} compact?
+ * @param {Boolean} [compact]
  * @constructor
  */
 export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {

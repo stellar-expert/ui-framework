@@ -160,10 +160,8 @@ const tagReplacerPipeline = [generateCanonicalLink, generateDescriptionMeta, gen
  * @param {PageMeta} meta - Page metadata
  */
 export function setPageMetadata(meta) {
-    console.log('set page meta')
     if (isEqual(pageMeta, meta))
         return
-    console.log('meta updated')
     const canonicalUrl = origin + location.pathname// + location.search
     document.title = formatPageTitle(meta.title)
     for (const replacer of tagReplacerPipeline) {

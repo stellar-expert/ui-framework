@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useCallback, useState} from 'react'
+import {Spoiler} from '../interaction/spoiler'
+import {OpEffectsView} from '../effect/op-effects-view'
+import {OpAccountingChanges, TxFeeAccountingChanges} from './op-accounting-changes'
 import TxFeeEffect from './tx-fee-effect'
 import {OpDescriptionView} from './op-description-view'
 import {OpIcon} from './op-icon'
-import {OpEffectsView} from './op-effects-view'
-import {OpAccountingChanges, TxFeeAccountingChanges} from './op-accounting-changes'
 import './op-description.scss'
 
 /*
@@ -57,20 +58,27 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
 /**
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
  * @param {Boolean} [showFees] - Whether to display transaction fees
+ * @param {Boolean} [showEffects] - Whether to show operation effects
  * @param {Boolean} [compact] - Compact view (without fee charges and accounting changes effects)
  */
-export const TxOperationsList = React.memo(function TxOperationsList({parsedTx, showFees = true, compact = false}) {
+export const TxOperationsList = React.memo(function TxOperationsList({parsedTx, showFees = true, compact = false, showEffects}) {
+    const [effectsExpanded, setEffectsExpanded] = useState(false)
+    const toggleEffects = useCallback(e => setEffectsExpanded(e.expanded), [])
+
     return <div className="condensed">
         {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
-        {parsedTx.operations.map(op => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
+        {parsedTx.operations.map((op, i) => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
             <div className="op-layout">
                 <OpIcon op={op}/>
                 <div>
                     <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact}/>
                 </div>
                 {!!compact && !op.isEphemeral && <OpAccountingChanges op={op}/>}
+                {!compact && showEffects !== false && (parsedTx.operations.length - 1 === i) &&
+                    <Spoiler micro active expanded={effectsExpanded} showLess="Hide operation effects" showMore="Show operation effects"
+                             onChange={toggleEffects} style={{margin: '0.2em'}}/>}
             </div>
-            <OpEffectsView effects={op.effects}/>
+            {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
         </div>)}
     </div>
 })

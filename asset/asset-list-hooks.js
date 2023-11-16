@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {throttle} from 'throttle-debounce'
 import equal from 'react-fast-compare'
 import {stringifyQuery} from '@stellar-expert/navigation'
-import apiCall from '../api/explorer-api-call'
+import {fetchExplorerApi} from '../api/explorer-api-call'
 import {useDeepEffect} from '../state/state-hooks'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
@@ -35,7 +35,7 @@ export function useAssetList(params) {
             }
             const endpoint = getCurrentStellarNetwork() + '/asset' + stringifyQuery(requestParams)
             setLoading(true)
-            apiCall(endpoint)
+            fetchExplorerApi(endpoint)
                 .then(res => {
                     const {records} = res._embedded
                     setAssets(existing => {

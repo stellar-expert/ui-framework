@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {InMemoryClientCache} from '@stellar-expert/client-cache'
-import apiCall from '../api/explorer-api-call'
+import {fetchExplorerApi} from '../api/explorer-api-call'
 import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
@@ -24,7 +24,7 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 const cache = new InMemoryClientCache()
 
 const loader = new ExplorerBatchInfoLoader(batch => {
-    return apiCall(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
+    return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
 }, entry => {
     cache.set(entry.name, entry)
     return {

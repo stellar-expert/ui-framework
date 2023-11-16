@@ -2,13 +2,13 @@ import {useEffect, useState} from 'react'
 import {StrKey} from 'stellar-base'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {InMemoryClientCache} from '@stellar-expert/client-cache'
-import apiCall from '../api/explorer-api-call'
+import {fetchExplorerApi} from '../api/explorer-api-call'
 import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 
 const cache = new InMemoryClientCache({})
 
 const loader = new ExplorerBatchInfoLoader(batch => {
-    return apiCall('directory' + stringifyQuery({address: batch}))
+    return fetchExplorerApi('directory' + stringifyQuery({address: batch}))
 }, entry => {
     cache.set(entry.address, entry)
     return {key: entry.address, info: entry}
@@ -19,7 +19,7 @@ export async function getDirectoryEntry(address, options) {
     //ignore invalid addresses
     if (!address || !StrKey.isValidEd25519PublicKey(address)) return null
     if (extended) {
-        return apiCall(`directory/${address}` + stringifyQuery({
+        return fetchExplorerApi(`directory/${address}` + stringifyQuery({
             extended: true,
             s: Math.random().toString(36).substr(2)
         }))
@@ -77,7 +77,7 @@ export function useDirectoryTags() {
         if (cachedEntry && !cachedEntry.isExpired) {
             return cachedEntry.data
         }
-        apiCall('directory/tags')
+        fetchExplorerApi('directory/tags')
             .then(data => {
                 cache.set('tags', data, 10 * 60) //10 minutes
                 setTags(data)

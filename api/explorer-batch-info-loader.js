@@ -4,7 +4,7 @@ export class ExplorerBatchInfoLoader {
     constructor(fetchCallback, processResponseCallback) {
         this.pendingRequests = {}
         this.requestsQueue = []
-        this.fetchDataFromServer = throttle(500, this.fetchDataFromServer)
+        this.fetchDataFromServer = throttle(500, this.fetchDataFromServer, {noLeading: true})
         this.fetchCallback = fetchCallback
         this.processResponseCallback = processResponseCallback
     }
@@ -41,7 +41,8 @@ export class ExplorerBatchInfoLoader {
         if (!batch.length) return
         return this.fetchCallback(batch.map(e => e.key))
             .then(data => {
-                if (data.error) return //TODO: handle errors in a more elegant way, with retries
+                if (data.error)
+                    return //TODO: handle errors in a more elegant way, with retries
                 //reschedule another batch fetch if the queue is not empty
                 if (this.requestsQueue.length) {
                     setTimeout(() => this.fetchDataFromServer(), 400)

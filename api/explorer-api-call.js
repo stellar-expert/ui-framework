@@ -3,7 +3,7 @@
  * @param {string} endpointWithQuery
  * @return {Promise<Object>}
  */
-export default async function fetchExplorerApi(endpointWithQuery) {
+export async function fetchExplorerApi(endpointWithQuery) {
     const url = `${explorerApiOrigin}/explorer/${endpointWithQuery}`
     try {
         const resp = await fetch(url)

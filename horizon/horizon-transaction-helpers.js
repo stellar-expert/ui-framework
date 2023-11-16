@@ -1,26 +1,4 @@
-import {parseStellarGenericId} from '../horizon/horizon-generic-id'
 import {initHorizon, applyListQueryParameters} from './horizon-client-helpers'
-
-/**
- * Load a transaction from Horizon
- * @param {string} txHashOrId - Transaction hash or generic id
- * @return {Promise<Object>}
- */
-export function loadTransaction(txHashOrId) {
-    if (/^[a-fA-F0-9]{64}$/.test(txHashOrId))
-        return initHorizon().transactions().transaction(txHashOrId)
-            .call()
-
-    if (/^\d+$/.test(txHashOrId)) { //treat as generic tx id
-        const {type, tx} = parseStellarGenericId(txHashOrId)
-        if (type !== 'transaction')
-            return Promise.reject(new Error('Invalid transaction id: ' + id))
-        const cursor = (BigInt(tx) - 1n).toString()
-        return loadTransactions({cursor, order: 'asc', limit: 1, includeFailed: true})
-            .then(res => res[0])
-    }
-    return Promise.reject(new Error(`Invalid transaction hash or id: ${txHashOrId}`))
-}
 
 /**
  * Load transactions from Horizon
@@ -32,19 +10,6 @@ export function loadTransactions(queryParams = null) {
     return query.call()
         .then(r => r.records)
 }
-
-/**
- * Load transactions included into the ledger
- * @param {Number} sequence - Ledger sequence
- * @param {ListQueryParams} [queryParams] - Query parameters (optional)
- * @return {Promise<Array<Object>>}
- */
-export function loadLedgerTransactions(sequence, queryParams = null) {
-    const query = applyListQueryParameters(initHorizon().transactions().forLedger(sequence), queryParams)
-    return query.call()
-        .then(r => r.records)
-}
-
 
 /**
  * Stream operations from Horizon

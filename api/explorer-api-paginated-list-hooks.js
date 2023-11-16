@@ -3,7 +3,7 @@ import isEqual from 'react-fast-compare'
 import {parseQuery, stringifyQuery, navigation} from '@stellar-expert/navigation'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 import {useDependantState} from '../state/state-hooks'
-import fetchExplorerApi from './explorer-api-call'
+import {fetchExplorerApi} from './explorer-api-call'
 import apiCache from './api-cache'
 
 function inverseOrder(order) {
@@ -22,6 +22,7 @@ class PaginatedListViewModel {
      * @param {'asc'|'desc'} [props.defaultSortOrder] - Results sorting order
      * @param {Object} [props.defaultQueryParams] - Default query values - query params not set if default
      * @param {Function} [props.dataProcessingCallback] - Callback called for the fetched data
+     * @param {Boolean|Function} [props.updateLocation] - Whether to update browser location
      */
     constructor(endpoint, props = {limit: 20}) {
         this.endpoint = endpoint

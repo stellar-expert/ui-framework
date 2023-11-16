@@ -1,7 +1,7 @@
 import {useExplorerPaginatedApi} from '../api/explorer-api-paginated-list-hooks'
 import {useExplorerApi} from '../api/explorer-api-hooks'
 
-export function useTxHistory(filters, order, rows = 40) {
+export function useTxHistory({filters, order = 'desc', rows = 40, updateLocation = true}) {
     return useExplorerPaginatedApi(
         {
             path: 'tx',
@@ -9,7 +9,8 @@ export function useTxHistory(filters, order, rows = 40) {
         }, {
             defaultSortOrder: order,
             limit: rows,
-            defaultQueryParams: {order: 'desc'}
+            updateLocation,
+            defaultQueryParams: {order}
         })
 }
 

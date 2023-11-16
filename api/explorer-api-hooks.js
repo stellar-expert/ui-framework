@@ -3,7 +3,7 @@ import isEqual from 'react-fast-compare'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {addVisibilityChangeListener, isDocumentVisible} from '../state/page-visibility-helpers'
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
-import fetchExplorerApi from './explorer-api-call'
+import {fetchExplorerApi} from './explorer-api-call'
 import apiCache from './api-cache'
 
 export class ExplorerApiResult {

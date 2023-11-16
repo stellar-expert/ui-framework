@@ -35,12 +35,13 @@ import TxMatcher from './tx-matcher'
  * @param {String} tx - Base64-encoded tx envelope xdr
  * @param {String} [result] - Base64-encoded tx envelope result
  * @param {String} [meta] - Base64-encoded tx envelope meta
+ * @param {String} [id] - Unique trasnaction id
  * @param {TxFiltersContext} [context] - Filters applied to transactions search
  * @param {String} [createdAt] - Ledger execution timestamp
  * @param {Boolean} [skipUnrelated] - Ledger execution timestamp
  * @return {ParsedTxDetails}
  */
-export function parseTxDetails({network, txEnvelope, result, meta, context, createdAt, skipUnrelated}) {
+export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated}) {
     const {tx, effects, operations, isEphemeral, failed} = parseTxOperationsMeta({network, tx: txEnvelope, meta, result})
     const txHash = tx.hash().toString('hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)
@@ -63,6 +64,9 @@ export function parseTxDetails({network, txEnvelope, result, meta, context, crea
     }
     if (!isEphemeral) {
         res.successful = !failed
+    }
+    if (id !== undefined) {
+        res.id = id
     }
     for (let op of parsedOps) {
         op.tx = res

@@ -57,28 +57,49 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
 
 /**
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
+ * @param {Function} [filter] - Filter matcher function
  * @param {Boolean} [showFees] - Whether to display transaction fees
  * @param {Boolean} [showEffects] - Whether to show operation effects
  * @param {Boolean} [compact] - Compact view (without fee charges and accounting changes effects)
  */
-export const TxOperationsList = React.memo(function TxOperationsList({parsedTx, showFees = true, compact = false, showEffects}) {
+export const TxOperationsList = React.memo(function TxOperationsList({
+                                                                         parsedTx,
+                                                                         filter = null,
+                                                                         showFees = true,
+                                                                         compact = false,
+                                                                         showEffects
+                                                                     }) {
     const [effectsExpanded, setEffectsExpanded] = useState(false)
     const toggleEffects = useCallback(e => setEffectsExpanded(e.expanded), [])
+    let {operations} = parsedTx
+    let opdiff = 0
+    //filter operations if filtered output is requested
+    if (filter) {
+        operations = operations.filter(filter)
+        opdiff = parsedTx.operations.length - operations.length
+    }
 
-    return <div className="condensed">
-        {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
-        {parsedTx.operations.map((op, i) => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
-            <div className="op-layout">
-                <OpIcon op={op}/>
-                <div>
-                    <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact}/>
+    return <div>
+        {!compact && showEffects !== false &&
+            <div className="tx-effects-toggle">
+                <Spoiler micro active expanded={effectsExpanded} showLess="Hide operation effects" showMore="Show operation effects"
+                         onChange={toggleEffects} style={{margin: '0.2em'}}/>
+            </div>}
+        <div className="condensed">
+            {operations.map((op, i) => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
+                <div className="op-layout">
+                    <OpIcon op={op}/>
+                    <div>
+                        <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact}/>
+                    </div>
+                    {!!compact && !op.isEphemeral && <OpAccountingChanges op={op}/>}
                 </div>
-                {!!compact && !op.isEphemeral && <OpAccountingChanges op={op}/>}
-                {!compact && showEffects !== false && (parsedTx.operations.length - 1 === i) &&
-                    <Spoiler micro active expanded={effectsExpanded} showLess="Hide operation effects" showMore="Show operation effects"
-                             onChange={toggleEffects} style={{margin: '0.2em'}}/>}
-            </div>
-            {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
-        </div>)}
+                {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
+            </div>)}
+            {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
+            {opdiff > 0 && <div className="dimmed text-small block-indent">
+                {opdiff} more operation{opdiff > 1 && 's'} hidden
+            </div>}
+        </div>
     </div>
 })

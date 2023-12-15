@@ -176,19 +176,20 @@ export function EffectDescription({effect}) {
         case 'liquidityPoolDeposited':
             return <>
                 <span className="nowrap">
-                <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
-                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/></span> deposited to
-                liquidity <span className="nowrap">pool <AssetLink asset={effect.pool}/></span> <i className="icon icon-shuffle"/>{' '}
-                <span className="nowrap">{formatWithAutoPrecision(effect.shares)} pool shares</span>
+                    <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
+                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/>
+                </span>{' '}
+                deposited to liquidity <span className="nowrap">pool <AssetLink asset={effect.pool}/></span>{' '}
+                <i className="icon icon-shuffle"/> <span className="nowrap">{formatWithAutoPrecision(effect.shares)} pool shares</span>
             </>
         case 'liquidityPoolWithdrew':
             return <>
-                Liquidity pool <AssetLink asset={effect.pool}/> created
                 {formatWithAutoPrecision(effect.shares)} pool shares <i className="icon icon-shuffle"/>{' '}
                 <span className="nowrap">
-                <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
-                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/></span> withdrawn from{' '}
-                <span className="nowrap"><AssetLink asset={effect.pool}/> pool</span>
+                    <Amount asset={effect.assets[0].asset} amount={effect.assets[0].amount} adjust/>{' '}
+                    and <Amount asset={effect.assets[1].asset} amount={effect.assets[1].amount} adjust/>
+                </span>{' '}
+                withdrawn from <span className="nowrap"><AssetLink asset={effect.pool}/> pool</span>
             </>
         case 'liquidityPoolCreated':
             return <>Liquidity pool <AssetLink asset={effect.pool}/> created</>

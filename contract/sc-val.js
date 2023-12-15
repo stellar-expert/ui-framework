@@ -55,8 +55,7 @@ export function ScVal({value, nested = false}) {
         case 'instance':
             return <>{value._value.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></>
         case 'error':
-            const asError = value.toXDR('base64')
-            return <><span className="condensed">{shortenString(asError, 50)}</span><ScValType type="error"/></>
+            return <><span className="condensed">{shortenString(value.toXDR('base64'), 50)}</span><ScValType type="error"/></>
         case 'contractId':
             return <AccountAddress account={xdrParserUtils.xdrParseContractAddress(value._value)}/>
         default:

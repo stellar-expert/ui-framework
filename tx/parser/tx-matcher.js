@@ -1,4 +1,4 @@
-import {LiquidityPoolAsset} from 'stellar-base'
+import {LiquidityPoolAsset} from '@stellar/stellar-base'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {TypeFilterMatcher} from './type-filter-matcher'
 

@@ -1,4 +1,4 @@
-import xdr from 'stellar-base'
+import xdr from '@stellar/stellar-base'
 import {XdrReader} from './xdr-reader'
 import {WasmSectionReader} from './wasm-section-reader'
 

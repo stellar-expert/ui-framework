@@ -1,5 +1,5 @@
 import React from 'react'
-import {xdr, scValToBigInt} from 'stellar-base'
+import {xdr, scValToBigInt} from '@stellar/stellar-base'
 import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
@@ -23,7 +23,7 @@ export function ScVal({value, nested = false}) {
                     <React.Fragment key={i}>{i > 0 && ', '}<ScVal value={kv.key()} nested/>: <ScVal value={kv.val()} nested/></React.Fragment>)}
                 &#125;</>
         case 'b':
-            return <>value._value<ScValType type="bool"/></>
+            return <>{value._value}<ScValType type="bool"/></>
         case 'i32':
         case 'u32':
             return <>{value._value}<ScValType type={value._arm}/></>

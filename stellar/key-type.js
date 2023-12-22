@@ -1,4 +1,4 @@
-import {StrKey} from 'stellar-base'
+import {StrKey} from '@stellar/stellar-base'
 
 /**
  * @param {String} key

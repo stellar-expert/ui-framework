@@ -1,9 +1,8 @@
-import {Server} from 'stellar-sdk'
+import {Horizon} from '@stellar/stellar-sdk'
 
 export function initHorizon() {
-    return new Server(window.horizonOrigin)
+    return new Horizon.Server(window.horizonOrigin)
 }
-
 
 /**
  * Load all data from the horizon query using next() iteration
@@ -26,7 +25,6 @@ export async function loadAllHorizonRecords(query) {
     }
     return {records: res}
 }
-
 
 /**
  * @typedef {Object} ListQueryParams

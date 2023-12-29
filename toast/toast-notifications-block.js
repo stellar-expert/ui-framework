@@ -33,6 +33,11 @@ function ToastNotificationsBlock() {
 
     useEffect(() => {
         //declare globally available notify() function
+        /**
+         * Show toast notification popup
+         * @param {'info'|'success'|'warning'|'error'} type - Notification type
+         * @param {String} message - Message to show
+         */
         window.notify = function ({type, message}) {
             const newNotification = new ToastNotificationInstance({
                 type,

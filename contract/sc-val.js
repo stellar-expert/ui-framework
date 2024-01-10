@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 import {xdr, scValToBigInt} from '@stellar/stellar-base'
 import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
 import {shortenString} from '@stellar-expert/formatter'
@@ -7,7 +8,7 @@ import './sc-val.scss'
 
 export const ScVal = React.memo(function ScVal({value, nested = false, indent = false}) {
     if (!nested)
-        return <code className="sc-val"><ScVal value={value} indent={indent} nested/></code>
+        return <code className={cn('sc-val', {block: indent})}><ScVal value={value} indent={indent} nested/></code>
     if (!value)
         return 'void'
     if (typeof value === 'string') {

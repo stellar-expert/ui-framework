@@ -82,3 +82,4 @@ export * from './effect/effect-description'
 //Stellar-specific utils
 export * from './stellar/key-type'
 export * from './stellar/signature-hint-utils'
+export * from './contract/sc-val'

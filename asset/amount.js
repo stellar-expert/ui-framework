@@ -7,11 +7,11 @@ import {AssetLink} from './asset-link'
  * Formatted tokens amount
  * @param {String|Number} amount - Amount of tokens
  * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
- * @param {String|Number|'auto'} decimals? - Formatted number decimals to show
- * @param {Boolean} adjust? - Denominate raw Int64 stroops to string format
- * @param {Boolean|'floor'} round? - Round or trim the number
- * @param {Boolean} issuer? - Whether to show asset issuer
- * @param {Boolean} icon? - Wheter to show asset icon
+ * @param {String|Number|'auto'} decimals - Number of decimals to show for a formatted numeric value
+ * @param {Boolean} [adjust] - Treat amount value as raw Int64 stroops amount
+ * @param {Boolean|'floor'} [round] - Round the amount
+ * @param {Boolean} [issuer] - Whether to show asset issuer
+ * @param {Boolean} [icon] - Whether to show asset icon
  * @constructor
  */
 export const Amount = React.memo(function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {

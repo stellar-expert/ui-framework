@@ -41,7 +41,7 @@ function decodeBase32(input) {
 /**
  * Draw Stellar address identicon on the given canvas
  * @param {String} address - StrKey-encoded account address
- * @param {Number} size? - Identicon size
+ * @param {Number} [size] - Identicon painting area size, in pixels (by default 448)
  * @return {String}
  */
 export function drawIdenticon(address, size = SIZE) {

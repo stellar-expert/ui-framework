@@ -207,8 +207,8 @@ export const Tooltip = React.memo(function Tooltip({trigger, desiredPlace = 'top
  */
 /**
  * @typedef {Object} PositionOffset
- * @property {Number} top? - Top offset
- * @property {Number} bottom? - Bottom offset
- * @property {Number} left? - Left offset
- * @property {Number} right? - Right offset
+ * @property {Number} [top] - Top offset
+ * @property {Number} [bottom] - Bottom offset
+ * @property {Number} [left] - Left offset
+ * @property {Number} [right] - Right offset
  */

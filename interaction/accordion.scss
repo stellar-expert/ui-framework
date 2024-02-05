@@ -1,0 +1,32 @@
+.accordion {
+  .accordion-header {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+
+    &:before {
+      content: '+';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: -20px;
+    }
+  }
+
+  .accordion-collapse {
+    height: 0;
+    overflow-y: hidden;
+  }
+
+  .option {
+    &.open {
+      .accordion-header:before {
+        content: '-';
+      }
+
+      .accordion-collapse {
+        height: auto;
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@
     user-select: none;
 
     &:before {
-      content: '+';
+      content: attr(data-collapsed);
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
@@ -19,9 +19,9 @@
   }
 
   .option {
-    &.open {
+    &.expanded {
       .accordion-header:before {
-        content: '-';
+        content: attr(data-expanded);
       }
 
       .accordion-collapse {

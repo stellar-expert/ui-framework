@@ -811,7 +811,7 @@ function InvokeHostFunctionView({op, compact}) {
                         <CopyToClipboard text={wasmHash}/>
                     </>
                     break
-                case 'contractExecutableToken':
+                case 'contractExecutableStellarAsset':
                     const preimageParams = preimage.value()
                     switch (preimage.switch().name) {
                         case 'contractIdPreimageFromAddress':
@@ -827,10 +827,10 @@ function InvokeHostFunctionView({op, compact}) {
             }
             if (op.isEphemeral)
                 return <>
-                    <b>Create contract</b> from {contractProps}<OpSourceAccount op={op}/>
+                    <b>Create contract</b> <AccountAddress account={contract}/> from {contractProps}<OpSourceAccount op={op}/>
                 </>
             return <>
-                <OpSourceAccount op={op}/> created contract from {contractProps}
+                <OpSourceAccount op={op}/> created contract <AccountAddress account={contract}/> from {contractProps}
             </>
             break
         default:

@@ -3,10 +3,15 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 /**
  * @param {'account'|'asset'|'ledger'|'tx'|'op'|'offer'} type
  * @param {String|Number} id
- * @param {String} network?
+ * @param {String} [network]
  * @return {String}
  */
 export function formatExplorerLink(type, id, network = null) {
+    if (typeof window.explorerLinkFormatter === 'function') {
+        const link = window.explorerLinkFormatter(type, id, network)
+        if (link)
+            return link
+    }
     const segments = [
         explorerFrontendOrigin !== window.origin ? explorerFrontendOrigin : '',
         'explorer',

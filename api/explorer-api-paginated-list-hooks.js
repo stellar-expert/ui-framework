@@ -227,7 +227,7 @@ class PaginatedListViewModel {
      */
     processResponseData(endpointWithQuery, data, queryParams) {
         if (data.error) {
-            console.error(e)
+            console.error(data.error)
             this.loaded = true
             this.loading = false
             this.error = data

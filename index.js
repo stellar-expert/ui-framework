@@ -18,6 +18,7 @@ export * from './meta/page-meta-tags'
 export * from './api/explorer-api-hooks'
 export * from './api/explorer-api-paginated-list-hooks'
 export * from './api/explorer-tx-api'
+export * from './api/explorer-batch-info-loader'
 //Horizon API binding and utils
 export * from './stellar/ledger-generic-id'
 export * from './horizon/horizon-client-helpers'

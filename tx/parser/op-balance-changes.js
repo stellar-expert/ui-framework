@@ -3,11 +3,11 @@ const manageOfferOpTypes = ['manageSellOffer', 'manageBuyOffer', 'createPassiveS
 /**
  * Calculate operation resulting balance changes
  * @param {{}} op - Operation descriptor
- * @return {[{amount: *, source, type: string, asset},{amount: *, source, type: string, asset}]|{length}|*|*[]}
+ * @return {{amount: String, source: String, type: String, asset: String}[]}
  */
 export function retrieveOpBalanceChanges(op) {
     const account = op.tx?.context?.account
-    if (typeof account!=='string')
+    if (typeof account !== 'string')
         return []
     const {effects} = op.operation
     const changes = effects.filter(e => e.source === account && (e.type === 'accountDebited' || e.type === 'accountCredited'))
@@ -58,6 +58,7 @@ export function retrieveOpBalanceChanges(op) {
     }*/
     return []
 }
+
 /*
 
 function sumAmounts(amounts) {

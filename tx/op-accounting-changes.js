@@ -13,7 +13,7 @@ export function OpAccountingChanges({op}) {
         {changes.map((ch, i) => <div key={op.txHash + op.order + i}
                                      className={ch.type === 'accountDebited' ? 'dimmed' : 'color-success'}>
             {ch.type === 'accountDebited' ? '-' : '+'}
-            <Amount amount={ch.amount} asset={ch.asset} issuer={false} icon={false}/>
+            <Amount amount={ch.amount} asset={ch.asset} issuer={false} icon={false} adjust/>
         </div>)}
     </div>
 }
@@ -21,7 +21,7 @@ export function OpAccountingChanges({op}) {
 export function TxFeeAccountingChanges({amount}) {
     return <div className="accounting-effects condensed">
         <div className="dimmed">
-            -<Amount amount={amount} asset="XLM" issuer={false} icon={false}/>
+            -<Amount amount={amount} asset="XLM" issuer={false} icon={false} adjust/>
         </div>
     </div>
 }

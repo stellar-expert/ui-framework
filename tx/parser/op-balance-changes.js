@@ -6,8 +6,11 @@ const manageOfferOpTypes = ['manageSellOffer', 'manageBuyOffer', 'createPassiveS
  * @return {[{amount: *, source, type: string, asset},{amount: *, source, type: string, asset}]|{length}|*|*[]}
  */
 export function retrieveOpBalanceChanges(op) {
+    const account = op.tx?.context?.account
+    if (typeof account!=='string')
+        return []
     const {effects} = op.operation
-    const changes = effects.filter(e => e.source === op.context && (e.type === 'accountDebited' || e.type === 'accountCredited'))
+    const changes = effects.filter(e => e.source === account && (e.type === 'accountDebited' || e.type === 'accountCredited'))
     if (changes.length) {
         changes.sort((a, b) => a.type - b.type)
         return changes

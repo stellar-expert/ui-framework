@@ -285,5 +285,5 @@ function ContractDetails({effect}) {
 }
 
 function ContractCodeWasm({wasm}) {
-    return <><code title={wasm}>{shortenString(wasm, 16)}</code><CopyToClipboard text={wasm}/>)</>
+    return <><code title={wasm}>{shortenString(wasm, 16)}</code><CopyToClipboard text={wasm}/></>
 }

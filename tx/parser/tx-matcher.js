@@ -13,9 +13,9 @@ export default class TxMatcher {
                 matcherFilters[key] = values
                 this.noFilters = false
             }
+            this.typeMatcher = new TypeFilterMatcher(filters.type)
         }
         this.filters = matcherFilters
-        this.typeMatcher = new TypeFilterMatcher(filters.type)
         this.skipUnrelated = skipUnrelated
     }
 
@@ -47,7 +47,7 @@ export default class TxMatcher {
     matchOperation(od) {
         if (this.noFilters)
             return true
-        if (!this.typeMatcher.match(od.operation.type))
+        if (!this.typeMatcher?.match(od.operation.type))
             return false
         if (!this.matchOperationProps(od))
             return false

@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import isEqual from 'react-fast-compare'
 import {stringifyQuery} from '@stellar-expert/navigation'
 import {addVisibilityChangeListener, isDocumentVisible} from '../state/page-visibility-helpers'
-import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
+import {useStellarNetwork} from '../state/stellar-network-hooks'
 import {fetchExplorerApi} from './explorer-api-call'
 import apiCache from './api-cache'
 
@@ -148,7 +148,8 @@ export function fetchData(url, ttl, processResult) {
  * @return {ExplorerApiResult}
  */
 export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult, allowStaleDataTransition = false} = {}) {
-    const endpointWithQuery = `${getCurrentStellarNetwork()}/${apiEndpoint}`
+    const network = useStellarNetwork()
+    const endpointWithQuery = `${network}/${apiEndpoint}`
     const [apiResponseData, updateApiResponseData] = useState(buildApiResult(endpointWithQuery))
     useEffect(() => {
         let componentUnmounted = false

@@ -1,7 +1,7 @@
 import {useRef} from 'react'
 import isEqual from 'react-fast-compare'
 import {parseQuery, stringifyQuery, navigation} from '@stellar-expert/navigation'
-import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
+import {getCurrentStellarNetwork, useStellarNetwork} from '../state/stellar-network-hooks'
 import {useDependantState} from '../state/state-hooks'
 import {fetchExplorerApi} from './explorer-api-call'
 import apiCache from './api-cache'
@@ -397,6 +397,7 @@ export function useExplorerPaginatedApi(apiEndpoint,
                                         dependencies = []) {
     if (!apiEndpoint)
         throw new Error(`Invalid API endpoint: ${apiEndpoint}`)
+    const network = useStellarNetwork()
     const pinRef = useRef(null)
     if (typeof apiEndpoint === 'string') {
         const [path, query] = apiEndpoint.split('?')
@@ -408,7 +409,7 @@ export function useExplorerPaginatedApi(apiEndpoint,
     if (defaultQueryParams.order) {
         defaultSortOrder = defaultQueryParams.order
     }
-    const endpoint = includeNetwork ? `${getCurrentStellarNetwork()}/${apiEndpoint.path}` : apiEndpoint.path
+    const endpoint = includeNetwork ? `${network}/${apiEndpoint.path}` : apiEndpoint.path
 
     const [apiResponseData, updateApiResponseData] = useDependantState(() => {
         const res = new PaginatedListViewModel(endpoint, {

@@ -57,7 +57,7 @@ ${navigator.userAgent}`
                 <BlockSelect as="div">
                     <div className="micro-space">{text}</div>
                     <div className="text-tiny">
-                        <pre>{stack}</pre>
+                        <pre style={{whiteSpace: 'pre-wrap'}}>{stack}</pre>
                         <div>{navigator.userAgent}</div>
                     </div>
                 </BlockSelect>

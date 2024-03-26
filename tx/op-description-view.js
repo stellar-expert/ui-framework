@@ -117,8 +117,10 @@ function PathPaymentDescriptionView({op, compact}) {
     if (sendMax !== undefined) {
         if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
             const changeEffect = effects.find(e => e.source === source && e.asset === sendAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
-            const change = BigInt(changeEffect.amount)
-            src = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? -change : change))
+            if (changeEffect) { //arbitrage successful, otherwise src = dst and no account changes happened
+                const change = BigInt(changeEffect.amount)
+                src = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? -change : change))
+            }
         } else {
             const debitedEffect = effects.find(e => e.source === source && e.type === 'accountDebited' && e.asset === sendAssetId)
             if (debitedEffect) {
@@ -129,8 +131,10 @@ function PathPaymentDescriptionView({op, compact}) {
     if (destMin !== undefined) {
         if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
             const changeEffect = effects.find(e => e.source === source && e.asset === destAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
-            const change = BigInt(changeEffect.amount)
-            dst = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
+            if (changeEffect) { //arbitrage successful, otherwise src = dst and no account changes happened
+                const change = BigInt(changeEffect.amount)
+                dst = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
+            }
         } else {
             const creditedEffect = effects.find(e => e.source === destination && e.type === 'accountCredited' && e.asset === destAssetId)
             if (creditedEffect) {

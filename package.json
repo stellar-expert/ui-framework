@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.10.4",
+  "version": "1.10.5",
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "module": "./index.js",
@@ -21,7 +21,7 @@
     "@stellar-expert/client-cache": "github:stellar-expert/client-cache",
     "@stellar-expert/formatter": "^2.3.0",
     "@stellar-expert/navigation": "github:stellar-expert/navigation#v1.0.2",
-    "@stellar-expert/tx-meta-effects-parser": "^5.0.4",
+    "@stellar-expert/tx-meta-effects-parser": "^5.2.0",
     "classnames": ">=2",
     "prop-types": ">=15",
     "qrcode.react": "^3.1.0",

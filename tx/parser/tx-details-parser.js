@@ -45,9 +45,13 @@ export function parseTxDetails({network, txEnvelope, result, meta, id, context, 
     const {tx, effects, operations, isEphemeral, failed} = parseTxOperationsMeta({network, tx: txEnvelope, meta, result})
     const txHash = tx.hash().toString('hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)
-    const parsedOps = OperationDescriptor.parseOperations(operations, txHash, isEphemeral, !isEphemeral && !failed)
-        .filter(od => txMatcher.matchOperation(od))
-
+    let parsedOps = OperationDescriptor.parseOperations(operations, txHash, isEphemeral, !isEphemeral && !failed)
+    //filter out irrelevant operations
+    const matchedOps = parsedOps.filter(od => txMatcher.matchOperation(od))
+    //display only relevant operations or all of them if no relevant operations found
+    if (matchedOps.length) {
+        parsedOps = matchedOps
+    }
     const res = {
         operations: parsedOps,
         tx,

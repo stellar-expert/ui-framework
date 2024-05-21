@@ -109,8 +109,8 @@ export const TxOperationsList = React.memo(function TxOperationsList({
                 {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
             </div>)}
             {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
-            {(opsExpanded || opdiff > 0) && <Spoiler expanded={opsExpanded} onChange={toggleAdditionalOps}
-                                    showMore={`${opdiff} more operation${opdiff > 1 && 's'} hidden`} showLess="Hide extra operations"/>}
         </div>
+        {(opsExpanded || opdiff > 0) && <Spoiler className="text-tiny" expanded={opsExpanded} onChange={toggleAdditionalOps}
+                                                 showMore={`${opdiff} more operation${opdiff > 1 && 's'} in this transaction`} showLess="Hide additional operations"/>}
     </div>
 })

@@ -848,15 +848,15 @@ function InvokeHostFunctionView({op, compact}) {
  * @param {Boolean} compact
  * @constructor
  */
-function BumpFootprintExpirationView({op}) {
-    const {ledgersToExpire} = op.operation
+function ExtendFootprintTTLView({op}) {
+    const {extendTo} = op.operation
     if (op.isEphemeral)
         return <>
-            <b>Bump state expiration</b> for {ledgersToExpire} ledgers
+            <b>Extend ledger state expiration</b> to sequence {extendTo}
             <OpSourceAccount op={op}/>
         </>
     return <>
-        <OpSourceAccount op={op}/> bumped state expiration for {ledgersToExpire} ledgers
+        <OpSourceAccount op={op}/> extended ledger state expiration to sequence {extendTo}
     </>
 }
 
@@ -870,10 +870,10 @@ function RestoreFootprintView({op}) {
     const {ledgersToExpire} = op.operation
     if (op.isEphemeral)
         return <>
-            <b>Restore state</b><OpSourceAccount op={op}/>
+            <b>Restore ledger state entry</b> <OpSourceAccount op={op}/>
         </>
     return <>
-        <OpSourceAccount op={op}/> restored state
+        <OpSourceAccount op={op}/> restored ledger state entry
     </>
 }
 
@@ -909,7 +909,7 @@ const typeMapping = {
     liquidityPoolDeposit: DepositLiquidityDescriptionView,
     liquidityPoolWithdraw: WithdrawLiquidityDescriptionView,
     invokeHostFunction: InvokeHostFunctionView,
-    bumpFootprintExpiration: BumpFootprintExpirationView,
+    extendFootprintTTL: ExtendFootprintTTLView,
     restoreFootprint: RestoreFootprintView
 }
 

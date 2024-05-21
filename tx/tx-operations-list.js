@@ -70,13 +70,25 @@ export const TxOperationsList = React.memo(function TxOperationsList({
                                                                          showEffects
                                                                      }) {
     const [effectsExpanded, setEffectsExpanded] = useState(false)
+    const [opsExpanded, setOpsExpanded] = useState(false)
     const toggleEffects = useCallback(e => setEffectsExpanded(e.expanded), [])
+    const toggleAdditionalOps = useCallback(e => setOpsExpanded(e.expanded), [])
     let {operations} = parsedTx
     let opdiff = 0
-    //filter operations if filtered output is requested
-    if (filter) {
-        operations = operations.filter(filter)
-        opdiff = parsedTx.operations.length - operations.length
+    if (!opsExpanded) {
+        //filter operations if filtered output is requested
+        if (filter) {
+            const visibleOps = operations.filter(filter)
+            if (visibleOps.length) {
+                operations = visibleOps
+                opdiff = parsedTx.operations.length - operations.length
+            }
+        }
+        //hide some operations in large transactions to prevent interface hanging
+        if (operations.length > 5) {
+            operations = operations.subarray(0, 5)
+            opdiff = parsedTx.operations.length - operations.length
+        }
     }
 
     return <div>
@@ -97,9 +109,8 @@ export const TxOperationsList = React.memo(function TxOperationsList({
                 {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
             </div>)}
             {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
-            {opdiff > 0 && <div className="dimmed text-small block-indent">
-                {opdiff} more operation{opdiff > 1 && 's'} hidden
-            </div>}
+            {(opsExpanded || opdiff > 0) && <Spoiler expanded={opsExpanded} onChange={toggleAdditionalOps}
+                                    showMore={`${opdiff} more operation${opdiff > 1 && 's'} hidden`} showLess="Hide extra operations"/>}
         </div>
     </div>
 })

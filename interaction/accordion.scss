@@ -20,11 +20,11 @@
 
   .option {
     &.expanded {
-      .accordion-header:before {
+      > .accordion-header:before {
         content: attr(data-expanded);
       }
 
-      .accordion-collapse {
+      > .accordion-collapse {
         height: auto;
       }
     }

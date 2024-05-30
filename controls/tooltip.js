@@ -12,12 +12,12 @@ import './tooltip.scss'
  */
 function calculateTooltipPosition(target, node, desiredPlace, offset) {
     //dimensions of node and target
-    const {width: tipWidth, height: tipHeight} = getBoundingRect(node),
-        {width: targetWidth, height: targetHeight} = getBoundingRect(target)
+    const {width: tipWidth, height: tipHeight} = getBoundingRect(node)
+    const {width: targetWidth, height: targetHeight} = getBoundingRect(target)
     //mouse offset
-    const {mouseX, mouseY} = getMouseOffset(target),
-        {offsetX, offsetY} = parseOffset(offset),
-        defaultOffset = getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight)
+    const {mouseX, mouseY} = getMouseOffset(target)
+    const {offsetX, offsetY} = parseOffset(offset)
+    const defaultOffset = getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight)
 
     // Get the edge offset of the tooltip
     function getTipOffsetLeft(place) {
@@ -45,11 +45,11 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
 
     let place
     if (!isOutside(desiredPlace)) {
-        place = desiredPlace
+        place = desiredPlace || 'top'
     } else {
         const possiblePlacements = (['top', 'bottom', 'left', 'right']).filter(p => !isOutside(p))
         if (possiblePlacements.length > 0 && isOutside(desiredPlace)) {
-            place = possiblePlacements[0]
+            place = possiblePlacements[0] || 'top'
         }
     }
 

@@ -43,7 +43,7 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
             getTipOffsetBottom(p) > window.innerHeight //outside bottom
     }
 
-    let place
+    let place = 'top'
     if (!isOutside(desiredPlace)) {
         place = desiredPlace || 'top'
     } else {
@@ -166,7 +166,8 @@ export const Tooltip = React.memo(function Tooltip({trigger, desiredPlace = 'top
         content = useRef(null)
 
     function mouseEnter(e) {
-        if (visible) return
+        if (visible)
+            return
         const {place, position} = calculateTooltipPosition(e.currentTarget, content.current, desiredPlace, offset)
         setVisible(true)
         setPosition(position)
@@ -174,7 +175,8 @@ export const Tooltip = React.memo(function Tooltip({trigger, desiredPlace = 'top
     }
 
     function mouseLeave(e) {
-        if (!visible) return
+        if (!visible)
+            return
         setVisible(false)
     }
 

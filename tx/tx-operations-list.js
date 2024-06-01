@@ -86,7 +86,7 @@ export const TxOperationsList = React.memo(function TxOperationsList({
         }
         //hide some operations in large transactions to prevent interface hanging
         if (operations.length > 5) {
-            operations = operations.subarray(0, 5)
+            operations = operations.slice(0, 5)
             opdiff = parsedTx.operations.length - operations.length
         }
     }

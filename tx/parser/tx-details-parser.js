@@ -39,10 +39,12 @@ import TxMatcher from './tx-matcher'
  * @param {TxFiltersContext} [context] - Filters applied to transactions search
  * @param {String} [createdAt] - Ledger execution timestamp
  * @param {Boolean} [skipUnrelated] - Ledger execution timestamp
+ * @param {Number} [protocol] – Specific Stellar protocol version for the executed transaction
  * @return {ParsedTxDetails}
  */
-export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated}) {
-    const {tx, effects, operations, isEphemeral, failed} = parseTxOperationsMeta({network, tx: txEnvelope, meta, result})
+export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated, protocol}) {
+    const parsedTx = parseTxOperationsMeta({network, tx: txEnvelope, meta, result, protocol})
+    const {tx, effects, operations, isEphemeral, failed} = parsedTx
     const txHash = tx.hash().toString('hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)
     let parsedOps = OperationDescriptor.parseOperations(operations, txHash, isEphemeral, !isEphemeral && !failed)

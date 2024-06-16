@@ -1,3 +1,4 @@
+import React from 'react'
 import {formatWithPrecision} from '@stellar-expert/formatter'
 import './soroban-tx-metrics.scss'
 

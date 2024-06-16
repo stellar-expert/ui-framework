@@ -1,5 +1,5 @@
 import React from 'react'
-import {formatWithPrecision} from '@stellar-expert/formatter'
+import {formatWithAutoPrecision, formatWithPrecision} from '@stellar-expert/formatter'
 import './soroban-tx-metrics.scss'
 
 export default function SorobanTxMetricsView({metrics}) {
@@ -19,6 +19,8 @@ const MetricValue = React.memo(function ({value}) {
     return <>{value}</>
 })
 
+//TODO: add descriptions (see https://github.com/stellar/stellar-core/blob/master/docs/metrics.md)
+
 function parseMetrics(metrics) {
     const res = {}
     for (const [key, value] of Object.entries(metrics)) {
@@ -32,7 +34,7 @@ function parseMetrics(metrics) {
                 }
                 break
             case 'invoke_time_nsecs':
-                res['Invoke time'] = formatWithPrecision(value / 1000, 3) + 'µs'
+                res['Invoke time'] = formatWithAutoPrecision(value / 1000) + 'µs'
                 break
             case 'mem_byte':
                 res['Memory usage'] = formatBytes(value)
@@ -105,5 +107,5 @@ function parseMetrics(metrics) {
 }
 
 function formatBytes(value) {
-    return formatWithPrecision(value, 3) + 'B'
+    return formatWithPrecision(value, 0) + 'B'
 }

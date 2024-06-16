@@ -11,6 +11,11 @@ import {Amount} from '../asset/amount'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {ScVal} from '../contract/sc-val'
 
+/**
+ * @param {{}} effect
+ * @return {JSX.Element}
+ * @constructor
+ */
 export function EffectDescription({effect}) {
     switch (effect.type) {
         case 'accountCreated':
@@ -223,6 +228,9 @@ export function EffectDescription({effect}) {
             </>
         case 'contractDataRemoved':
             return <>Contract <AccountAddress account={effect.owner}/> removed data <ScVal value={effect.key}/></>
+        case 'contractError':
+            return <>Execution error {effect.code ? effect.code + ': ' : ''}"{effect.details[0]}"{' '}
+                <code>{JSON.stringify(effect.details.slice(1))}</code> in <AccountAddress account={effect.contract}/></>
         case 'feeCharged':
             return <><Amount asset="XLM" amount={effect.charged} adjust/> fee charged from <AccountAddress account={effect.source}/> (
                 bid <Amount asset="XLM" amount={effect.bid} adjust/>)</>

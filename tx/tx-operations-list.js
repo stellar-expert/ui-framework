@@ -94,7 +94,7 @@ export const TxOperationsList = React.memo(function TxOperationsList({
     return <div>
         {!compact && showEffects !== false &&
             <div className="tx-effects-toggle">
-                <Spoiler micro active expanded={effectsExpanded} showLess="Hide operation effects" showMore="Show operation effects"
+                <Spoiler micro active expanded={effectsExpanded} showLess="Hide operation details" showMore="Show operation details"
                          onChange={toggleEffects} style={{margin: '0.2em'}}/>
             </div>}
         <div className="condensed">

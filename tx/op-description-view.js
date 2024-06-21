@@ -133,7 +133,7 @@ function PathPaymentDescriptionView({op, compact}) {
             const changeEffect = effects.find(e => e.source === source && e.asset === destAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
             if (changeEffect) { //arbitrage successful, otherwise src = dst and no account changes happened
                 const change = BigInt(changeEffect.amount)
-                dst = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
+                dst = fromStroops(toStroops(sendAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
             }
         } else {
             const creditedEffect = effects.find(e => e.source === destination && e.type === 'accountCredited' && e.asset === destAssetId)

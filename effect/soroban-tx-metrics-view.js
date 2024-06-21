@@ -10,11 +10,11 @@ export default function SorobanTxMetricsView({metrics}) {
         {Object.entries(parsedMetrics).map(([key, value]) => <div key={key} className="column column-25">
             <span className="dimmed">{key}: </span><MetricValue value={value}/>
         </div>)}
-        {!!metrics.fee && <div className="column">
+        {!!metrics.fee && <div className="column micro-space">
             <span className="dimmed">Fees: </span>
-            {metrics.fee.refundable} <span className="dimmed">refundable, </span>
-            {metrics.fee.nonrefundable} <span className="dimmed">nonrefundable, </span>
-            {metrics.fee.rent} <span className="dimmed">rent</span>
+            {formatWithPrecision(metrics.fee.refundable, 0)} <span className="dimmed">refundable, </span>
+            {formatWithPrecision(metrics.fee.nonrefundable, 0)} <span className="dimmed">non-refundable, </span>
+            {formatWithPrecision(metrics.fee.rent, 0)} <span className="dimmed">rent</span>
         </div>}
     </div>
 }

@@ -5,10 +5,17 @@ import './soroban-tx-metrics.scss'
 export default function SorobanTxMetricsView({metrics}) {
     if (!metrics)
         return null
+    const parsedMetrics = parseMetrics(metrics)
     return <div className="soroban-tx-metrics-info row micro-space text-tiny text-monospace condensed">
-        {Object.entries(parseMetrics(metrics)).map(([key, value]) => <div key={key} className="column column-25">
+        {Object.entries(parsedMetrics).map(([key, value]) => <div key={key} className="column column-25">
             <span className="dimmed">{key}: </span><MetricValue value={value}/>
         </div>)}
+        {!!metrics.fee && <div className="column">
+            <span className="dimmed">Fees: </span>
+            {metrics.fee.refundable} <span className="dimmed">refundable, </span>
+            {metrics.fee.nonrefundable} <span className="dimmed">nonrefundable, </span>
+            {metrics.fee.rent} <span className="dimmed">rent</span>
+        </div>}
     </div>
 }
 

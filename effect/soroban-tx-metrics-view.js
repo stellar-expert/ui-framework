@@ -37,7 +37,7 @@ function parseMetrics(metrics) {
                 break
             case  'emit_event':
                 if (value > 0) {
-                    res['Emitted events'] = value.toString() + ' ' + formatBytes(value)
+                    res['Emitted events'] = value.toString() + ' ' + formatBytes(metrics.emit_event_byte)
                 }
                 break
             case 'invoke_time_nsecs':

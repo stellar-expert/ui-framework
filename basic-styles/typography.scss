@@ -45,6 +45,10 @@ code {
   background: var(--color-alt-bg);
   padding: 0 3px;
   border-radius: $border-radius-input;
+
+  code {
+    padding: 0;
+  }
 }
 
 .text-small {

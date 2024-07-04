@@ -185,19 +185,6 @@ export function resetPageMetadata(meta) {
     //TODO: add logic to cleanup custom page meta tags on page unload
 }
 
-export function setPageNoIndex(noIndex) {
-    if (!noIndex) {
-        removeTag('meta[name=robots]')
-    } else {
-        replaceMetaTags({
-            locator: 'name',
-            tags: [
-                {name: 'robots', content: 'noindex,nofollow'}
-            ]
-        })
-    }
-}
-
 /**
  * React hook for setting page metadata
  * @param {PageMeta} meta - Page metadata

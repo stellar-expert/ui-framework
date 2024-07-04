@@ -66,17 +66,11 @@ function generateOpenGraphMeta({description, title, facebookImage}, canonicalUrl
         {name: 'og:url', content: canonicalUrl},
         {name: 'og:site_name', content: formatPageTitle(metaProps.serviceTitle)},
         {name: 'og:description', content: description || metaProps.description},
-        {name: 'og:type', content: 'website'}
+        {name: 'og:type', content: 'website'},
+        {name: 'og:image:width', content: 1200},
+        {name: 'og:image:height', content: 630},
+        {name: 'og:image', content: facebookImage || metaProps.facebookImage}
     ]
-    if (facebookImage) {
-        tags.push({name: 'og:image', content: facebookImage})
-    } else {
-        tags.push({name: 'og:image', content: metaProps.facebookImage})
-        /*tags = tags.concat([
-            {name: 'og:image', content: metaProps.facebookImage},
-            {name: 'og:image:width', content: 1200},
-            {name: 'og:image:height', content: 630}])*/
-    }
     return {
         locator: 'property',
         tags
@@ -164,6 +158,10 @@ export function setPageMetadata(meta) {
         return
     const canonicalUrl = origin + location.pathname// + location.search
     document.title = formatPageTitle(meta.title)
+    if (meta.image) {
+        meta.facebookImage = meta.image
+        meta.twitterImage = meta.image
+    }
     for (const replacer of tagReplacerPipeline) {
         replaceMetaTags(replacer(meta, canonicalUrl))
     }
@@ -187,19 +185,6 @@ export function resetPageMetadata(meta) {
     //TODO: add logic to cleanup custom page meta tags on page unload
 }
 
-/*export function setPageNoIndex(noIndex) {
-    if (!noIndex) {
-        removeTag('meta[name=robots]')
-    } else {
-        replaceMetaTags({
-            locator: 'name',
-            tags: [
-                {name: 'robots', content: 'noindex,nofollow'}
-            ]
-        })
-    }
-}*/
-
 /**
  * React hook for setting page metadata
  * @param {PageMeta} meta - Page metadata
@@ -218,6 +203,7 @@ export function usePageMetadata(meta, dependencies = []) {
  * @property {String} description - Contents description
  * @property {String} [twitterImage] - Twitter image url
  * @property {String} [facebookImage] - Facebook image url
+ * @property {String} [image] - Sets the image for both the Twitter image and the Facebook image
  * @property {MetaTagReplacement} [customMeta] - Custom metadata tags
  */
 

@@ -30,7 +30,7 @@ export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
         if (value !== newDate) {
             setDate(newDate)
             if (onChange) {
-                onChange(toUnixTimestamp(normalizeDate(newDate)))
+                onChange(newDate ? toUnixTimestamp(normalizeDate(newDate)) : '')
             }
         }
     }), [onChange, value])

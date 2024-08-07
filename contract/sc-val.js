@@ -6,7 +6,7 @@ import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
 import './sc-val.scss'
 
-export const ScVal = React.memo(function ScVal({value, nested = false, indent = false}) {
+export const ScVal = React.memo(function ScVal({value, nested = false, indent = false, wrapObjects = true}) {
     if (!nested)
         return <code className={cn('sc-val', {block: indent})}><ScVal value={value} indent={indent} nested/></code>
     if (!value)
@@ -14,10 +14,12 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
     if (typeof value === 'string') {
         value = xdr.ScVal.fromXDR(value, 'base64')
     }
-    if (value instanceof Array)
-        return <>[{value.map((v, i) => <ScValStruct key={i} indent={indent} separate={value.length - i}>
+    if (value instanceof Array) {
+        const values = value.map((v, i) => <ScValStruct key={i} indent={indent} separate={value.length - i}>
             <ScVal value={v} indent={indent} nested/>
-        </ScValStruct>)}]</>
+        </ScValStruct>)
+        return wrapObjects ? <>[{values}]</> : <>{values}</>
+    }
     const val = value._value
     switch (value._arm) {
         case 'vec':
@@ -25,11 +27,11 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
                 <ScVal value={v} indent={indent} nested/>
             </ScValStruct>)}]</>
         case 'map':
-            return <>&#123;{val.map((kv, i) =>
+            const values = val.map((kv, i) =>
                 <ScValStruct key={i} indent={indent} separate={val.length - i}>
                     <ScVal value={kv.key()} indent={indent} nested/>: <ScVal value={kv.val()} indent={indent} nested/>
-                </ScValStruct>)}
-                &#125;</>
+                </ScValStruct>)
+            return wrapObjects ? <>&#123;{values}&#125;</> : <>{values}</>
         case 'b':
             return <>{val.toString()}<ScValType type="bool"/></>
         case 'i32':
@@ -57,7 +59,7 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
             return <><span className="condensed">{shortenString(asBytes, 86)}</span><ScValType type="bytes"/></>
         case 'str':
         case 'sym':
-            return <>"{val.toString()}"<ScValType type={value._arm}/></>
+            return <span className="word-break">"{val.toString()}"<ScValType type={value._arm}/></span>
         case 'nonceKey':
             return <>{val.nonce()._value.toString()}<ScValType type="nonce"/></>
         case 'instance':
@@ -74,11 +76,15 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
     }
 })
 
+export function parseScValValue(value) {
+    return xdr.ScVal.fromXDR(value, 'base64')
+}
+
 const ScValType = React.memo(function ScValType({type}) {
     return <sub className="dimmed text-tiny" style={{padding: '0 0.2em'}}>{type}</sub>
 })
 
-const ScValStruct = React.memo(function ScValStruct({indent, children, separate}) {
+export const ScValStruct = React.memo(function ScValStruct({indent, children, separate}) {
     const separator = separate > 1 ? <>, </> : null
     if (!indent)
         return <>{children}{separator}</>
@@ -86,3 +92,5 @@ const ScValStruct = React.memo(function ScValStruct({indent, children, separate}
         {children}{separator}
     </div>
 })
+
+export const primitiveTypes = new Set(['b', 'i32', 'u32', 'i256', 'u256', 'i128', 'u128', 'i64', 'u64', 'timepoint', 'duration', 'address', 'bytes', 'str', 'sym', 'nonceKey', 'contractId', 'instance'])

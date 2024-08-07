@@ -15,6 +15,7 @@ import {ClaimableBalanceClaimants} from '../claimable-balance/claimable-balance-
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
 import {ScVal} from '../contract/sc-val'
+import InvocationInfoView from '../contract/invocation-info-view'
 
 function formatBalanceId(balance) {
     return `${balance.substr(8, 4)}…${balance.substr(-4)}`
@@ -46,7 +47,7 @@ function OpSourceAccount({op, compact}) {
 
     if (!op.isEphemeral)
         return accountItem
-    return <> on behalf of account {accountItem}</>
+    return <> for account {accountItem}</>
 }
 
 
@@ -453,13 +454,13 @@ function CreateClaimableBalanceDescriptionView({op, compact}) {
         return <>
             <b>Create claimable balance</b> <Amount amount={amount} asset={AssetDescriptor.parse(asset)} issuer={!compact}/>
             <OpSourceAccount op={op}/>{' '}
-            for claimants <ClaimableBalanceClaimants claimants={claimants}/>
+            claimable by <ClaimableBalanceClaimants claimants={claimants}/>
 
         </>
     return <>
         <OpSourceAccount op={op}/> created claimable balance{' '}
         <Amount amount={amount} asset={AssetDescriptor.parse(asset)} issuer={!compact}/>{' '}
-        for claimants <ClaimableBalanceClaimants claimants={claimants}/>
+        claimable by <ClaimableBalanceClaimants claimants={claimants}/>
     </>
 }
 
@@ -775,18 +776,25 @@ function InvokeHostFunctionView({op, compact}) {
     const value = func.value()
     switch (func.arm()) {
         case 'invokeContract':
-            const invocation = <>
-                <AccountAddress account={xdrParserUtils.xdrParseScVal(value.contractAddress())}/>{' '}
-                <code>{value.functionName().toString()}(<ScVal value={value.args()}/>)</code>
-            </>
+            const contractAddress = xdrParserUtils.xdrParseScVal(value._attributes.contractAddress)
+            const sac = op.operation.sacMap?.[contractAddress]
+            const invocationArgs = {
+                contract: contractAddress,
+                func: value.functionName().toString(),
+                args: value.args(),
+                sac
+            }
             if (op.isEphemeral)
                 return <>
-                    <b>Invoke contract</b> {invocation}<OpSourceAccount op={op}/>
+                    <b>Invoke contract</b> <AccountAddress account={contractAddress}/>{' '}
+                    <InvocationInfoView {...invocationArgs}/>
+                    <OpSourceAccount op={op}/>
                 </>
+            const invocationEffect = op.operation.effects.find(e => e.type === 'contractInvoked' && e.contract === contractAddress)
             return <>
-                <OpSourceAccount op={op}/> invoked contract {invocation}
+                <OpSourceAccount op={op}/> invoked contract <AccountAddress account={contractAddress}/>{' '}
+                <InvocationInfoView {...invocationArgs} result={invocationEffect?.result}/>
             </>
-            break
         case 'wasm':
             const wasmCode = value.toString('base64')
             const codeReference = <>
@@ -800,7 +808,6 @@ function InvokeHostFunctionView({op, compact}) {
             return <>
                 <OpSourceAccount op={op}/> uploaded contract code {codeReference}
             </>
-            break
         case 'createContract':
             const preimage = value.contractIdPreimage()
             const executable = value.executable()

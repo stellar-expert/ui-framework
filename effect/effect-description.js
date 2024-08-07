@@ -10,13 +10,14 @@ import {AssetLink} from '../asset/asset-link'
 import {Amount} from '../asset/amount'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {ScVal} from '../contract/sc-val'
+import InvocationInfoView from '../contract/invocation-info-view'
 
 /**
  * @param {{}} effect
  * @return {JSX.Element}
  * @constructor
  */
-export function EffectDescription({effect}) {
+export function EffectDescription({effect, operation}) {
     switch (effect.type) {
         case 'accountCreated':
             return <>Account <AccountAddress account={effect.account}/> created</>
@@ -216,18 +217,20 @@ export function EffectDescription({effect}) {
         case 'contractInvoked':
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
-                Contract <AccountAddress account={effect.contract}/>{' '} function <code>{effect.function}</code> invoked
-                {!!effect.rawArgs && <> with arguments <ScVal value={effect.rawArgs}/></>}</>
+                Contract <AccountAddress account={effect.contract}/> invoked{' '}
+                <InvocationInfoView func={effect.function} args={effect.rawArgs} contract={effect.contract} result={effect.result} sac={operation.operation.sacMap?.[effect.contract]}/>
+            </>
         case 'contractEvent':
             return <>Contract <AccountAddress account={effect.contract}/> raised event <ScVal value={effect.rawTopics}/>{' '}
                 with data <ScVal value={effect.rawData}/></>
         case 'contractDataCreated':
         case 'contractDataUpdated':
-            return <>Contract <AccountAddress account={effect.owner}/> {effect.type === 'contractDataCreated' ? 'created ' : 'updated '}
-                data <ScVal value={effect.key}/> with value <ScVal value={effect.value}/>
+            return <>Contract <AccountAddress account={effect.owner}/>
+                {effect.type === 'contractDataCreated' ? ' created ' : ' updated '} {effect.durability} data{' '}
+                <ScVal value={effect.key}/> with value <ScVal value={effect.value}/>
             </>
         case 'contractDataRemoved':
-            return <>Contract <AccountAddress account={effect.owner}/> removed data <ScVal value={effect.key}/></>
+            return <>Contract <AccountAddress account={effect.owner}/> removed {effect.durability} data <ScVal value={effect.key}/></>
         case 'contractError':
             return <>Execution error {effect.code ? effect.code + ': ' : ''}"{effect.details[0]}"{' '}
                 <code>{JSON.stringify(effect.details.slice(1))}</code> in <AccountAddress account={effect.contract}/></>

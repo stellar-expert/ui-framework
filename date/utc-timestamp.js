@@ -5,12 +5,18 @@ import {normalizeDate, formatDateUTC} from '@stellar-expert/formatter'
 import {BlockSelect} from '../interaction/block-select'
 
 export const UtcTimestamp = React.memo(function UtcTimestamp({date, dateOnly, className}) {
-    date = normalizeDate(date)
-    let formatted = formatDateUTC(date)
-    if (dateOnly) {
-        formatted = formatted.split(' ')[0]
-    } else {
-        formatted += ' UTC'
+    let formatted
+    try {
+        date = normalizeDate(date)
+        formatted = formatDateUTC(date)
+        if (dateOnly) {
+            formatted = formatted.split(' ')[0]
+        } else {
+            formatted += ' UTC'
+        }
+    } catch (e) {
+        console.error(e)
+        return null
     }
     const localTime = date.toString().replace(/ \(.+\)/, '').replace(/\w+ /, '')
     return <BlockSelect className={cn('condensed nowrap', className)} title={localTime}>{formatted}</BlockSelect>

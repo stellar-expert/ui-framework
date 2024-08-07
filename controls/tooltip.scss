@@ -21,7 +21,7 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
   background: var(--color-bg);
   border-color: var(--color-contrast-border);
   border-radius: $border-radius-input;
-  box-shadow: 0 2px 4px -1px var(--color-backdrop);
+  box-shadow: 0 1px 6px 2px var(--color-backdrop);
   padding: 1rem 1.4rem;
   letter-spacing: normal;
   word-break: normal;
@@ -69,6 +69,10 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
     z-index: 5;
     position: relative;
   }
+
+  &.visible {
+    visibility: visible;
+  }
 }
 
 .trigger {
@@ -78,10 +82,20 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
   top: -.3rem;
   left: .2rem;
   color: var(--color-primary);
-  transition: color 0.15s ease 0.3s;
 
   &:before {
     opacity: 0.4;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    opacity: 0.01;
+    display: block;
+    width: 200%;
+    height: 200%;
+    left: -50%;
+    top: -50%;
   }
 
   &:hover {
@@ -90,7 +104,6 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
     }
 
     & > .tooltip-wrapper {
-      visibility: visible;
       opacity: 1;
     }
   }

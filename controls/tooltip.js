@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useCallback, useMemo} from 'react'
 import cn from 'classnames'
 import './tooltip.scss'
 
@@ -152,47 +152,69 @@ function parseOffset(offset) {
 
 /**
  * Tooltip component
- * @param {any} trigger
+ * @param {HTMLElement} trigger
  * @param {PositionDescriptor} desiredPlace
- * @param {PositionOffset} offset?
- * @param {String} maxWidth?
- * @param {any} children?
+ * @param {PositionOffset} [offset]
+ * @param {'hover'|'click'} [activation]
+ * @param {String} [maxWidth]
+ * @param {*} [children]
  * @constructor
  */
-export const Tooltip = React.memo(function Tooltip({trigger, desiredPlace = 'top', offset = {}, children, maxWidth = '20em', ...op}) {
-    const [visible, setVisible] = useState(false),
-        [place, setPlace] = useState('top'),
-        [position, setPosition] = useState({top: 0, left: 0}),
-        content = useRef(null)
+export const Tooltip = React.memo(function Tooltip({
+                                                       trigger,
+                                                       desiredPlace = 'top',
+                                                       offset = {},
+                                                       activation = 'hover',
+                                                       children,
+                                                       maxWidth = '20em',
+                                                       ...op
+                                                   }) {
+    const [visible, setVisible] = useState(false)
+    const [rendered, setRendered] = useState(false)
+    const [place, setPlace] = useState('top')
+    const [position, setPosition] = useState({top: 0, left: 0})
+    const content = useRef(null)
 
-    function mouseEnter(e) {
+    function activate(e) {
         if (visible)
             return
-        const {place, position} = calculateTooltipPosition(e.currentTarget, content.current, desiredPlace, offset)
-        setVisible(true)
-        setPosition(position)
-        setPlace(place)
+        const {currentTarget} = e
+        setRendered(true)
+        setTimeout(() => {
+            if (visible)
+                return
+            const {place, position} = calculateTooltipPosition(currentTarget, content.current, desiredPlace, offset)
+            setVisible(true)
+            setPosition(position)
+            setPlace(place)
+        }, 250)
     }
 
-    function mouseLeave(e) {
+    function onMouseLeave(e) {
         if (!visible)
             return
         setVisible(false)
+        setRendered(false)
     }
 
     const triggerProps = {
-        onMouseEnter: e => mouseEnter(e),
-        onMouseLeave: e => mouseLeave(e),
+        onMouseLeave,
         ...op
+    }
+    if (activation === 'hover') {
+        triggerProps.onMouseEnter = activate
+    } else {
+        triggerProps.onClick = activate
     }
     const contentStyle = {
         maxWidth,
         left: position.left + 'px',
         top: position.top + 'px'
     }
+
     return React.cloneElement(trigger, triggerProps, <div className="tooltip-wrapper" style={contentStyle}>
-        <div ref={content} className={cn('tooltip', place)}>
-            <div className="tooltip-content">{children}</div>
+        <div ref={content} className={cn('tooltip', place, {visible})}>
+            <div className="tooltip-content">{rendered ? children : null}</div>
         </div>
     </div>)
 })

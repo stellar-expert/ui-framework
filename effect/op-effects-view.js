@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 import {EffectDescription} from './effect-description'
 import SorobanTxMetricsView from './soroban-tx-metrics-view'
 import './op-effects.scss'
@@ -14,7 +15,7 @@ export function OpEffectsView({operation}) {
             if (e.type === 'contractMetrics')
                 return null
             return <div key={i}>
-                <i className={e.type === 'contractError' ? 'icon-warning' : 'icon-puzzle'}/>
+                <i className={cn('effect-icon', e.type === 'contractError' ? 'icon-warning' : 'icon-puzzle')}/>&thinsp;
                 <EffectDescription effect={e} operation={operation}/>
             </div>
         })}
@@ -35,7 +36,7 @@ function sortContractEffects(effects) {
         const bInvocation = b.type === 'contractInvoked'
         if (aInvocation && bInvocation)
             return 0
-        if (!aInvocation && !bInvocation){
+        if (!aInvocation && !bInvocation) {
             const aData = a.type.startsWith('contractData')
             const bData = b.type.startsWith('contractData')
             if (aData === bData)

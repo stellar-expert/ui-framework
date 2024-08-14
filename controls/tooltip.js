@@ -166,7 +166,7 @@ export const Tooltip = React.memo(function Tooltip({
                                                        offset = {},
                                                        activation = 'hover',
                                                        children,
-                                                       maxWidth = '20em',
+                                                       maxWidth,
                                                        ...op
                                                    }) {
     const [visible, setVisible] = useState(false)
@@ -187,7 +187,7 @@ export const Tooltip = React.memo(function Tooltip({
             setVisible(true)
             setPosition(position)
             setPlace(place)
-        }, 250)
+        }, 400)
     }
 
     function onMouseLeave(e) {
@@ -206,13 +206,16 @@ export const Tooltip = React.memo(function Tooltip({
     } else {
         triggerProps.onClick = activate
     }
-    const contentStyle = {
-        maxWidth,
+    const containerStyle = {
         left: position.left + 'px',
         top: position.top + 'px'
     }
+    if (maxWidth) {
+        containerStyle.width = '100vw'
+        containerStyle.maxWidth = maxWidth
+    }
 
-    return React.cloneElement(trigger, triggerProps, <div className="tooltip-wrapper" style={contentStyle}>
+    return React.cloneElement(trigger, triggerProps, <div className="tooltip-wrapper" style={containerStyle}>
         <div ref={content} className={cn('tooltip', place, {visible})}>
             <div className="tooltip-content">{rendered ? children : null}</div>
         </div>

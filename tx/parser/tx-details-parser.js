@@ -43,7 +43,7 @@ import TxMatcher from './tx-matcher'
  * @return {ParsedTxDetails}
  */
 export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated, protocol}) {
-    const parsedTx = parseTxOperationsMeta({network, tx: txEnvelope, meta, result, protocol, processSystemEvents: true, mapSac: true})
+    const parsedTx = parseTxOperationsMeta({network, tx: txEnvelope, meta, result, protocol, processSystemEvents: true, processFailedOpEffects: true, mapSac: true})
     const {tx, effects, operations, isEphemeral, failed} = parsedTx
     const txHash = tx.hash().toString('hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)

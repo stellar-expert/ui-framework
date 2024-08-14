@@ -22,9 +22,9 @@ export default function InvocationInfoView({contract, func, args, result, sac}) 
         <code>{func}({args.map((arg, i) => <ScValStruct key={i} separate={args.length - i}>
             <ScVal value={arg} nested/>
         </ScValStruct>)})<InvocationResult result={result}/></code>
-        <Tooltip trigger={<i className="trigger icon-info"/>} desiredPlace="top" activation="click" maxWidth="90vw">
+        <Tooltip trigger={<i className="trigger icon-info"/>} desiredPlace="top" activation="click" maxWidth="Min(60em, 40vw)">
             <ExtendedInvocationInfoView {...{contract, func, args, result, sac}}/>
-        </Tooltip>
+        </Tooltip>&nbsp;
     </>
 }
 
@@ -68,7 +68,7 @@ const ExtendedInvocationInfoView = React.memo(function ({contract, func, args, r
         <div className="text-small space">
             {fd.doc ?
                 <>{fd.doc.split('\n').filter(v => !!v).map((v, i) => <div key={i}>{v}</div>)}</> :
-                <span className="dimmed">Function documentation is not included into the WASM</span>}
+                <span className="dimmed text-tiny">No function documentation is available in the contract WASM</span>}
         </div>
     </div>
 })

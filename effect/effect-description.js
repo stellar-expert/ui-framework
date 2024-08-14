@@ -232,8 +232,12 @@ export function EffectDescription({effect, operation}) {
         case 'contractDataRemoved':
             return <>Contract <AccountAddress account={effect.owner}/> removed {effect.durability} data <ScVal value={effect.key}/></>
         case 'contractError':
-            return <>Execution error {effect.code ? effect.code + ': ' : ''}"{effect.details[0]}"{' '}
-                <code>{JSON.stringify(effect.details.slice(1))}</code> in <AccountAddress account={effect.contract}/></>
+            let errCode = effect.code
+            if (errCode?.name) {
+                errCode = errCode.name
+            }
+            return <>Execution error {errCode ? <><code>{errCode}</code> </> : null}in <AccountAddress account={effect.contract}/>{': '}
+                <code>{JSON.stringify(effect.details)}</code> </>
         case 'feeCharged':
             return <><Amount asset="XLM" amount={effect.charged} adjust/> fee charged from <AccountAddress account={effect.source}/> (
                 bid <Amount asset="XLM" amount={effect.bid} adjust/>)</>

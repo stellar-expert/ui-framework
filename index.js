@@ -81,6 +81,8 @@ export * from './tx/tx-operations-list'
 export * from './tx/parser/tx-details-parser'
 export * from './tx/tx-list-hooks'
 export * from './effect/effect-description'
+//contract-related components
+export * from './contract/contract-api'
 //Stellar-specific utils
 export * from './stellar/key-type'
 export * from './stellar/signature-hint-utils'

@@ -106,11 +106,11 @@ export const TxOperationsList = React.memo(function TxOperationsList({
                     </div>
                     {!!compact && !op.isEphemeral && <OpAccountingChanges op={op}/>}
                 </div>
-                {effectsExpanded && <OpEffectsView effects={op.operation.effects}/>}
+                {effectsExpanded && <OpEffectsView operation={op}/>}
             </div>)}
             {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
         </div>
         {(opsExpanded || opdiff > 0) && <Spoiler className="text-tiny" expanded={opsExpanded} onChange={toggleAdditionalOps}
-                                                 showMore={`${opdiff} more operation${opdiff > 1 && 's'} in this transaction`} showLess="Hide additional operations"/>}
+                                                 showMore={`${opdiff} more operation${opdiff > 1 ? 's' : ''} in this transaction`} showLess="Hide additional operations"/>}
     </div>
 })

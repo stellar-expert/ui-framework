@@ -1,4 +1,4 @@
-import React, {useState, useRef, useCallback, useMemo} from 'react'
+import React, {useState, useRef} from 'react'
 import cn from 'classnames'
 import './tooltip.scss'
 
@@ -29,11 +29,11 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
     }
 
     function getTipOffsetTop(place) {
-        return mouseY + defaultOffset[place].t + offsetY
+        return mouseY + defaultOffset[place].t + offsetY + window.scrollY
     }
 
     function getTipOffsetBottom(place) {
-        return mouseY + defaultOffset[place].b + offsetY
+        return mouseY + defaultOffset[place].b + offsetY + window.scrollY
     }
 
     function isOutside(p) {
@@ -53,13 +53,11 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
         }
     }
 
-    const {top: parentTop, left: parentLeft} = target.getBoundingClientRect()
-
     return {
         place,
         position: {
-            top: (getTipOffsetTop(place) - parentTop) | 0,
-            left: (getTipOffsetLeft(place) - parentLeft) | 0
+            top: getTipOffsetTop(place) | 0,
+            left: getTipOffsetLeft(place) | 0
         }
     }
 }
@@ -97,28 +95,28 @@ function getMouseOffset(element) {
  * @param {Number} tipHeight
  *  */
 function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
-    const notchSize = 6
+    const notchSize = 4
     return {
         top: {
             l: -tipWidth / 2,
             r: tipWidth / 2,
-            t: -targetHeight / 2 - tipHeight - notchSize,
+            t: -targetHeight / 2 - tipHeight + notchSize,
             b: -targetHeight / 2
         },
         bottom: {
             l: -tipWidth / 2,
             r: tipWidth / 2,
-            t: targetHeight / 2 + notchSize,
+            t: targetHeight / 2 - notchSize,
             b: targetHeight / 2 + tipHeight
         },
         left: {
-            l: -tipWidth - targetWidth / 2,
+            l: -tipWidth - targetWidth / 2 + notchSize,
             r: -targetWidth / 2 + notchSize,
             t: -tipHeight / 2,
             b: tipHeight / 2
         },
         right: {
-            l: targetWidth / 2 + notchSize,
+            l: targetWidth / 2 - notchSize / 2,
             r: tipWidth + targetWidth / 2,
             t: -tipHeight / 2,
             b: tipHeight / 2
@@ -180,6 +178,7 @@ export const Tooltip = React.memo(function Tooltip({
             return
         const {currentTarget} = e
         setRendered(true)
+        content.current.showPopover()
         setTimeout(() => {
             if (visible)
                 return
@@ -193,6 +192,7 @@ export const Tooltip = React.memo(function Tooltip({
     function onMouseLeave(e) {
         if (!visible)
             return
+        content.current.hidePopover()
         setVisible(false)
         setRendered(false)
     }
@@ -215,8 +215,8 @@ export const Tooltip = React.memo(function Tooltip({
         containerStyle.maxWidth = maxWidth
     }
 
-    return React.cloneElement(trigger, triggerProps, <div className="tooltip-wrapper" style={containerStyle}>
-        <div ref={content} className={cn('tooltip', place, {visible})}>
+    return React.cloneElement(trigger, triggerProps, <div ref={content} className="tooltip-wrapper" style={containerStyle} popover="auto">
+        <div className={cn('tooltip', place, {visible})}>
             <div className="tooltip-content">{rendered ? children : null}</div>
         </div>
     </div>)

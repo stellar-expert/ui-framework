@@ -5,11 +5,20 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
 .tooltip-wrapper {
   width: 40rem;
   max-width: Min(40rem, 60vw);
+  margin: 0;
+  padding: .8em;
   position: absolute;
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.15s ease 0.4s, visibility 0.15s ease 0.4s;
   z-index: 10;
+  background: transparent;
+  border: none;
+
+  &:popover-open {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 
 .tooltip {
@@ -24,6 +33,7 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
   padding: 1rem 1.4rem;
   letter-spacing: normal;
   word-break: normal;
+  visibility: hidden;
 
   &:before {
     content: "";
@@ -37,29 +47,29 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
 
   &.top:before {
     left: 50%;
-    bottom: -.25em;
+    bottom: -.2em;
     box-shadow: 1px 1px 0 $tooltip-notch-shadow-color;
-    margin-left: -0.4rem;
+    margin-left: -0.26rem;
   }
 
   &.bottom:before {
     left: 50%;
-    top: -.25em;
+    top: -.2em;
     box-shadow: -1px -1px 0 $tooltip-notch-shadow-color;
-    margin-left: -0.4rem;
+    margin-left: -0.26rem;
   }
 
   &.left:before {
-    right: -.25em;
+    right: -.2em;
     top: 50%;
-    margin-top: -0.4em;
+    margin-top: -0.26em;
     box-shadow: 1px -1px 0 $tooltip-notch-shadow-color;
   }
 
   &.right:before {
-    left: -.25em;
+    left: -.2em;
     top: 50%;
-    margin-top: -0.4em;
+    margin-top: -0.26em;
     box-shadow: -1px 1px 0 $tooltip-notch-shadow-color;
   }
 
@@ -99,10 +109,6 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
 
   &:hover {
     &:before {
-      opacity: 1;
-    }
-
-    & > .tooltip-wrapper {
       opacity: 1;
     }
   }

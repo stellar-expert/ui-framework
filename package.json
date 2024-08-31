@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.13.3",
+  "version": "1.13.4",
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "module": "./index.js",

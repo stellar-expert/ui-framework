@@ -29,11 +29,11 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
     }
 
     function getTipOffsetTop(place) {
-        return mouseY + defaultOffset[place].t + offsetY + window.scrollY
+        return mouseY + defaultOffset[place].t + offsetY
     }
 
     function getTipOffsetBottom(place) {
-        return mouseY + defaultOffset[place].b + offsetY + window.scrollY
+        return mouseY + defaultOffset[place].b + offsetY
     }
 
     function isOutside(p) {
@@ -56,8 +56,8 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
     return {
         place,
         position: {
-            top: getTipOffsetTop(place) | 0,
-            left: getTipOffsetLeft(place) | 0
+            top: getTipOffsetTop(place) + window.scrollY | 0,
+            left: getTipOffsetLeft(place) + window.scrollX | 0
         }
     }
 }

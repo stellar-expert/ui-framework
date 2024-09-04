@@ -25,10 +25,10 @@ export function EffectDescription({effect, operation}) {
             return <>Account <AccountAddress account={effect.source}/> removed</>
         case 'accountCredited':
             return <><Amount asset={effect.asset} amount={effect.amount} adjust/> credited to
-                account <AccountAddress account={effect.source}/></>
+                {effect.source.startsWith('C') ? 'contract' : 'account'} <AccountAddress account={effect.source}/></>
         case 'accountDebited':
             return <><Amount asset={effect.asset} amount={effect.amount} adjust/> debited from
-                account <AccountAddress account={effect.source}/></>
+                {effect.source.startsWith('C') ? 'contract' : 'account'} <AccountAddress account={effect.source}/></>
         case 'accountThresholdsUpdated':
             return <>Account <AccountAddress account={effect.source}/> set thresholds to {effect.thresholds.join('/')}</>
         case 'accountHomeDomainUpdated':

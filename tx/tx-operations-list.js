@@ -48,7 +48,7 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
         return null
     return <div className="op-container">
         <div className="op-layout">
-            <OpIcon op="feeCharge"/>
+            <OpIcon op="feeCharge" failed={!parsedTx.successful}/>
             <TxFeeEffect feeEffect={fee} compact={compact}/>
             {!!compact && !parsedTx.isEphemeral && <TxFeeAccountingChanges amount={fee.charged}/>}
         </div>
@@ -73,7 +73,7 @@ export const TxOperationsList = React.memo(function TxOperationsList({
     const [opsExpanded, setOpsExpanded] = useState(false)
     const toggleEffects = useCallback(e => setEffectsExpanded(e.expanded), [])
     const toggleAdditionalOps = useCallback(e => setOpsExpanded(e.expanded), [])
-    let {operations} = parsedTx
+    let {operations, successful} = parsedTx
     let opdiff = 0
     if (!opsExpanded) {
         //filter operations if filtered output is requested
@@ -100,7 +100,7 @@ export const TxOperationsList = React.memo(function TxOperationsList({
         <div className="condensed">
             {operations.map((op, i) => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
                 <div className="op-layout">
-                    <OpIcon op={op}/>
+                    <OpIcon op={op} failed={!successful}/>
                     <div>
                         <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact}/>
                     </div>

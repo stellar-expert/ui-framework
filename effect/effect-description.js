@@ -14,6 +14,7 @@ import InvocationInfoView from '../contract/invocation-info-view'
 
 /**
  * @param {{}} effect
+ * @param {{}} operation
  * @return {JSX.Element}
  * @constructor
  */
@@ -211,9 +212,11 @@ export function EffectDescription({effect, operation}) {
         case 'inflation':
             return <>Inflation distribution initialized</>
         case 'contractCodeUploaded':
-            return <>Contract code <ContractCodeWasm wasm={effect.wasm}/> uploaded</>
+            return <>Contract code <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm}/></LedgerKeyHint> uploaded</>
         case 'contractCreated':
             return <>Contract <AccountAddress account={effect.contract}/> created <ContractDetails effect={effect}/></>
+        case 'contractUpdated':
+            return <>Contract <AccountAddress account={effect.contract}/> updated <ContractDetails effect={effect}/></>
         case 'contractInvoked':
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
@@ -227,10 +230,11 @@ export function EffectDescription({effect, operation}) {
         case 'contractDataUpdated':
             return <>Contract <AccountAddress account={effect.owner}/>
                 {effect.type === 'contractDataCreated' ? ' created ' : ' updated '} {effect.durability} data{' '}
-                <ScVal value={effect.key}/> with value <ScVal value={effect.value}/>
+                <LedgerKeyHint effect={effect}><ScVal value={effect.key}/></LedgerKeyHint> with value <ScVal value={effect.value}/>
             </>
         case 'contractDataRemoved':
-            return <>Contract <AccountAddress account={effect.owner}/> removed {effect.durability} data <ScVal value={effect.key}/></>
+            return <>Contract <AccountAddress account={effect.owner}/> removed {effect.durability}{' '}
+                data <LedgerKeyHint effect={effect}><ScVal value={effect.key}/></LedgerKeyHint></>
         case 'contractError':
             let errCode = effect.code
             if (errCode?.name) {
@@ -238,6 +242,12 @@ export function EffectDescription({effect, operation}) {
             }
             return <>Execution error {errCode ? <><code>{errCode}</code> </> : null}in <AccountAddress account={effect.contract}/>{': '}
                 <code>{JSON.stringify(effect.details)}</code> </>
+        case 'setTtl':
+            return <>Time-to-live extended to ledger {effect.ttl} for {!!effect.owner && <AccountAddress account={effect.owner}/>}{' '}
+                {ledgerEntryKind[effect.kind]}{' '}
+                <CopyToClipboard text={effect.keyHash}>
+                    <code title={effect.keyHash + ' - click to copy'}>{shortenString(effect.keyHash, 12)}</code>
+                </CopyToClipboard></>
         case 'feeCharged':
             return <><Amount asset="XLM" amount={effect.charged} adjust/> fee charged from <AccountAddress account={effect.source}/> (
                 bid <Amount asset="XLM" amount={effect.bid} adjust/>)</>
@@ -300,5 +310,19 @@ function ContractDetails({effect}) {
 }
 
 function ContractCodeWasm({wasm}) {
-    return <><code title={wasm}>{shortenString(wasm, 16)}</code><CopyToClipboard text={wasm}/></>
+    return <>
+        <code title={wasm}>{shortenString(wasm, 16)}</code>
+        <CopyToClipboard text={wasm}/>
+    </>
+}
+
+function LedgerKeyHint({effect, children}) {
+    if (!effect.keyHash)
+        return children
+    return <span title={'Ledger key ' + effect.keyHash}>{children}</span>
+}
+
+const ledgerEntryKind = {
+    contractData: 'contract state entry',
+    contractCode: 'contract code WASM'
 }

@@ -63,15 +63,23 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
         case 'nonceKey':
             return <>{val.nonce()._value.toString()}<ScValType type="nonce"/></>
         case 'instance':
-            return <>{val.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></>
+            return <>{val._attributes.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></>
         case 'error':
             const errMessage = value.toXDR('base64')
             return <><span className="condensed" title={errMessage}>{shortenString(errMessage, 50)}</span><ScValType type="error"/></>
         case 'contractId':
             return <AccountAddress account={xdrParserUtils.xdrParseContractAddress(value._value)}/>
         default:
-            if (value.switch().name === 'scvVoid')
-                return '()'
+            switch (value._switch.name) {
+                case 'scvVoid':
+                    return '()'
+                case 'scvContractInstance':
+                    return '<ContractInstance>'
+                case 'scvLedgerKeyContractInstance':
+                    return '<LedgerKeyContractInstance>'
+                case 'scvLedgerKeyNonce':
+                    return '<LedgerKeyNonce>'
+            }
             return <span className="dimmed">(unknown)</span>
     }
 })

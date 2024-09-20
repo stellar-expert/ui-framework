@@ -37,10 +37,19 @@ function sortContractEffects(effects) {
         if (aInvocation && bInvocation)
             return 0
         if (!aInvocation && !bInvocation) {
-            const aData = a.type.startsWith('contractData')
-            const bData = b.type.startsWith('contractData')
-            if (aData === bData)
+            const aData = a.type === 'setTtl' || a.type.startsWith('contractData')
+            const bData = b.type === 'setTtl' || b.type.startsWith('contractData')
+            if (aData === bData) {
+                if (a.type === 'setTtl')
+                    return 1
+                if (b.type === 'setTtl')
+                    return -1
+                if (a.durability === 'instance' && a.durability !== b.durability)
+                    return -1
+                if (b.durability === 'instance' && a.durability !== b.durability)
+                    return 1
                 return 0
+            }
             return aData ? 1 : -1
         }
         return aInvocation ? -1 : 1

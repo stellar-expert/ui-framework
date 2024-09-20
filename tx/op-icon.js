@@ -1,4 +1,5 @@
 import React from 'react'
+import cn from 'classnames'
 
 const opIconMapping = {
     feeCharge: 'send-circle',
@@ -50,15 +51,19 @@ const opIconMapping = {
 /**
  * Transaction operation icon
  * @param {OperationDescriptor|'feeCharge'} op - Operation descriptor
+ * @param {Boolean} failed - Whether the transaction failed during execution
  * @constructor
  */
-export const OpIcon = React.memo(function OpIcon({op}) {
+export const OpIcon = React.memo(function OpIcon({op, failed = false}) {
     let type
+    let title
     if (op === 'feeCharge') {
         type = 'feeCharge'
+        title = 'Transaction fees charge'
     } else {
         const {operation} = op
-        type = operation.type
+        title = type = operation.type
+        title = title[0].toUpperCase() + title.substring(1) + ' operation'
         switch (type) {
             case 'payment':
             case 'accountMerge':
@@ -84,10 +89,11 @@ export const OpIcon = React.memo(function OpIcon({op}) {
                 break
         }
     }
-
-
+    if (failed) {
+        title += ' - Transaction failed'
+    }
     const icon = opIconMapping[type]
-    return <div className="op-icon">
+    return <div className={cn('op-icon', {failed})} title={title}>
         <i className={`icon-${icon}`}/>
     </div>
 })

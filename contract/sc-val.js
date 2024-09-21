@@ -63,7 +63,7 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
         case 'nonceKey':
             return <>{val.nonce()._value.toString()}<ScValType type="nonce"/></>
         case 'instance':
-            return <>{val._attributes.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></>
+            return <span className="word-break">{val._attributes.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></span>
         case 'error':
             const errMessage = value.toXDR('base64')
             return <><span className="condensed" title={errMessage}>{shortenString(errMessage, 50)}</span><ScValType type="error"/></>

@@ -22,9 +22,9 @@ export default function InvocationInfoView({contract, func, args, result, sac}) 
         <code>{func}({args.map((arg, i) => <ScValStruct key={i} separate={args.length - i}>
             <ScVal value={arg} nested/>
         </ScValStruct>)})<InvocationResult result={result}/></code>
-        <Tooltip trigger={<i className="trigger icon-info"/>} desiredPlace="top" activation="click" maxWidth="Min(60em, 40vw)">
+        {!!contract && <Tooltip trigger={<i className="trigger icon-info"/>} desiredPlace="top" activation="click" maxWidth="Min(60em, 40vw)">
             <ExtendedInvocationInfoView {...{contract, func, args, result, sac}}/>
-        </Tooltip>&nbsp;
+        </Tooltip>}{' '}
     </>
 }
 

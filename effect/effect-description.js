@@ -26,10 +26,10 @@ export function EffectDescription({effect, operation}) {
             return <>Account <AccountAddress account={effect.source}/> removed</>
         case 'accountCredited':
             return <><Amount asset={effect.asset} amount={effect.amount} adjust/> credited to
-                {effect.source.startsWith('C') ? 'contract' : 'account'} <AccountAddress account={effect.source}/></>
+                {effect.source.startsWith('C') ? ' contract' : ' account'} <AccountAddress account={effect.source}/></>
         case 'accountDebited':
             return <><Amount asset={effect.asset} amount={effect.amount} adjust/> debited from
-                {effect.source.startsWith('C') ? 'contract' : 'account'} <AccountAddress account={effect.source}/></>
+                {effect.source.startsWith('C') ? ' contract' : ' account'} <AccountAddress account={effect.source}/></>
         case 'accountThresholdsUpdated':
             return <>Account <AccountAddress account={effect.source}/> set thresholds to {effect.thresholds.join('/')}</>
         case 'accountHomeDomainUpdated':
@@ -220,7 +220,7 @@ export function EffectDescription({effect, operation}) {
         case 'contractInvoked':
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
-                Contract <AccountAddress account={effect.contract}/> invoked{' '}
+                Invoked contract <AccountAddress account={effect.contract}/>{' '}
                 <InvocationInfoView func={effect.function} args={effect.rawArgs} contract={effect.contract} result={effect.result} sac={operation.operation.sacMap?.[effect.contract]}/>
             </>
         case 'contractEvent':
@@ -307,6 +307,12 @@ function ContractDetails({effect}) {
         default:
             return <span className="dimme">(contract type not supported)</span>
     }
+}
+
+function ConstructorDetails({effect}) {
+    if (!effect.constructorArgs?.length)
+        return null
+    return <span>{' '}<InvocationInfoView func="__constructor" args={effect.constructorArgs}/></span>
 }
 
 function ContractCodeWasm({wasm}) {

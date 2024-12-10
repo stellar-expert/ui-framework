@@ -809,6 +809,7 @@ function InvokeHostFunctionView({op, compact}) {
                 <OpSourceAccount op={op}/> uploaded contract code {codeReference}
             </>
         case 'createContract':
+        case 'createContractV2':
             const preimage = value.contractIdPreimage()
             const executable = value.executable()
             const executableType = executable.switch().name
@@ -835,6 +836,12 @@ function InvokeHostFunctionView({op, compact}) {
                             break
                     }
                     break
+            }
+            if (func.arm() === 'createContractV2') {
+                const args = value.constructorArgs() //array
+                if (args.length > 0) {
+                    contractProps = <>{contractProps} with <InvocationInfoView func="__constructor" args={args}/></>
+                }
             }
             if (op.isEphemeral)
                 return <>

@@ -50,6 +50,8 @@ export * from './interaction/theme-selector'
 export * from './interaction/inline-progress'
 export * from './interaction/responsive'
 export * from './interaction/qr-code'
+export * from './interaction/dialog'
+export * from './interaction/system-dialog'
 //date components
 export * from './date/utc-timestamp'
 export * from './date/elapsed-time'

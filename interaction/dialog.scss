@@ -29,6 +29,7 @@
       border-radius: $border-radius-input;
       box-shadow: 0 2px 4px 0 var(--color-modal-bg);
       padding: $space-micro $space-standard $space-standard;
+      max-width: 32em;
     }
   }
 }

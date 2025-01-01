@@ -19,6 +19,17 @@ export const SystemDialog = React.memo(function SystemDialog() {
 
     useEffect(() => {
         window.alert = function (content, options = {title: defaultAlertTitle, icon: 'info'}) {
+            function close() {
+                setContent(undefined)
+                window.removeEventListener('keydown', keyHandler, true)
+            }
+
+            function keyHandler(e) {
+                if (e.keyCode === 27 || e.keyCode === 13) {
+                    close()
+                }
+            }
+
             setContent(<>
                 <h2>
                     <i className={'inline-block icon-' + (options.icon || 'info')} style={{marginLeft: '-0.2em'}}/>{' '}
@@ -26,7 +37,8 @@ export const SystemDialog = React.memo(function SystemDialog() {
                 </h2>
                 <div className="space">{content}</div>
             </>)
-            setButtons([null, <Button block autoFocus onClick={() => setContent(undefined)}>Ok</Button>])
+            setButtons([null, <Button block autoFocus onClick={close}>Ok</Button>])
+            window.addEventListener('keydown', keyHandler, true)
         }
         window.confirm = function (content, options = {
             title: defaultConfirmTitle,
@@ -38,6 +50,15 @@ export const SystemDialog = React.memo(function SystemDialog() {
                 function setResult(result) {
                     setContent(undefined)
                     resolve(result)
+                    window.removeEventListener('keydown', keyHandler, true)
+                }
+
+                function keyHandler(e) {
+                    if (e.keyCode === 27) {
+                        setResult(false)
+                    } else if (e.keyCode === 13) {
+                        setResult(true)
+                    }
                 }
 
                 setContent(<>
@@ -50,6 +71,8 @@ export const SystemDialog = React.memo(function SystemDialog() {
                     <Button block autoFocus onClick={() => setResult(true)}>{options.confirmTitle || defaultConfirmCaption}</Button>,
                     <Button block outline onClick={() => setResult(false)}>{options.cancelTitle || defaultCancelCaption}</Button>
                 ])
+
+                window.addEventListener('keydown', keyHandler, true)
             })
         }
     }, [])

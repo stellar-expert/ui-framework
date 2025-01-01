@@ -923,7 +923,7 @@ const typeMapping = {
     liquidityPoolDeposit: DepositLiquidityDescriptionView,
     liquidityPoolWithdraw: WithdrawLiquidityDescriptionView,
     invokeHostFunction: InvokeHostFunctionView,
-    extendFootprintTTL: ExtendFootprintTTLView,
+    extendFootprintTtl: ExtendFootprintTTLView,
     restoreFootprint: RestoreFootprintView
 }
 

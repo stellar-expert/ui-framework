@@ -44,7 +44,7 @@ const opIconMapping = {
     liquidityPoolDeposit: 'droplet',
     liquidityPoolWithdraw: 'droplet-half',
     invokeHostFunction: 'flash',
-    bumpFootprintExpiration: 'upload',
+    extendFootprintTtl: 'upload',
     restoreFootprint: 'upload'
 }
 

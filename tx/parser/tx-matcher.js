@@ -186,7 +186,7 @@ export default class TxMatcher {
                 case 'bumpSequence':
                 case 'endSponsoringFutureReserves':
                 case 'clawbackClaimableBalance':
-                case 'bumpFootprintExpiration':
+                case 'extendFootprintTtl':
                 case 'restoreFootprint':
                     matchingProps.account = new Set()
                     break

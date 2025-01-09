@@ -45,7 +45,7 @@ export function findKeyBySignatureHint(hint, allKeys) {
 /**
  * Find tx signature for a given signer key
  * @param {String} key
- * @param {Singature} allSignatures
+ * @param {Signature} allSignatures
  * @returns {Signature}
  */
 export function findSignatureByKey(key, allSignatures = []) {

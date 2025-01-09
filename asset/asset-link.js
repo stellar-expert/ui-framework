@@ -15,7 +15,7 @@ import './asset-link.scss'
  * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
  * @param {Boolean|String} [link] - Reference link
  * @param {Boolean} [issuer] - Whether to show asset issuer
- * @param {Boolean} [icon] - Wheter to show asset icon
+ * @param {Boolean} [icon] - Whether to show asset icon
  * @param {String} [className] - Optional CSS class name
  * @param {{}} [style] - Optional CSS style
  * @param {*} [children] - Optional inner link text

@@ -1,4 +1,4 @@
-const operatinTypeMap = {
+const operationTypeMap = {
     createAccount: 0,
     payment: 1,
     pathPaymentStrictReceive: 2,
@@ -53,7 +53,7 @@ export class TypeFilterMatcher {
      * @return {Boolean}
      */
     match(operationType) {
-        return !this.types || this.types.has(operatinTypeMap[operationType])
+        return !this.types || this.types.has(operationTypeMap[operationType])
     }
 
     /**
@@ -74,51 +74,51 @@ export class TypeFilterMatcher {
         switch (filter) {
             case 'payments':
                 return [
-                    operatinTypeMap.createAccount,
-                    operatinTypeMap.accountMerge,
-                    operatinTypeMap.payment,
-                    operatinTypeMap.pathPaymentStrictReceive,
-                    operatinTypeMap.pathPaymentStrictSend,
-                    operatinTypeMap.createClaimableBalance,
-                    operatinTypeMap.claimClaimableBalance,
-                    operatinTypeMap.clawback,
-                    operatinTypeMap.clawbackClaimableBalance,
-                    operatinTypeMap.inflation
+                    operationTypeMap.createAccount,
+                    operationTypeMap.accountMerge,
+                    operationTypeMap.payment,
+                    operationTypeMap.pathPaymentStrictReceive,
+                    operationTypeMap.pathPaymentStrictSend,
+                    operationTypeMap.createClaimableBalance,
+                    operationTypeMap.claimClaimableBalance,
+                    operationTypeMap.clawback,
+                    operationTypeMap.clawbackClaimableBalance,
+                    operationTypeMap.inflation
                 ]
             case 'trustlines':
                 return [
-                    operatinTypeMap.changeTrust,
-                    operatinTypeMap.allowTrust,
-                    operatinTypeMap.setTrustLineFlags
+                    operationTypeMap.changeTrust,
+                    operationTypeMap.allowTrust,
+                    operationTypeMap.setTrustLineFlags
                 ]
             case 'dex':
                 return [
-                    operatinTypeMap.manageSellOffer,
-                    operatinTypeMap.manageBuyOffer,
-                    operatinTypeMap.createPassiveSellOffer,
-                    operatinTypeMap.liquidityPoolDeposit,
-                    operatinTypeMap.liquidityPoolWithdraw
+                    operationTypeMap.manageSellOffer,
+                    operationTypeMap.manageBuyOffer,
+                    operationTypeMap.createPassiveSellOffer,
+                    operationTypeMap.liquidityPoolDeposit,
+                    operationTypeMap.liquidityPoolWithdraw
                 ]
             case 'settings':
                 return [
-                    operatinTypeMap.createAccount,
-                    operatinTypeMap.setOptions,
-                    operatinTypeMap.changeTrust,
-                    operatinTypeMap.allowTrust,
-                    operatinTypeMap.accountMerge,
-                    operatinTypeMap.inflation,
-                    operatinTypeMap.manageData,
-                    operatinTypeMap.bumpSequence,
-                    operatinTypeMap.beginSponsoringFutureReserves,
-                    operatinTypeMap.endSponsoringFutureReserves,
-                    operatinTypeMap.revokeSponsorship,
-                    operatinTypeMap.setTrustLineFlags
+                    operationTypeMap.createAccount,
+                    operationTypeMap.setOptions,
+                    operationTypeMap.changeTrust,
+                    operationTypeMap.allowTrust,
+                    operationTypeMap.accountMerge,
+                    operationTypeMap.inflation,
+                    operationTypeMap.manageData,
+                    operationTypeMap.bumpSequence,
+                    operationTypeMap.beginSponsoringFutureReserves,
+                    operationTypeMap.endSponsoringFutureReserves,
+                    operationTypeMap.revokeSponsorship,
+                    operationTypeMap.setTrustLineFlags
                 ]
             case 'contracts':
                 return [
-                    operatinTypeMap.invokeHostFunction,
-                    operatinTypeMap.bumpFootprintExpiration,
-                    operatinTypeMap.restoreFootprint
+                    operationTypeMap.invokeHostFunction,
+                    operationTypeMap.bumpFootprintExpiration,
+                    operationTypeMap.restoreFootprint
                 ]
             default:
                 return [parseInt(filter, 10)]

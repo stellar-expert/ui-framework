@@ -35,7 +35,7 @@ import TxMatcher from './tx-matcher'
  * @param {String} tx - Base64-encoded tx envelope xdr
  * @param {String} [result] - Base64-encoded tx envelope result
  * @param {String} [meta] - Base64-encoded tx envelope meta
- * @param {String} [id] - Unique trasnaction id
+ * @param {String} [id] - Unique transaction id
  * @param {TxFiltersContext} [context] - Filters applied to transactions search
  * @param {String} [createdAt] - Ledger execution timestamp
  * @param {Boolean} [skipUnrelated] - Ledger execution timestamp

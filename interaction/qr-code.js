@@ -7,7 +7,7 @@ import QR from 'qrcode.react'
  * @param {String} [caption] - Additional caption under QR code
  * @param {Number} [size] - Width|height fo the rendered QR code image
  * @param {String} [embeddedImage] - Optional logo to render in the center of QR code
- * @param {Number} [embeddedSize] - Embeded logo size (by default 10% of QR code size)
+ * @param {Number} [embeddedSize] - Embedded logo size (by default 10% of QR code size)
  * @return {JSX.Element}
  */
 export const QrCode = React.memo(function QrCode({value, caption, size = 320, embeddedImage, embeddedSize}) {

@@ -49,7 +49,10 @@ export const SystemDialog = React.memo(function SystemDialog() {
             return new Promise((resolve, reject) => {
                 function setResult(result) {
                     setContent(undefined)
-                    resolve(result)
+                    if (result)
+                        resolve(true)
+                    else
+                        reject()
                     window.removeEventListener('keydown', keyHandler, true)
                 }
 

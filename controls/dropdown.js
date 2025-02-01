@@ -89,7 +89,14 @@ export const Dropdown = React.memo(function Dropdown({
 
     //check dropdown container alignment
     if (listOpen) {
-        setTimeout(() => setAlignRight(isAlignedRight(listRef.current)), 200)
+        setTimeout(() => {
+            if (!alignRight) {
+                const shouldAlignRight = isAlignedRight(listRef.current)
+                if (alignRight !== shouldAlignRight) {
+                    setAlignRight(shouldAlignRight)
+                }
+            }
+        }, 200)
     }
     //show a dropdown after the initial render
     useEffect(() => {

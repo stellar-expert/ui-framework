@@ -262,7 +262,7 @@ class PaginatedListViewModel {
     }
 
     /**
-     * Update naviagtion links retrieved from the response
+     * Update navigation links retrieved from the response
      * @param {String} self
      * @param {String} next
      * @param {String} prev
@@ -360,7 +360,7 @@ class PaginatedListViewModel {
  * @typedef {Object} ExplorerApiListResponse
  * @property {Object[]} data - Data retrieved from the server
  * @property {Boolean} loaded - Response result loaded flag
- * @property {Function} load - Load pgae function
+ * @property {Function} load - Load page function
  * @property {Boolean} canLoadPrevPage - Whether the prev page is available
  * @property {Boolean} canLoadNextPage - Whether the next page is available
  */

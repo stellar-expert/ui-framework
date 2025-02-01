@@ -28,7 +28,7 @@ export const Dropdown = React.memo(function Dropdown({
     const headerRef = useRef()
     const listRef = useRef()
     const [listOpen, updateListOpen] = useState(false)
-    const [alignRigth, setAlignRight] = useState(false)
+    const [alignRight, setAlignRight] = useState(false)
     //collapse dropdown handler
     const collapseDropdown = useCallback(function () {
         updateListOpen(open => {
@@ -39,7 +39,7 @@ export const Dropdown = React.memo(function Dropdown({
         })
     }, [onClose])
 
-    //collapse dropdwon list on click
+    //collapse dropdown list on click
     const [selectedValue, updateSelectedValue] = useDependantState(() => {
         if (listOpen) {
             setTimeout(() => {
@@ -51,7 +51,7 @@ export const Dropdown = React.memo(function Dropdown({
         document.removeEventListener('click', collapseDropdown)
     })
 
-    //close/open dropdown on header cick
+    //close/open dropdown on header click
     const toggleList = useCallback(function toggleList(e) {
         e && e.nativeEvent.stopImmediatePropagation()
         updateListOpen(prevState => {
@@ -71,7 +71,7 @@ export const Dropdown = React.memo(function Dropdown({
         updateSelectedValue(option)
     }, [collapseDropdown, onChange])
 
-    //handle user scroll action for infinit scroll support
+    //handle user scroll action for infinity scroll support
     const scrollList = useMemo(() => throttle(200, e => {
         if (!onScroll)
             return
@@ -84,10 +84,10 @@ export const Dropdown = React.memo(function Dropdown({
         onScroll(pos)
     }), [onScroll])
 
-    //locate currently selectd option
+    //locate currently selected option
     const {option: selectedItem, isDefault} = getSelectedOption([value, selectedValue], options)
 
-    //check dropdown container alignement
+    //check dropdown container alignment
     if (listOpen) {
         setTimeout(() => setAlignRight(isAlignedRight(listRef.current)), 200)
     }
@@ -106,7 +106,7 @@ export const Dropdown = React.memo(function Dropdown({
         </a>
         {!!listOpen && createPortal(<div className={className}>
             <div className={cn('dd-backdrop', {solo})}/>
-            <div className={cn('dd-list', {solo, visible: listOpen && !disabled, 'align-right': alignRigth})}
+            <div className={cn('dd-list', {solo, visible: listOpen && !disabled, 'align-right': alignRight})}
                  style={getListPosition(headerRef.current, solo)} ref={listRef}>
                 {!!header && <>
                     <div className="dd-list-header" onClick={preventClosing}>{header}</div>

@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react'
 import {throttle} from 'throttle-debounce'
 import './slider.scss'
 
-export function Slider({value, categroies, onChange, min = 0, max = 100, step = 1, ...otherProps}) {
+export function Slider({value, categories, onChange, min = 0, max = 100, step = 1, ...otherProps}) {
     const [inputValue, setInputValue] = useState(value || min)
     const change = useMemo(() => throttle(300, onChange), [onChange])
     const onSlide = useCallback(function (e) {
@@ -12,8 +12,8 @@ export function Slider({value, categroies, onChange, min = 0, max = 100, step = 
     }, [change])
 
     return <div className="slider dimmed text-small" {...otherProps}>
-        {categroies && <datalist className="categories dimmed condensed">
-            {categroies.map((category, index) => <option key={index + category} value={category} label={category}/>)}
+        {categories && <datalist className="categories dimmed condensed">
+            {categories.map((category, index) => <option key={index + category} value={category} label={category}/>)}
         </datalist>}
         <input type="range" min={min} max={max} step={step} value={inputValue} onChange={onSlide}/>
     </div>

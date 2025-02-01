@@ -21,7 +21,7 @@ export function AssetSelector({value, predefinedAssets, onChange, restricted, ti
 
     const focusSearch = useCallback(() => {
         setTimeout(() => searchRef.current?.focus(), 200)
-    })
+    }, [])
 
     if (predefinedAssets) {
         for (const asset of predefinedAssets) {

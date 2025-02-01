@@ -202,7 +202,7 @@ export default class TxMatcher {
         }
         //add op source account
         matchingProps.source = new Set([op.source])
-        //porcess assets
+        //process assets
         if (filters.asset || filters.src_asset || filters.dest_asset)
             switch (op.type) {
                 case 'createAccount':

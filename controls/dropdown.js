@@ -96,7 +96,7 @@ export const Dropdown = React.memo(function Dropdown({
                     setAlignRight(shouldAlignRight)
                 }
             }
-        }, 200)
+        }, 100)
     }
     //show a dropdown after the initial render
     useEffect(() => {

@@ -56,8 +56,8 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
     return {
         place,
         position: {
-            top: getTipOffsetTop(place) + window.scrollY | 0,
-            left: getTipOffsetLeft(place) + window.scrollX | 0
+            top: (getTipOffsetTop(place) + window.scrollY) | 0,
+            left: tipWidth >= screen.width ? 0 : ((getTipOffsetLeft(place) + window.scrollX) | 0)
         }
     }
 }

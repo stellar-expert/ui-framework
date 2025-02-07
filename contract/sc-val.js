@@ -63,6 +63,8 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
         case 'nonceKey':
             return <>{val.nonce()._value.toString()}<ScValType type="nonce"/></>
         case 'instance':
+            if (val._attributes.executable._switch.name==="contractExecutableStellarAsset")
+                return <span>StellarAsset<ScValType type="instance"/></span>
             return <span className="word-break">{val._attributes.executable.wasmHash().toString('hex')}<ScValType type="wasm"/></span>
         case 'error':
             const errMessage = value.toXDR('base64')

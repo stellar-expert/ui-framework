@@ -135,6 +135,33 @@ button {
       }
     }
   }
+
+
+  .loading:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    opacity: 0.4;
+    background: linear-gradient(to right, transparent, var(--color-text) 50%, transparent);
+    transform: skew(-20deg) translateX(0);
+    animation: loading-button 3s infinite ease-in-out;
+  }
+
+  @keyframes loading-button {
+    0% {
+      left: 0;
+    }
+    50% {
+      left: 80%;
+    }
+    100% {
+      left: 0;
+    }
+  }
 }
 
 @media (max-width: $responsive-mobile-browser-width) {

@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './button.scss'
 
-export const Button = React.memo(function Button({href, onClick, block, outline, clear, stackable, small, disabled, className, children, ...op}) {
+export const Button = React.memo(function Button({href, onClick, block, outline, clear, stackable, small, disabled, loading, className, children, ...op}) {
     const c = cn('button', {
         small,
         disabled,
+        loading,
         'button-block': block,
         'button-outline': outline,
         'button-clear': clear,

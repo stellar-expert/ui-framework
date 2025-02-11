@@ -61,6 +61,10 @@ Button.propTypes = {
      */
     disabled: PropTypes.bool,
     /**
+     * Show loading animation on the button
+     */
+    loading: PropTypes.bool,
+    /**
      * Externally provided CSS classes
      */
     className: PropTypes.string,

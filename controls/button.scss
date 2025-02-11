@@ -60,6 +60,7 @@ button {
 
   &:hover {
     color: var(--color-bg);
+
     &:before {
       background: var(--color-primary);
       border-color: var(--color-primary);
@@ -112,6 +113,7 @@ button {
       &:hover {
         color: var(--color-highlight);
       }
+
       &:before {
         background: var(--color-bg);
         border-color: var(--color-highlight);
@@ -136,7 +138,7 @@ button {
     }
   }
 
-  .loading:after {
+  &.loading:after {
     content: "";
     display: block;
     position: absolute;
@@ -149,17 +151,17 @@ button {
     transform: skew(-20deg) translateX(0);
     animation: loading-button 3s infinite ease-in-out;
   }
+}
 
-  @keyframes loading-button {
-    0% {
-      left: 0;
-    }
-    50% {
-      left: 80%;
-    }
-    100% {
-      left: 0;
-    }
+@keyframes loading-button {
+  0% {
+    left: 0;
+  }
+  50% {
+    left: 80%;
+  }
+  100% {
+    left: 0;
   }
 }
 

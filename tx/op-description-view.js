@@ -407,7 +407,7 @@ function ManageDataDescriptionView({op, compact}) {
     const {name, value, effects} = op.operation
     const dataEntryDesc = <span className="word-break condensed text-small">
         <code>"{name}"</code>
-        {!!value && <> = <code>"{value}"</code></>}
+        {!!value && <> = <code>"{value.toString()}"</code></>}
     </span>
 
     if (op.isEphemeral) {

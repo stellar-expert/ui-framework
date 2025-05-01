@@ -1,23 +1,32 @@
 import {useEffect} from 'react'
 import isEqual from 'react-fast-compare'
 
-const {origin} = window.location
-const domain = origin.replace(/https?:\/\//, '')
-
 const metaProps = {
     serviceTitle: '',
     description: '',
-    facebookImage: '',
-    twitterImage: '',
-    twitterUsername: ''
+    image: '',
+    imageEndpoint: '',
+    origin: '',
+    domain: ''
 }
+
+setOrigin(window.location.origin)
 
 /**
  * Initialize default meta properties for the application
- * @param {{serviceTitle: String, description: String, facebookImage: String, twitterImage: String, twitterUsername: String}} appMetaProps
+ * @param {{serviceTitle: String, description: String, origin: String, [image]: String, [imageEndpoint]: String}} appMetaProps
  */
 export function initMeta(appMetaProps) {
-    Object.assign(metaProps, appMetaProps)
+    const {origin, ...props} = appMetaProps
+    Object.assign(metaProps, props)
+    if (origin) {
+        setOrigin(origin)
+    }
+}
+
+function setOrigin(origin) {
+    metaProps.origin = origin
+    metaProps.domain = origin.replace(/https?:\/\//, '')
 }
 
 function formatPageTitle(title) {
@@ -47,33 +56,20 @@ function generateDescriptionMeta({description}) {
     }
 }
 
-function generateTwitterMeta({description, title, twitterImage}) {
-    return {
-        locator: 'name',
-        tags: [
-            {name: 'twitter:card', content: 'summary_large_image'},
-            {name: 'twitter:site', content: metaProps.twitterUsername},
-            {name: 'twitter:title', content: formatPageTitle(title)},
-            {name: 'twitter:description', content: description || metaProps.description},
-            {name: 'twitter:image:src', content: twitterImage || metaProps.twitterImage}
-        ]
-    }
-}
-
-function generateOpenGraphMeta({description, title, facebookImage}, canonicalUrl) {
-    let tags = [
-        {name: 'og:title', content: formatPageTitle(title)},
-        {name: 'og:url', content: canonicalUrl},
-        {name: 'og:site_name', content: formatPageTitle(metaProps.serviceTitle)},
-        {name: 'og:description', content: description || metaProps.description},
-        {name: 'og:type', content: 'website'},
-        {name: 'og:image:width', content: 1200},
-        {name: 'og:image:height', content: 630},
-        {name: 'og:image', content: facebookImage || metaProps.facebookImage}
-    ]
+function generateOpenGraphMeta({description, title, image}, canonicalUrl) {
+    //imageEndpoint
     return {
         locator: 'property',
-        tags
+        tags: [
+            {name: 'og:title', content: formatPageTitle(title)},
+            {name: 'og:url', content: canonicalUrl},
+            {name: 'og:site_name', content: formatPageTitle(metaProps.serviceTitle)},
+            {name: 'og:description', content: description || metaProps.description},
+            {name: 'og:type', content: 'website'},
+            {name: 'og:image:width', content: 1200},
+            {name: 'og:image:height', content: 630},
+            {name: 'og:image', content: formatPageImage(image, canonicalUrl)}
+        ]
     }
 }
 
@@ -83,12 +79,12 @@ function generateItemPropSchema({description, title, image}) {
         tags: [
             {name: 'name', content: title},
             {name: 'description', content: description || metaProps.description},
-            {name: 'image', content: image || metaProps.facebookImage}
+            {name: 'image', content: image || metaProps.image}
         ]
     }
 }
 
-function generateLdJsonSchema({title}) {
+function generateLdJsonSchema({title, description, image}, canonicalUrl) {
     return {
         tag: 'script',
         locator: 'type',
@@ -97,10 +93,15 @@ function generateLdJsonSchema({title}) {
                 name: 'application/ld+json',
                 content: JSON.stringify({
                     '@context': 'http://schema.org',
-                    '@type': 'WebSite',
-                    'name': domain,
-                    'alternateName': title,
-                    'url': origin
+                    '@type': 'WebPage',
+                    name: formatPageTitle(title),
+                    description: description || metaProps.description,
+                    url: canonicalUrl,
+                    thumbnailUrl: formatPageImage(image, canonicalUrl),
+                    publisher: {
+                        '@type': 'ProfilePage',
+                        name: metaProps.serviceTitle
+                    }
                 })
             }
         ]
@@ -145,23 +146,37 @@ function removeTag(selector) {
     }
 }
 
+function formatCanonicalUrl() {
+    return metaProps.origin + window.location.pathname// + location.search
+}
+
+function formatPageImage(image, canonicalUrl) {
+    if (image)
+        return image
+    if (metaProps.imageEndpoint)
+        return metaProps.imageEndpoint + canonicalUrl.replace(metaProps.origin, '')
+    return metaProps.image
+}
+
 let pageMeta = {}
 
-const tagReplacerPipeline = [generateCanonicalLink, generateDescriptionMeta, generateOpenGraphMeta, generateTwitterMeta, generateLdJsonSchema] // generateItemPropSchema
+const tagReplacerPipeline = [
+    generateCanonicalLink,
+    generateDescriptionMeta,
+    generateOpenGraphMeta,
+    generateLdJsonSchema
+] // generateItemPropSchema
 
 /**
  * Update page metadata tags
  * @param {PageMeta} meta - Page metadata
  */
-export function setPageMetadata(meta) {
+function setPageMetadata(meta) {
     if (isEqual(pageMeta, meta))
         return
-    const canonicalUrl = origin + location.pathname// + location.search
+    //generate canonical URL
+    const canonicalUrl = formatCanonicalUrl()
     document.title = formatPageTitle(meta.title)
-    if (meta.image) {
-        meta.facebookImage = meta.image
-        meta.twitterImage = meta.image
-    }
     for (const replacer of tagReplacerPipeline) {
         replaceMetaTags(replacer(meta, canonicalUrl))
     }
@@ -175,12 +190,11 @@ export function setPageMetadata(meta) {
  * Reset page metadata tags to their default values
  * @param {PageMeta} meta - Page metadata
  */
-export function resetPageMetadata(meta) {
+function resetPageMetadata(meta) {
     setPageMetadata({
         title: metaProps.serviceTitle,
         description: metaProps.description,
-        twitterImage: metaProps.twitterImage,
-        facebookImage: metaProps.facebookImage
+        image: metaProps.image
     })
     //TODO: add logic to cleanup custom page meta tags on page unload
 }
@@ -188,22 +202,32 @@ export function resetPageMetadata(meta) {
 /**
  * React hook for setting page metadata
  * @param {PageMeta} meta - Page metadata
- * @param {*[]} dependencies
  */
-export function usePageMetadata(meta, dependencies = []) {
+export function usePageMetadata(meta) {
     useEffect(() => {
         setPageMetadata(meta)
         return () => resetPageMetadata(meta)
-    }, [JSON.stringify(meta), ...dependencies])
+    }, [JSON.stringify(meta), [formatCanonicalUrl()]])
+}
+
+export function setPageNoIndex(noIndex) {
+    if (!noIndex) {
+        removeTag('meta[name=robots]')
+    } else {
+        replaceMetaTags({
+            locator: 'name',
+            tags: [
+                {name: 'robots', content: 'noindex,nofollow'}
+            ]
+        })
+    }
 }
 
 /**
  * @typedef {Object} PageMeta
  * @property {String} title - Page title
  * @property {String} description - Contents description
- * @property {String} [twitterImage] - Twitter image url
- * @property {String} [facebookImage] - Facebook image url
- * @property {String} [image] - Sets the image for both the Twitter image and the Facebook image
+ * @property {String} [image] - Page image url
  * @property {MetaTagReplacement} [customMeta] - Custom metadata tags
  */
 

@@ -19,6 +19,7 @@ export * from './api/explorer-api-hooks'
 export * from './api/explorer-api-paginated-list-hooks'
 export * from './api/explorer-tx-api'
 export * from './api/explorer-batch-info-loader'
+export * from './api/ledger-stream'
 //Horizon API binding and utils
 export * from './stellar/ledger-generic-id'
 export * from './horizon/horizon-client-helpers'
@@ -59,6 +60,7 @@ export * from './date/date-selector'
 //ledger-entries-related components
 export * from './ledger/ledger-entry-link'
 export * from './ledger/ledger-entry-href-formatter'
+export * from './ledger/ledger-info-parser'
 //account-related components
 export * from './account/identicon'
 export * from './account/account-address'

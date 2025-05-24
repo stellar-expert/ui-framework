@@ -1,7 +1,7 @@
 import {useRef} from 'react'
 import isEqual from 'react-fast-compare'
 import {parseQuery, stringifyQuery, navigation} from '@stellar-expert/navigation'
-import {getCurrentStellarNetwork, useStellarNetwork} from '../state/stellar-network-hooks'
+import {useStellarNetwork} from '../state/stellar-network-hooks'
 import {useDependantState} from '../state/state-hooks'
 import {fetchExplorerApi} from './explorer-api-call'
 import apiCache from './api-cache'

@@ -90,7 +90,7 @@ class LedgerStream {
     }
 
     async getLast() {
-        return fetchExplorerApi('ledger/last')
+        return fetchExplorerApi(getCurrentStellarNetwork() + '/ledger/last')
     }
 
     async getLastSequence() {

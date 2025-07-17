@@ -92,6 +92,10 @@ $tooltip-notch-shadow-color: var(--color-border-shadow);
   margin-right: .1rem;
   color: var(--color-primary);
 
+  + .trigger {
+    margin-left: 1em;
+  }
+
   &:before {
     opacity: 0.4;
   }

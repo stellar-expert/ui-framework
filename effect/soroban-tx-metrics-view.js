@@ -47,54 +47,34 @@ function parseMetrics(metrics) {
                 res['Memory usage'] = formatBytes(value)
                 break
             case 'read_code_byte':
-                if (value > 0) {
-                    res['Code read'] = formatBytes(value)
-                }
+                res['Code read'] = formatBytes(value)
                 break
             case 'write_code_byte':
-                if (value > 0) {
-                    res['Code write'] = formatBytes(value)
-                }
+                res['Code write'] = formatBytes(value)
                 break
             case 'ledger_read_byte':
-                if (value > 0) {
-                    res['Ledger read'] = formatBytes(value)
-                }
+                res['Ledger read'] = formatBytes(value)
                 break
             case 'ledger_write_byte':
-                if (value > 0) {
-                    res['Ledger write'] = formatBytes(value)
-                }
+                res['Ledger write'] = formatBytes(value)
                 break
             case 'read_data_byte':
-                if (value > 0) {
-                    res['Data read'] = formatBytes(value)
-                }
+                res['Data read'] = formatBytes(value)
                 break
             case 'write_data_byte':
-                if (value > 0) {
-                    res['Data write'] = formatBytes(value)
-                }
+                res['Data write'] = formatBytes(value)
                 break
             case 'read_key_byte':
-                if (value > 0) {
-                    res['Key read'] = formatBytes(value)
-                }
+                res['Key read'] = formatBytes(value)
                 break
             case 'write_key_byte':
-                if (value > 0) {
-                    res['Key write'] = formatBytes(value)
-                }
+                res['Key write'] = formatBytes(value)
                 break
             case 'read_entry':
-                if (value > 0) {
-                    res['Entries read'] = value.toString()
-                }
+                res['Entries read'] = value.toString()
                 break
             case 'write_entry':
-                if (value > 0) {
-                    res['Entries write'] = value.toString()
-                }
+                res['Entries write'] = value.toString()
                 break
             case 'emit_event_byte': //ignore these metrics
             case 'max_emit_event_byte':

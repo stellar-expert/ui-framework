@@ -52,6 +52,8 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
                     return <AccountAddress account={xdrParserUtils.xdrParseAccountAddress(val.value())}/>
                 case 'contractId':
                     return <AccountAddress account={xdrParserUtils.xdrParseContractAddress(val.value())}/>
+                case 'muxedAccount':
+                    return <AccountAddress account={xdrParserUtils.xdrParseMuxedScAddress(val.value())}/>
             }
             return <span className="dimmed">(unsupported address)</span>
         case 'bytes':

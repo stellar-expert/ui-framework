@@ -212,11 +212,14 @@ export function EffectDescription({effect, operation}) {
         case 'inflation':
             return <>Inflation distribution initialized</>
         case 'contractCodeUploaded':
-            return <>Contract code <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm}/></LedgerKeyHint> uploaded</>
+        case 'contractCodeRestored':
+            return <>Contract code {getEffectAction(effect, 'contractCode')}
+                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm}/></LedgerKeyHint></>
         case 'contractCreated':
-            return <>Contract <AccountAddress account={effect.contract}/> created <ContractDetails effect={effect}/></>
         case 'contractUpdated':
-            return <>Contract <AccountAddress account={effect.contract}/> updated <ContractDetails effect={effect}/></>
+        case 'contractRestored':
+            return <>Contract <AccountAddress account={effect.contract}/> {getEffectAction(effect, 'contract')}
+                <ContractDetails effect={effect}/></>
         case 'contractInvoked':
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
@@ -228,9 +231,10 @@ export function EffectDescription({effect, operation}) {
                 with data <ScVal value={effect.rawData}/></>
         case 'contractDataCreated':
         case 'contractDataUpdated':
+        case 'contractDataRestored':
             return <>Contract <AccountAddress account={effect.owner}/>
-                {effect.type === 'contractDataCreated' ? ' created ' : ' updated '} {effect.durability} data{' '}
-                <LedgerKeyHint effect={effect}><ScVal value={effect.key}/></LedgerKeyHint> with value <ScVal value={effect.value}/>
+                {getEffectAction(effect, 'contractData')}{effect.durability} data{' '}
+                <LedgerKeyHint effect={effect}><ScVal value={effect.key}/></LedgerKeyHint> = <ScVal value={effect.value}/>
             </>
         case 'contractDataRemoved':
             return <>Contract <AccountAddress account={effect.owner}/> removed {effect.durability}{' '}
@@ -326,6 +330,10 @@ function LedgerKeyHint({effect, children}) {
     if (!effect.keyHash)
         return children
     return <span title={'Ledger key ' + effect.keyHash}>{children}</span>
+}
+
+function getEffectAction(effect, prefix) {
+    return effect.type.replace(prefix, '').toLowerCase() + ' '
 }
 
 const ledgerEntryKind = {

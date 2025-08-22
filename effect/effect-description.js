@@ -214,7 +214,7 @@ export function EffectDescription({effect, operation}) {
         case 'contractCodeUploaded':
         case 'contractCodeRestored':
             return <>Contract code {getEffectAction(effect, 'contractCode')}
-                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm}/></LedgerKeyHint></>
+                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm || effect.wasmHash}/></LedgerKeyHint></>
         case 'contractCreated':
         case 'contractUpdated':
         case 'contractRestored':
@@ -232,8 +232,8 @@ export function EffectDescription({effect, operation}) {
         case 'contractDataCreated':
         case 'contractDataUpdated':
         case 'contractDataRestored':
-            return <>Contract <AccountAddress account={effect.owner}/>
-                {getEffectAction(effect, 'contractData')}{effect.durability} data{' '}
+            return <>Contract <AccountAddress account={effect.owner}/> {getEffectAction(effect, 'contractData')}
+                {effect.durability} data{' '}
                 <LedgerKeyHint effect={effect}><ScVal value={effect.key}/></LedgerKeyHint> = <ScVal value={effect.value}/>
             </>
         case 'contractDataRemoved':

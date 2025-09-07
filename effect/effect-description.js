@@ -331,7 +331,7 @@ function ContractCodeWasm({wasm}) {
 function ClaimableBalance(effect) {
     const {balance} = effect
     return <>
-        {shortenString(balance)} <CopyToClipboard text={wasmHash}/>{/*<InfoTooltip icon="icon-plus">
+        {shortenString(balance)} <CopyToClipboard text={balance}/>{/*<InfoTooltip icon="icon-plus">
             <CopyToClipboard text={balance}>{balance}</CopyToClipboard>
         </InfoTooltip>*/}
     </>

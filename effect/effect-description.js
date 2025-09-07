@@ -10,7 +10,6 @@ import {AssetLink} from '../asset/asset-link'
 import {Amount} from '../asset/amount'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {ScVal} from '../contract/sc-val'
-import {InfoTooltip} from '../controls/info-tooltip'
 import InvocationInfoView from '../contract/invocation-info-view'
 
 /**
@@ -328,7 +327,7 @@ function ContractCodeWasm({wasm}) {
     </>
 }
 
-function ClaimableBalance(effect) {
+function ClaimableBalance({effect}) {
     const {balance} = effect
     return <>
         {shortenString(balance)} <CopyToClipboard text={balance}/>{/*<InfoTooltip icon="icon-plus">

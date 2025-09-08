@@ -220,7 +220,7 @@ export function EffectDescription({effect, operation}) {
         case 'contractUpdated':
         case 'contractRestored':
             return <>Contract <AccountAddress account={effect.contract}/> {getEffectAction(effect, 'contract')}
-                <ContractDetails effect={effect}/><ConstructorDetails/></>
+                <ContractDetails effect={effect}/><ConstructorDetails effect={effect}/></>
         case 'contractInvoked':
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}

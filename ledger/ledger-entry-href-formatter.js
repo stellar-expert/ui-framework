@@ -1,7 +1,7 @@
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
- * @param {'account'|'asset'|'ledger'|'tx'|'op'|'offer'|'contract'} type
+ * @param {'account'|'asset'|'ledger'|'tx'|'op'|'offer'|'contract'|'liquidity-pool'|'claimable-balance'} type
  * @param {String|Number} id
  * @param {String} [network]
  * @return {String}

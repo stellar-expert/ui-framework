@@ -7,6 +7,7 @@ import {AccountAddress} from '../account/account-address'
 import {SignerKey} from '../account/signer-key'
 import {OfferLink, PoolLink} from '../ledger/ledger-entry-link'
 import {AssetLink} from '../asset/asset-link'
+import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
 import {Amount} from '../asset/amount'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {ScVal} from '../contract/sc-val'
@@ -107,12 +108,12 @@ export function EffectDescription({effect, operation}) {
         case 'claimableBalanceCreated':
             return <>
                 Account <AccountAddress account={effect.source}/> created claimable
-                balance <ClaimableBalance effect={effect}/> <Amount asset={effect.asset} amount={effect.amount} adjust/>
+                balance <ClaimableBalanceId balance={effect.balance}/> <Amount asset={effect.asset} amount={effect.amount} adjust/>
             </>
         case 'claimableBalanceRemoved':
             return <>
                 Account <AccountAddress account={effect.source}/> claimed claimable
-                balance <ClaimableBalance effect={effect}/> <Amount asset={effect.asset} amount={effect.amount} adjust/>
+                balance <ClaimableBalanceId balance={effect.balance}/> <Amount asset={effect.asset} amount={effect.amount} adjust/>
             </>
         case 'accountSponsorshipCreated':
         case 'accountSponsorshipUpdated':
@@ -161,13 +162,14 @@ export function EffectDescription({effect, operation}) {
         case 'claimableBalanceSponsorshipCreated':
         case 'claimableBalanceSponsorshipUpdated':
             return <>
-                Account <AccountAddress account={effect.sponsor}/> sponsored claimable balance <ClaimableBalance effect={effect}/>
+                Account <AccountAddress account={effect.sponsor}/> sponsored
+                claimable balance <ClaimableBalanceId balance={effect.balance}/>
                 {effect.source !== effect.sponsor && <> for account <AccountAddress account={effect.source}/></>}
             </>
         case 'claimableBalanceSponsorshipRemoved':
             return <>
                 Account <AccountAddress account={effect.prevSponsor}/> revoked claimable
-                balance <ClaimableBalance effect={effect}/> sponsorship
+                balance <ClaimableBalanceId balance={effect.balance}/> sponsorship
                 {effect.source !== effect.prevSponsor && <> for account <AccountAddress account={effect.source}/></>}
             </>
         case 'signerSponsorshipCreated':
@@ -324,15 +326,6 @@ function ContractCodeWasm({wasm}) {
     return <>
         <code title={wasm}>{shortenString(wasm, 16)}</code>
         <CopyToClipboard text={wasm}/>
-    </>
-}
-
-function ClaimableBalance({effect}) {
-    const {balance} = effect
-    return <>
-        {shortenString(balance)} <CopyToClipboard text={balance}/>{/*<InfoTooltip icon="icon-plus">
-            <CopyToClipboard text={balance}>{balance}</CopyToClipboard>
-        </InfoTooltip>*/}
     </>
 }
 

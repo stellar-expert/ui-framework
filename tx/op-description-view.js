@@ -14,12 +14,8 @@ import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {ClaimableBalanceClaimants} from '../claimable-balance/claimable-balance-claimants'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
-import {ScVal} from '../contract/sc-val'
 import InvocationInfoView from '../contract/invocation-info-view'
-
-function formatBalanceId(balance) {
-    return `${balance.substr(8, 4)}…${balance.substr(-4)}`
-}
+import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
 
 function getAccountPredefinedDisplayName(address) {
     if (!window.predefinedAccountDisplayNames)
@@ -449,16 +445,19 @@ function BumpSequenceDescriptionView({op, compact}) {
  * @constructor
  */
 function CreateClaimableBalanceDescriptionView({op, compact}) {
-    const {asset, amount, claimants} = op.operation
+    const {asset, amount, claimants, effects} = op.operation
+    const balanceId = effects.find(e => e.type === 'claimableBalanceCreated')?.balance
     if (op.isEphemeral)
         return <>
             <b>Create claimable balance</b> <Amount amount={amount} asset={AssetDescriptor.parse(asset)} issuer={!compact}/>
+            <ClaimableBalanceId balance={balanceId}/>
             <OpSourceAccount op={op}/>{' '}
             claimable by <ClaimableBalanceClaimants claimants={claimants}/>
 
         </>
     return <>
-        <OpSourceAccount op={op}/> created claimable balance{' '}
+        <OpSourceAccount op={op}/> created claimable balance
+        <ClaimableBalanceId balance={balanceId}/>{' '}
         <Amount amount={amount} asset={AssetDescriptor.parse(asset)} issuer={!compact}/>{' '}
         claimable by <ClaimableBalanceClaimants claimants={claimants}/>
     </>
@@ -474,11 +473,11 @@ function ClaimClaimableBalanceDescriptionView({op, compact}) {
     const {balanceId} = op.operation
     if (op.isEphemeral)
         return <>
-            <b>Claim balance</b> <code>{formatBalanceId(balanceId)}</code>
+            <b>Claim balance</b> <ClaimableBalanceId balance={balanceId}/>
             <OpSourceAccount op={op}/>
         </>
     return <>
-        <OpSourceAccount op={op}/> claimed balance <code>{formatBalanceId(balanceId)}</code>
+        <OpSourceAccount op={op}/> claimed balance <ClaimableBalanceId balance={balanceId}/>
     </>
 }
 
@@ -619,11 +618,11 @@ function RevokeClaimableBalanceSponsorshipDescriptionView({op, compact}) {
     const {balanceId} = op.operation
     if (op.isEphemeral)
         return <>
-            <b>Revoke sponsorship</b> on claimable balance <code>{formatBalanceId(balanceId)}</code>
+            <b>Revoke sponsorship</b> on claimable balance <ClaimableBalanceId balance={balanceId}/>
             <OpSourceAccount op={op}/>
         </>
     return <>
-        <OpSourceAccount op={op}/> revoked sponsorship on claimable balance <code>{formatBalanceId(balanceId)}</code>
+        <OpSourceAccount op={op}/> revoked sponsorship on claimable balance <ClaimableBalanceId balance={balanceId}/>
     </>
 }
 
@@ -674,10 +673,10 @@ function ClawbackClaimableBalanceDescriptionView({op, compact}) {
     const {balanceId} = op.operation
     if (op.isEphemeral)
         return <>
-            <b>Clawback claimable balance</b> <code>{formatBalanceId(balanceId)}</code><OpSourceAccount op={op}/>
+            <b>Clawback claimable balance</b> <ClaimableBalanceId balance={balanceId}/><OpSourceAccount op={op}/>
         </>
     return <>
-        <OpSourceAccount op={op}/> clawedback claimable balance <code>{formatBalanceId(balanceId)}</code>
+        <OpSourceAccount op={op}/> clawedback claimable balance <ClaimableBalanceId balance={balanceId}/>
     </>
 }
 

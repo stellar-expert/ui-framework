@@ -5,7 +5,7 @@ import {CodeBlock} from '../controls/code-block'
 
 export const ClaimableBalanceClaimants = React.memo(function ClaimableBalanceClaimants({claimants}) {
     const parsed = claimants.map(c => {
-        if (c.destination && c.predicate)
+        if (c.destination && c.predicate && !c._predicate)
             return c
         return xdrParseClaimant(c)
     })

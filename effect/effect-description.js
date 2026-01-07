@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 import {AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag, AuthClawbackEnabledFlag} from '@stellar/stellar-base'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {shortenString, formatWithAutoPrecision} from '@stellar-expert/formatter'
-import {AccountAddress} from '../account/account-address'
-import {SignerKey} from '../account/signer-key'
-import {OfferLink, PoolLink} from '../ledger/ledger-entry-link'
-import {AssetLink} from '../asset/asset-link'
-import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
-import {Amount} from '../asset/amount'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
-import {ScVal} from '../contract/sc-val'
+import {AccountAddress} from '../account/account-address'
+import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
 import InvocationInfoView from '../contract/invocation-info-view'
+import {ScVal} from '../contract/sc-val'
+import {SignerKey} from '../account/signer-key'
+import {OfferLink} from '../ledger/ledger-entry-link'
+import {AssetLink} from '../asset/asset-link'
+import {Amount} from '../asset/amount'
 
 /**
  * @param {{}} effect
@@ -89,7 +89,7 @@ export function EffectDescription({effect, operation}) {
                     <Amount asset={effect.asset[1]} amount={effect.amount[1]} adjust/>
                 </span>{' '}
                 {effect.pool ?
-                    <>(pool <PoolLink pool={effect.pool}/>)</> :
+                    <>(pool <AssetLink asset={effect.pool}/>)</> :
                     <>(DEX offer <OfferLink offer={effect.offer}/> by <AccountAddress account={effect.seller}/>)</>}
             </span>
         case 'sequenceBumped':

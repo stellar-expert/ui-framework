@@ -7,6 +7,14 @@ import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 
 const cache = new InMemoryClientCache({})
 
+function isValidAddress(address) {
+    if (!address)
+        return false
+    if (!StrKey.isValidEd25519PublicKey(address) && !StrKey.isValidContract(address))
+        return false
+    return true
+}
+
 const loader = new ExplorerBatchInfoLoader(batch => {
     return fetchExplorerApi('directory' + stringifyQuery({address: batch}))
 }, entry => {
@@ -17,7 +25,8 @@ const loader = new ExplorerBatchInfoLoader(batch => {
 export async function getDirectoryEntry(address, options) {
     const {forceRefresh = false, extended = false} = options || {}
     //ignore invalid addresses
-    if (!address || !StrKey.isValidEd25519PublicKey(address)) return null
+    if (!isValidAddress(address))
+        return null
     if (extended) {
         return fetchExplorerApi(`directory/${address}` + stringifyQuery({
             extended: true,
@@ -48,7 +57,7 @@ export function useDirectory(address, options) {
     const [directoryInfo, setDirectoryInfo] = useState(null)
     let unloaded = false
     useEffect(function () {
-        if (!address || !(StrKey.isValidEd25519PublicKey(address) || StrKey.isValidContract(address)))
+        if (!isValidAddress(address))
             return
         if (!forceRefresh) {
             const cachedEntry = cache.get(address)

@@ -21,7 +21,15 @@ import './asset-link.scss'
  * @param {*} [children] - Optional inner link text
  * @constructor
  */
-export const AssetLink = React.memo(function AssetLink({asset, link, issuer, icon, className, style, children: innerText}) {
+export const AssetLink = React.memo(function AssetLink({
+                                                           asset,
+                                                           link,
+                                                           issuer,
+                                                           icon,
+                                                           className,
+                                                           style,
+                                                           children: innerText
+                                                       }) {
     if (!(asset instanceof AssetDescriptor)) {
         asset = AssetDescriptor.parse(asset)
     }
@@ -54,12 +62,19 @@ export const AssetLink = React.memo(function AssetLink({asset, link, issuer, ico
             } else {
                 children = <>{shortenString(asset.poolId)}</>
             }
+        } else if (asset.isContract) {
+            children = <>
+                <AssetWarningStatus meta={meta}/>
+                {!!meta.code && <>{meta.code} </>}
+                {(issuer !== false && !!meta.code) &&
+                    <AccountAddress account={asset.contract} chars={8} link={false} icon={!!icon}
+                                    title={meta.tokenName}/>}
+            </>
         } else {
             children = <>
                 <AssetWarningStatus meta={meta}/>
                 {icon !== false && <AssetIcon asset={asset}/>}
                 {!!asset.code && asset.code}
-                {!!asset.isContract && <AccountAddress account={asset.contract} chars={8} link={false} icon={false}/>}
                 {issuer !== false && <AssetIssuer asset={asset}/>}
             </>
         }

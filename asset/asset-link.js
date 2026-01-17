@@ -65,10 +65,10 @@ export const AssetLink = React.memo(function AssetLink({
         } else if (asset.isContract) {
             children = <>
                 <AssetWarningStatus meta={meta}/>
-                {!!meta.code && <>{meta.code} </>}
-                {(issuer !== false && !!meta.code) &&
+                {!!meta?.code && <>{meta.code} </>}
+                {(issuer !== false || !meta?.code) &&
                     <AccountAddress account={asset.contract} chars={8} link={false} icon={!!icon}
-                                    title={meta.tokenName}/>}
+                                    title={meta?.tokenName}/>}
             </>
         } else {
             children = <>

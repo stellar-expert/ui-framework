@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.16.5",
+  "version": "1.16.6",
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "module": "./index.js",
@@ -16,11 +16,11 @@
   "peerDependencies": {
     "@stellar/stellar-base": "^14.0.0",
     "@stellar/stellar-sdk": "^14.0.0",
-    "@stellar-expert/asset-descriptor": "^1.4.0",
+    "@stellar-expert/asset-descriptor": "^1.5.0",
     "@stellar-expert/claimable-balance-utils": "^1.4.1",
     "@stellar-expert/client-cache": "^1.1.0",
     "@stellar-expert/contract-wasm-interface-parser": "^3.2.0",
-    "@stellar-expert/formatter": "^2.5.0",
+    "@stellar-expert/formatter": "^3.0.0",
     "@stellar-expert/navigation": "^1.1.0",
     "@stellar-expert/tx-meta-effects-parser": "^8.3.3",
     "classnames": ">=2",

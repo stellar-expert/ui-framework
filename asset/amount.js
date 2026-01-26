@@ -1,6 +1,7 @@
 import React from 'react'
-import {formatWithPrecision, formatWithAutoPrecision, stripTrailingZeros, fromStroops} from '@stellar-expert/formatter'
+import {formatWithPrecision, formatWithAutoPrecision, fromStroops} from '@stellar-expert/formatter'
 import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
+import {useAssetMeta} from './asset-meta-hooks'
 import {AssetLink} from './asset-link'
 
 /**
@@ -15,11 +16,12 @@ import {AssetLink} from './asset-link'
  * @constructor
  */
 export const Amount = React.memo(function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {
+    const meta = useAssetMeta(asset)
     if (amount === undefined || amount === null)
         return null
     if (adjust === true) {
         try {
-            amount = fromStroops(amount)
+            amount = fromStroops(amount, meta?.decimals ?? 7)
         } catch (e) {
             console.error(e)
             return null
@@ -47,7 +49,9 @@ export const Amount = React.memo(function Amount({amount, asset, decimals, adjus
     return <span className="amount nowrap condensed">
         {amount}
         {!!asset && <>
-            {' '}{isAssetValid(asset) || isValidPoolId(asset) ? <AssetLink asset={asset} icon={icon} issuer={issuer}/> : asset.toString()}
+            {' '}{isAssetValid(asset) || isValidPoolId(asset) ?
+            <AssetLink asset={asset} icon={icon} issuer={issuer}/> :
+            asset.toString()}
         </>}
     </span>
 })

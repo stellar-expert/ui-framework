@@ -24,7 +24,10 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 const cache = new InMemoryClientCache()
 
 const loader = new ExplorerBatchInfoLoader(batch => {
-    return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch, origin: window.location.origin}))
+    return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({
+        asset: batch,
+        origin: window.location.origin
+    }))
 }, entry => {
     cache.set(entry.name, entry)
     return {
@@ -56,7 +59,11 @@ function normalizeAssetName(asset) {
  * @return {AssetMeta}
  */
 export function useAssetMeta(asset) {
-    asset = normalizeAssetName(asset)
+    try {
+        asset = normalizeAssetName(asset)
+    } catch (e) {
+        asset = null
+    }
     const [assetInfo, setAssetInfo] = useState(retrieveFromCache(asset))
     useEffect(() => {
         if (!asset)
@@ -68,7 +75,11 @@ export function useAssetMeta(asset) {
         let unloaded = false
         //load from the server
         loader.loadEntry(asset)
-            .then(a => !unloaded && setAssetInfo(a))
+            .then(a => {
+                if (unloaded)
+                    return
+                setAssetInfo(a)
+            })
         return () => {
             unloaded = true
         }

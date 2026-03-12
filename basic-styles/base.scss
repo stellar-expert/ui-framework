@@ -33,7 +33,7 @@ body {
 }
 
 ::selection {
-  background-color: transparentize($color-primary, 0.8) !important;
+  background-color: rgba($color-primary, 0.8) !important;
   color: var(--color-text);
 }
 

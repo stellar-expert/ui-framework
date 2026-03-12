@@ -9,7 +9,7 @@
   position: relative;
   width: 100%;
   @media (max-width: $responsive-mobile-browser-width) {
-    padding: 0 $container-padding/2;
+    padding: 0 calc($container-padding/2);
   }
 
   &.narrow {

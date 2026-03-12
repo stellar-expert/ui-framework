@@ -58,7 +58,7 @@
       padding-right: $space-micro;
       @media (max-width: $responsive-mobile-browser-width) {
         font-size: 1em;
-        padding-right: $space-micro/2;
+        padding-right: calc($space-micro/2);
       }
     }
 

@@ -58,7 +58,7 @@
 
   @media (max-width: $responsive-mobile-browser-width) {
     display: block;
-    margin: auto $container-padding/2*-1;
+    margin: auto calc($container-padding/2*-1);
     width: calc(100% + #{$container-padding});
 
     thead, th {

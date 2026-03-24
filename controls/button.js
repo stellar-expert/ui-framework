@@ -3,6 +3,21 @@ import PropTypes from 'prop-types'
 import cn from 'classnames'
 import './button.scss'
 
+/**
+ * Versatile button component rendered as `<button>` or `<a>` tag
+ * @param {Object} props
+ * @param {string} [props.href] - Link URL; renders as `<a>` tag when set
+ * @param {function} [props.onClick] - Click handler
+ * @param {boolean} [props.block] - Render as a block-level element
+ * @param {boolean} [props.outline] - Render with outline style instead of filled
+ * @param {boolean} [props.clear] - Render with no outline, text only
+ * @param {boolean} [props.stackable] - Stack buttons on mobile devices
+ * @param {boolean} [props.small] - Render a smaller button
+ * @param {boolean} [props.disabled] - Disable the button
+ * @param {boolean} [props.loading] - Show loading animation
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {*} props.children - Button content
+ */
 export const Button = React.memo(function Button({href, onClick, block, outline, clear, stackable, small, disabled, loading, className, children, ...op}) {
     const c = cn('button', {
         small,

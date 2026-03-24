@@ -3,6 +3,10 @@ import PropTypes from 'prop-types'
 import {navigation as nav} from '@stellar-expert/navigation'
 import {BlockSelect} from '../interaction/block-select'
 
+/**
+ * React error boundary that catches rendering errors and displays a fallback UI
+ * @extends React.Component
+ */
 export class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props)
@@ -86,6 +90,15 @@ ${navigator.userAgent}`
     }
 }
 
+/**
+ * Higher-order component that wraps a component with an ErrorBoundary
+ * @param {function} wrapped - React component to wrap
+ * @param {Object} [options]
+ * @param {string} [options.errorBoundaryTitle] - Title displayed in the error UI
+ * @param {boolean} [options.errorBoundarySendErrors] - Show "contact support" link
+ * @param {boolean|*} [options.errorBoundaryErrorDetails] - Show error details (true), hide (false), or provide custom content
+ * @return {function} Wrapped component with error boundary
+ */
 export function withErrorBoundary(wrapped, {errorBoundaryTitle, errorBoundarySendErrors, errorBoundaryErrorDetails} = {}) {
     function ErrorBoundaryWrapper(props) {
         const nested = /*#__PURE__*/React.createElement(wrapped, props)

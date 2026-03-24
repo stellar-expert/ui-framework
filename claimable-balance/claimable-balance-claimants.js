@@ -3,6 +3,11 @@ import {xdrParseClaimant} from '@stellar-expert/claimable-balance-utils'
 import {AccountAddress} from '../account/account-address'
 import {CodeBlock} from '../controls/code-block'
 
+/**
+ * Displays a list of claimable balance claimants with their addresses and predicates
+ * @param {Object} props
+ * @param {Array<Object>} props.claimants - Array of claimant objects (raw XDR or parsed)
+ */
 export const ClaimableBalanceClaimants = React.memo(function ClaimableBalanceClaimants({claimants}) {
     const parsed = claimants.map(c => {
         if (c.destination && c.predicate && !c._predicate)

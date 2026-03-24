@@ -115,6 +115,13 @@ function setupAutoRefresh(refreshInterval, fetchData) {
 
 const currentRequests = {}
 
+/**
+ * Fetch data from the Explorer API with caching support
+ * @param {string} url - API endpoint URL (with network prefix)
+ * @param {number} [ttl] - Cache time-to-live in seconds
+ * @param {function(*): *} [processResult] - Optional callback to transform the response data
+ * @return {Promise<{data: *, ts: number}>}
+ */
 export function fetchData(url, ttl, processResult) {
     //try to retrieve data from the browser cache
     const fromCache = apiCache.get(url)

@@ -14,10 +14,12 @@ import {AssetLink} from '../asset/asset-link'
 import {Amount} from '../asset/amount'
 
 /**
- * @param {{}} effect
- * @param {{}} operation
+ * Renders a human-readable description of a Stellar transaction effect
+ * @param {Object} props
+ * @param {Object} props.effect - Parsed transaction effect object
+ * @param {string} props.effect.type - Effect type identifier
+ * @param {Object} [props.operation] - Parent operation context
  * @return {JSX.Element}
- * @constructor
  */
 export function EffectDescription({effect, operation}) {
     switch (effect.type) {

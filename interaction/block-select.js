@@ -22,6 +22,17 @@ function select(target) {
     sel.addRange(range)
 }
 
+/**
+ * Block that selects all its text content on focus/click
+ * @param {Object} props
+ * @param {string} [props.as='span'] - HTML tag to render
+ * @param {*} props.children - Content to display
+ * @param {string} [props.title] - HTML title attribute
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {boolean} [props.wrap] - Enable text wrapping (true) or disable it (false)
+ * @param {boolean} [props.inline] - Force inline display
+ * @param {Object} [props.style] - Inline styles
+ */
 export const BlockSelect = React.memo(function BlockSelect({as = 'span', children, title, className, wrap, inline, style, ...op}) {
     const props = {
         className: cn('block-select', className),

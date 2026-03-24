@@ -18,6 +18,14 @@ hljs.registerLanguage('plain', plaintextLang)
 hljs.registerLanguage('toml', tomlLang)
 hljs.registerLanguage('rust', rustLang)
 
+/**
+ * Syntax-highlighted code block using highlight.js
+ * @param {Object} props
+ * @param {string} props.children - Source code text
+ * @param {'js'|'json'|'html'|'xml'|'toml'|'rust'|'plain'} [props.lang] - Language for syntax highlighting
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {Object} [props.style] - Inline styles
+ */
 export const CodeBlock = React.memo(function CodeBlock({children, lang, className, style}) {
     if (lang) {
         lang = lang.split(',')

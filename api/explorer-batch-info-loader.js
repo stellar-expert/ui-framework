@@ -1,6 +1,14 @@
 import {throttle} from 'throttle-debounce'
 
+/**
+ * Batches multiple individual load requests into single API calls for efficiency.
+ * Accumulates requests over a short window and sends them together.
+ */
 export class ExplorerBatchInfoLoader {
+    /**
+     * @param {function(string[]): Promise<{_embedded: {records: Object[]}}>} fetchCallback - Fetches a batch of entries by their keys
+     * @param {function(Object): {key: string, info: *}} processResponseCallback - Extracts key and info from each response record
+     */
     constructor(fetchCallback, processResponseCallback) {
         this.pendingRequests = {}
         this.requestsQueue = []
@@ -17,6 +25,11 @@ export class ExplorerBatchInfoLoader {
 
     processResponseCallback
 
+    /**
+     * Load a single entry by key, batching the request with other pending loads
+     * @param {string} key - Entry identifier
+     * @return {Promise<*>} Resolves with the entry data or null if not found
+     */
     loadEntry(key) {
         //check whether the same address is being fetched right now
         const pending = this.pendingRequests[key]

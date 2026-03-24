@@ -1,6 +1,9 @@
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 import {fetchExplorerApi} from './explorer-api-call'
 
+/**
+ * Long-polling stream that notifies listeners about new ledgers
+ */
 class LedgerStream {
     constructor() {
         this.listeners = new Set()
@@ -89,13 +92,25 @@ class LedgerStream {
         }
     }
 
+    /**
+     * Fetch the most recent ledger info from the API
+     * @return {Promise<Object>}
+     */
     async getLast() {
         return fetchExplorerApi(getCurrentStellarNetwork() + '/ledger/last')
     }
 
+    /**
+     * Fetch the sequence number of the most recent ledger
+     * @return {Promise<number>}
+     */
     async getLastSequence() {
         return (await this.getLast()).sequence
     }
 }
 
+/**
+ * Singleton ledger stream instance for subscribing to new ledger notifications
+ * @type {LedgerStream}
+ */
 export const ledgerStream = new LedgerStream()

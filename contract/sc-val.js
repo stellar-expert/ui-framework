@@ -6,6 +6,14 @@ import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
 import './sc-val.scss'
 
+/**
+ * Renders a Stellar smart contract value (ScVal) in a human-readable format
+ * @param {Object} props
+ * @param {string|xdr.ScVal|Array} props.value - ScVal as base64 XDR string, parsed XDR object, or array
+ * @param {boolean} [props.nested=false] - Whether this is a nested rendering (internal use)
+ * @param {boolean} [props.indent=false] - Enable block-level indentation for nested structures
+ * @param {boolean} [props.wrapObjects=true] - Wrap maps and arrays with brackets
+ */
 export const ScVal = React.memo(function ScVal({value, nested = false, indent = false, wrapObjects = true}) {
     if (!nested)
         return <code className={cn('sc-val', {block: indent})}><ScVal value={value} indent={indent} nested/></code>
@@ -88,6 +96,11 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
     }
 })
 
+/**
+ * Parse a base64-encoded XDR ScVal string into an xdr.ScVal object
+ * @param {string} value - Base64-encoded XDR string
+ * @return {xdr.ScVal}
+ */
 export function parseScValValue(value) {
     return xdr.ScVal.fromXDR(value, 'base64')
 }
@@ -96,6 +109,13 @@ const ScValType = React.memo(function ScValType({type}) {
     return <sub className="dimmed text-tiny" style={{padding: '0 0.2em'}}>{type}</sub>
 })
 
+/**
+ * Structural wrapper for ScVal elements, handling indentation and separators
+ * @param {Object} props
+ * @param {boolean} [props.indent] - Enable block-level indentation
+ * @param {*} props.children - Nested content
+ * @param {number} [props.separate] - Show comma separator when > 1
+ */
 export const ScValStruct = React.memo(function ScValStruct({indent, children, separate}) {
     const separator = separate > 1 ? <>, </> : null
     if (!indent)
@@ -105,4 +125,8 @@ export const ScValStruct = React.memo(function ScValStruct({indent, children, se
     </div>
 })
 
+/**
+ * Set of primitive ScVal type identifiers
+ * @type {Set<string>}
+ */
 export const primitiveTypes = new Set(['b', 'i32', 'u32', 'i256', 'u256', 'i128', 'u128', 'i64', 'u64', 'timepoint', 'duration', 'address', 'bytes', 'str', 'sym', 'nonceKey', 'contractId', 'instance'])

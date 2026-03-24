@@ -4,6 +4,15 @@ import cn from 'classnames'
 import {formatPrice} from '@stellar-expert/formatter'
 import './price-dynamic.scss'
 
+/**
+ * Displays a price change percentage with positive/negative styling
+ * @param {Object} props
+ * @param {number} [props.change] - Pre-calculated change percentage; auto-calculated from current/prev if omitted
+ * @param {number} [props.current] - Current price value (used to calculate change)
+ * @param {number} [props.prev] - Previous price value (used to calculate change)
+ * @param {boolean} [props.standalone] - Apply standalone styling
+ * @param {boolean} [props.allowZero] - Show "0%" instead of returning null for zero change
+ */
 export const PriceDynamic = React.memo(function PriceDynamic({change, current, prev, standalone, allowZero}) {
     if (change === undefined) {
         if (current === prev || !prev || !current) {

@@ -3,10 +3,18 @@ import cn from 'classnames'
 import './accordion.scss'
 
 /**
- * Group of collapsible panels
- * @param {{key: String, title: String|JSX.Element, content:*}[]} options - Accordion options
- * @param {String} [collapsedSymbol] - Prefix to show for collapsed panels
- * @param {String} [expandedSymbol] - Prefix to show for expanded panel
+ * @typedef {Object} AccordionOption
+ * @property {string} [key] - Unique key for the panel (falls back to title)
+ * @property {string|JSX.Element} title - Panel header content
+ * @property {*} content - Panel body content
+ */
+
+/**
+ * Group of collapsible panels where only one panel is expanded at a time
+ * @param {Object} props
+ * @param {AccordionOption[]} props.options - Accordion panel definitions
+ * @param {string} [props.collapsedSymbol='+'] - Prefix shown for collapsed panels
+ * @param {string} [props.expandedSymbol='-'] - Prefix shown for the expanded panel
  */
 export function Accordion({options, collapsedSymbol = '+', expandedSymbol = '-', ...otherProps}) {
     const [selectedOption, setSelectedOption] = useState()

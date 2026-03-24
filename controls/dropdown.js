@@ -6,6 +6,37 @@ import {throttle} from 'throttle-debounce'
 import {useDependantState} from '../state/state-hooks'
 import './dropdown.scss'
 
+/**
+ * @typedef {Object} DropdownOption
+ * @property {string|number} [value] - Internal value used for identification
+ * @property {string} [href] - Link URL for menu-style dropdown items
+ * @property {*} [title] - Display title (defaults to value)
+ * @property {string} [className] - Additional CSS class
+ * @property {boolean} [disabled] - Whether the option is disabled
+ * @property {boolean} [hidden] - Whether to hide the option
+ */
+
+/**
+ * Customizable dropdown select component
+ * @param {Object} props
+ * @param {Array<DropdownOption|string>} props.options - Available options
+ * @param {string|number} [props.value] - Currently selected value
+ * @param {*} [props.title] - Title to display instead of the selected value
+ * @param {boolean} [props.disabled=false] - Disable the dropdown
+ * @param {string} [props.className] - Additional CSS classes
+ * @param {function(string|number): void} [props.onChange] - Callback invoked with the selected value
+ * @param {string} [props.hint] - HTML title attribute for the control
+ * @param {boolean} [props.showToggle=true] - Show toggle arrow icon
+ * @param {boolean} [props.solo=false] - Show dropdown list in a centered dialog overlay
+ * @param {boolean} [props.hideSelected=false] - Hide currently selected item from the list
+ * @param {*} [props.header] - Optional list header content
+ * @param {*} [props.footer] - Optional list footer content
+ * @param {boolean} [props.expanded] - Initially open the dropdown
+ * @param {function({position: number, rel: 'top'|'middle'|'bottom'}): void} [props.onScroll] - Scroll handler for infinite scroll support
+ * @param {function} [props.onOpen] - Handler called when the dropdown opens
+ * @param {function} [props.onClose] - Handler called when the dropdown closes
+ * @param {string} [props.maxHeight='35em'] - Maximum dropdown list height
+ */
 export const Dropdown = React.memo(function Dropdown({
                                                          options,
                                                          title,

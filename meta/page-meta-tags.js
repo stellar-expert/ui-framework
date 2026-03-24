@@ -210,6 +210,10 @@ export function usePageMetadata(meta) {
     }, [JSON.stringify(meta), [formatCanonicalUrl()]])
 }
 
+/**
+ * Set or remove the robots "noindex,nofollow" meta tag
+ * @param {boolean} noIndex - Whether to add (true) or remove (false) the noindex directive
+ */
 export function setPageNoIndex(noIndex) {
     if (!noIndex) {
         removeTag('meta[name=robots]')

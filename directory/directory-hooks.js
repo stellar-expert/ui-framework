@@ -22,6 +22,14 @@ const loader = new ExplorerBatchInfoLoader(batch => {
     return {key: entry.address, info: entry}
 })
 
+/**
+ * Fetch a directory entry for a Stellar address
+ * @param {string} address - Stellar account or contract address
+ * @param {Object} [options]
+ * @param {boolean} [options.forceRefresh=false] - Bypass cache and fetch fresh data
+ * @param {boolean} [options.extended=false] - Fetch extended directory information
+ * @return {Promise<Object|null>} Directory entry or null if not found
+ */
 export async function getDirectoryEntry(address, options) {
     const {forceRefresh = false, extended = false} = options || {}
     //ignore invalid addresses
@@ -80,6 +88,10 @@ export function useDirectory(address, options) {
     return directoryInfo
 }
 
+/**
+ * React hook that fetches and returns all available directory tags
+ * @return {Array<Object>} Array of directory tag objects
+ */
 export function useDirectoryTags() {
     const [tags, setTags] = useState(() => {
         const cachedEntry = cache.get('tags')

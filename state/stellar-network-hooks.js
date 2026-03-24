@@ -1,5 +1,9 @@
 import {useState, useEffect} from 'react'
 
+/**
+ * @typedef {'public'|'testnet'} StellarNetwork
+ */
+
 const listeners = []
 let currentNetwork = 'public'
 
@@ -10,13 +14,17 @@ function removeListener(callback) {
     if (~idx) listeners.splice(idx, 1)
 }
 
+/**
+ * Get current Stellar network identifier
+ * @return {StellarNetwork}
+ */
 export function getCurrentStellarNetwork() {
     return currentNetwork
 }
 
 /**
- * Set current Stellar network.
- * @param {'testnet'|'public'} network
+ * Set current Stellar network
+ * @param {StellarNetwork} network
  */
 export function setStellarNetwork(network) {
     if (currentNetwork === network) return
@@ -26,14 +34,18 @@ export function setStellarNetwork(network) {
     }
 }
 
+/**
+ * Subscribe to Stellar network change events
+ * @param {function(StellarNetwork): void} onChange - Callback invoked when the network changes
+ */
 export function subscribeToStellarNetworkChange(onChange) {
     removeListener(onChange)
     listeners.push(onChange)
 }
 
 /**
- * React hook for reacting on Stellar network changes.
- * @return {'testnet'|'public'}
+ * React hook that returns the current Stellar network and re-renders on network changes
+ * @return {StellarNetwork}
  */
 export function useStellarNetwork() {
     const [state, updateState] = useState(currentNetwork)

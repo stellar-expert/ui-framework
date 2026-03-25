@@ -5,6 +5,7 @@ import {useAssetList} from './asset-list-hooks'
 import './asset-selector.scss'
 
 /**
+ * Asset picker dropdown with search
  * @param {AssetSelectorOnAssetChanged} onChange - On asset selected callback
  * @param {string} [value] - Selected asset
  * @param {string[]} [predefinedAssets] - Optional lists of predefined assets that should be shown at the top of the dropdown list

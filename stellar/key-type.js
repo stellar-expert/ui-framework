@@ -1,6 +1,7 @@
 import {StrKey} from '@stellar/stellar-base'
 
 /**
+ * Decode StrKey-encoded Stellar key and determine its type
  * @param {string} key
  * @return {{address: string, type: ('muxed'|'ed25519'|'hash'|'tx'|'contract'), [muxedId]: bigint}|null}
  * @internal

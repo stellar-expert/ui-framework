@@ -56,6 +56,7 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
 })
 
 /**
+ * Renders a list of transaction operations
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
  * @param {function} [filter] - Filter matcher function
  * @param {boolean} [showFees] - Whether to display transaction fees

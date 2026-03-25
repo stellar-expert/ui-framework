@@ -63,6 +63,7 @@ function calculateTooltipPosition(target, node, desiredPlace, offset) {
 }
 
 /**
+ * Get the bounding rectangle of a DOM node
  * @param {Element} node
  * @return {PositionRect}
  */
@@ -77,6 +78,7 @@ function getBoundingRect(node) {
 }
 
 /**
+ * Calculate element offset for mouse positioning
  * @param {Element} element
  * @return {{mouseX: number, mouseY: number}}
  */
@@ -89,11 +91,12 @@ function getMouseOffset(element) {
 }
 
 /**
+ * Calculate default tooltip position boundaries for each placement direction
  * @param {number} targetWidth
  * @param {number} targetHeight
  * @param {number} tipWidth
  * @param {number} tipHeight
- *  */
+ */
 function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
     const notchSize = 4
     return {
@@ -125,6 +128,7 @@ function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
 }
 
 /**
+ * Parse position offset value into X/Y coordinates
  * @param {PositionOffset} offset
  * @return {{offsetX: number, offsetY: number}}
  */

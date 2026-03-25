@@ -1,6 +1,7 @@
 import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
+ * Build URL path to StellarExpert explorer page for given ledger entry
  * @param {'account'|'asset'|'ledger'|'tx'|'op'|'offer'|'contract'|'liquidity-pool'|'claimable-balance'} type
  * @param {string|number} id
  * @param {string} [network]

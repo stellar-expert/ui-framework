@@ -3,6 +3,7 @@ import {StrKey} from '@stellar/stellar-base'
 import {AccountAddress} from './account-address'
 
 /**
+ * Decode a Stellar signer object (XDR or parsed) into a StrKey-encoded key and weight
  * @param {Signer} signer
  * @return {{key: string, weight: number}|null}
  * @internal

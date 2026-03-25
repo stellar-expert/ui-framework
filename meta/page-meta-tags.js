@@ -109,6 +109,7 @@ function generateLdJsonSchema({title, description, image}, canonicalUrl) {
 }
 
 /**
+ * Replace or create HTML meta tags in the document head
  * @param {MetaTagReplacement} replacement
  */
 function replaceMetaTags(replacement) {

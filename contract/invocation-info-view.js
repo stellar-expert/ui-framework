@@ -8,6 +8,14 @@ import {parseScValValue, primitiveTypes, ScVal, ScValStruct} from './sc-val'
 import {useContractSource} from './contract-api'
 import {sacInterface} from './sac-interface'
 
+/**
+ * Basic Soroban contract invocation info
+ * @param {string} [contract] - Contract address
+ * @param {string} func - Invoked function name
+ * @param {Array|string} args - Function arguments (ScVal array or XDR string)
+ * @param {string|xdr.ScVal} [result] - Invocation result
+ * @param {string} [sac] - Stellar Asset Contract identifier
+ */
 export default function InvocationInfoView({contract, func, args, result, sac}) {
     if (typeof args === 'string') {
         args = parseScValValue(args)

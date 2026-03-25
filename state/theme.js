@@ -13,6 +13,7 @@ if (preferredTheme) {
 }
 
 /**
+ * Hook that manages the current color theme (day/night) with localStorage persistence
  * @returns {[colorTheme: string, setTheme: function]}
  */
 export function useTheme() {

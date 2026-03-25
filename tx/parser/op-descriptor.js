@@ -1,3 +1,6 @@
+/**
+ * Operation rendering context
+ */
 export default class OperationDescriptor {
     /**
      * @type {BaseOperation} - Operation properties

@@ -17,13 +17,23 @@ import {useStellarNetwork} from '../state/stellar-network-hooks'
 import InvocationInfoView from '../contract/invocation-info-view'
 import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
 
-function getAccountPredefinedDisplayName(address) {
-    if (!window.predefinedAccountDisplayNames)
-        return undefined
-    return window.predefinedAccountDisplayNames[address]
-}
+/**
+ * Detailed operation description within a transaction
+ * @param {OperationDescriptor} op
+ * @param {boolean} [compact]
+ * @constructor
+ */
+export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {
+    const render = typeMapping[op.operation.type]
+    if (!render) {
+        console.warn(`No operation text type mapping for operation ${op.operation.type}`)
+        return null
+    }
+    return React.createElement(render, {op, compact})
+})
 
 /**
+ * Renders operation source account
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -48,6 +58,7 @@ function OpSourceAccount({op, compact}) {
 
 
 /**
+ * CreateAccount operation (type 0)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -65,7 +76,7 @@ function CreateAccountDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 1
+ * Payment operation (type 1)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -83,7 +94,7 @@ function PaymentDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 2, 13
+ * Description view for PathPayment operations (types 2, 13)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -155,7 +166,7 @@ function PathPaymentDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 3, 4, 12
+ * Description view for ManageSellOffer/ManageBuyOffer/CreatePassiveSellOffer operations (types 3, 4, 12)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -232,7 +243,7 @@ function AccountFlags({flags}) {
 }
 
 /**
- * Type: 5
+ * SetOptions operation (type 5)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -305,7 +316,7 @@ function SetOptionsDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 6
+ * ChangeTrust operation (type 6)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -338,7 +349,7 @@ function ChangeTrustDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 7
+ * AllowTrust operation (type 7)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -360,7 +371,7 @@ function AllowTrustDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 8
+ * AccountMerge operation (type 8)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -378,7 +389,7 @@ function MergeAccountDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 9
+ * Inflation operation (type 9)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -394,7 +405,7 @@ function InflationDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 10
+ * ManageData operation (type 10)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -422,7 +433,7 @@ function ManageDataDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 11
+ * BumpSequence operation (type 11)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -439,7 +450,7 @@ function BumpSequenceDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 14
+ * CreateClaimableBalance operation (type 14)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -464,7 +475,7 @@ function CreateClaimableBalanceDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 15
+ * ClaimClaimableBalance operation (type 15)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -482,7 +493,7 @@ function ClaimClaimableBalanceDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 16
+ * BeginSponsoringFutureReserves operation (type 16)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -499,7 +510,7 @@ function BeginSponsoringFutureReservesDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 17
+ * EndSponsoringFutureReserves operation (type 17)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -515,7 +526,7 @@ function EndSponsoringFutureReservesDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeAccountSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -532,7 +543,7 @@ function RevokeAccountSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeSignerSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -552,7 +563,7 @@ function RevokeSignerSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeTrustlineSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -571,7 +582,7 @@ function RevokeTrustlineSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeOfferSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -590,7 +601,7 @@ function RevokeOfferSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeDataSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -609,7 +620,7 @@ function RevokeDataSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeClaimableBalanceSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -627,7 +638,7 @@ function RevokeClaimableBalanceSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 18
+ * RevokeLiquidityPoolSponsorship operation (type 18)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -645,7 +656,7 @@ function RevokeLiquidityPoolSponsorshipDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 19
+ * Clawback operation (type 19)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -664,7 +675,7 @@ function ClawbackDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 20
+ * ClawbackClaimableBalance operation (type 20)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -681,7 +692,7 @@ function ClawbackClaimableBalanceDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 21
+ * SetTrustLineFlags operation (type 21)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -714,7 +725,7 @@ function SetTrustLineFlagsDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 22
+ * LiquidityPoolDeposit operation (type 22)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -739,7 +750,7 @@ function DepositLiquidityDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 23
+ * LiquidityPoolWithdraw operation (type 23)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -764,7 +775,7 @@ function WithdrawLiquidityDescriptionView({op, compact}) {
 }
 
 /**
- * Type: 24
+ * InvokeHostFunction operation (type 24) — Soroban contract calls
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -856,7 +867,7 @@ function InvokeHostFunctionView({op, compact}) {
 }
 
 /**
- * Type: 25
+ * ExtendFootprintTTL operation (type 25)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -874,7 +885,7 @@ function ExtendFootprintTTLView({op}) {
 }
 
 /**
- * Type: 26
+ * RestoreFootprint operation (type 26)
  * @param {OperationDescriptor} op
  * @param {boolean} compact
  * @constructor
@@ -888,6 +899,13 @@ function RestoreFootprintView({op}) {
     return <>
         <OpSourceAccount op={op}/> restored ledger state entry
     </>
+}
+
+
+function getAccountPredefinedDisplayName(address) {
+    if (!window.predefinedAccountDisplayNames)
+        return undefined
+    return window.predefinedAccountDisplayNames[address]
 }
 
 const typeMapping = {
@@ -925,18 +943,3 @@ const typeMapping = {
     extendFootprintTtl: ExtendFootprintTTLView,
     restoreFootprint: RestoreFootprintView
 }
-
-/**
- * Text description of a tx operation
- * @param {OperationDescriptor} op
- * @param {boolean} [compact]
- * @constructor
- */
-export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {
-    const render = typeMapping[op.operation.type]
-    if (!render) {
-        console.warn(`No operation text type mapping for operation ${op.operation.type}`)
-        return null
-    }
-    return React.createElement(render, {op, compact})
-})

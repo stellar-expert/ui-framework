@@ -3,6 +3,7 @@ import {debounce} from 'throttle-debounce'
 import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
 
 /**
+ * Date-time picker input
  * @param {string} value - Current input value
  * @param {DateSelector~OnChange} onChange - Onchange event handler
  * @param {string} [min] - Minimum allowed date
@@ -37,6 +38,7 @@ export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
 }
 
 /**
+ * Trim seconds and milliseconds for basic ISO date format representation
  * @param {Date|number} date
  * @return {string}
  */

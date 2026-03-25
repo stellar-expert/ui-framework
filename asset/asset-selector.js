@@ -6,11 +6,11 @@ import './asset-selector.scss'
 
 /**
  * @param {AssetSelectorOnAssetChanged} onChange - On asset selected callback
- * @param {String} [value] - Selected asset
- * @param {String[]} [predefinedAssets] - Optional lists of predefined assets that should be shown at the top of the dropdown list
- * @param {Boolean} [restricted] - If set, the selector is limited to the predefined assets list only
- * @param {String} [title] - Dropdown selector title
- * @param {String} [expanded] - Expanded by default
+ * @param {string} [value] - Selected asset
+ * @param {string[]} [predefinedAssets] - Optional lists of predefined assets that should be shown at the top of the dropdown list
+ * @param {boolean} [restricted] - If set, the selector is limited to the predefined assets list only
+ * @param {string} [title] - Dropdown selector title
+ * @param {string} [expanded] - Expanded by default
  * @return {JSX.Element}
  * @constructor
  */
@@ -68,5 +68,5 @@ export function AssetSelector({value, predefinedAssets, onChange, restricted, ti
 
 /**
  * @callback AssetSelectorOnAssetChanged
- * @param {String} value
+ * @param {string} value
  */

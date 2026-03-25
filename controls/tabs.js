@@ -7,11 +7,11 @@ import './tabs.scss'
 /**
  * Tabs control
  * @param {TabDescriptor[]} tabs - Tabs list
- * @param {String} [selectedTab] - Currently selected tab
- * @param {Function} [onChange] - Handler for tabChanged event
- * @param {String} [queryParam] - Associated query param name (control will auto-update query string)
- * @param {String} [className] - Optional CSS class name
- * @param {Boolean} [right] - Position tabs to the right within the header
+ * @param {string} [selectedTab] - Currently selected tab
+ * @param {function} [onChange] - Handler for tabChanged event
+ * @param {string} [queryParam] - Associated query param name (control will auto-update query string)
+ * @param {string} [className] - Optional CSS class name
+ * @param {boolean} [right] - Position tabs to the right within the header
  * @param {*} [children] - Additional content to render in the tabs header
  * @constructor
  */
@@ -87,8 +87,8 @@ export function Tabs({tabs, selectedTab, queryParam, className, onChange, right,
 
 /**
  * @typedef {{}} TabDescriptor
- * @property {String} name - Unique table name
- * @property {String} [title] - Display name (if differs from tab name)
- * @property {Function} [render] - Render callback
- * @property {Boolean} [isDefault] - Whether this tab should be displayed by default
+ * @property {string} name - Unique table name
+ * @property {string} [title] - Display name (if differs from tab name)
+ * @property {function} [render] - Render callback
+ * @property {boolean} [isDefault] - Whether this tab should be displayed by default
  */

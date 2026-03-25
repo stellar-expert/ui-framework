@@ -5,12 +5,12 @@ import {xdr} from '@stellar/stellar-base'
  * @property {number} sequence - Ledger sequence number
  * @property {number} ts - Ledger close timestamp
  * @property {number} protocol - Protocol version
- * @property {number} operations - Number of successful operations
- * @property {number} failedOperations - Number of failed operations
- * @property {number} txSuccess - Number of successful transactions
- * @property {number} txFailed - Number of failed transactions
- * @property {BigInt} xlm - Total lumens in circulation
- * @property {BigInt} feePool - Fee pool amount
+ * @property {number} operations - number of successful operations
+ * @property {number} failedOperations - number of failed operations
+ * @property {number} txSuccess - number of successful transactions
+ * @property {number} txFailed - number of failed transactions
+ * @property {bigint} xlm - Total lumens in circulation
+ * @property {bigint} feePool - Fee pool amount
  * @property {number} baseFee - Base fee in stroops
  * @property {number} baseReserve - Base reserve in stroops
  */

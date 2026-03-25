@@ -19,11 +19,11 @@ export function loadMarketTrades(baseAsset, counterAsset, queryParams = null) {
 
 /**
  * Stream trades from Horizon
- * @param {String} cursor - Cursor to start from
+ * @param {string} cursor - Cursor to start from
  * @param {AssetDescriptor} baseAsset - Base asset descriptor
  * @param {AssetDescriptor} counterAsset - Counter asset descriptor
- * @param {Function} onNewTrade - Callback to invoke when new trade arrives
- * @return {Function}
+ * @param {function} onNewTrade - Callback to invoke when new trade arrives
+ * @return {function}
  */
 export function streamMarketTrades(cursor, baseAsset, counterAsset, onNewTrade) {
     return initHorizon().trades()
@@ -36,9 +36,9 @@ export function streamMarketTrades(cursor, baseAsset, counterAsset, onNewTrade) 
 
 /**
  * Stream all trades from Horizon
- * @param {String} cursor - Cursor to start from
- * @param {Function} onNewTrade - Callback to invoke when new trade arrives
- * @return {Function}
+ * @param {string} cursor - Cursor to start from
+ * @param {function} onNewTrade - Callback to invoke when new trade arrives
+ * @return {function}
  */
 export function streamTrades(cursor, onNewTrade) {
     return initHorizon().trades()
@@ -51,11 +51,11 @@ export function streamTrades(cursor, onNewTrade) {
 
 /**
  *
- * @param {String|AssetDescriptor|Asset} base - Base asset
- * @param {String|AssetDescriptor|Asset} counter - Counter asset
+ * @param {string|AssetDescriptor|Asset} base - Base asset
+ * @param {string|AssetDescriptor|Asset} counter - Counter asset
  * @param {('5m'|'15m'|'1h'|'1d'|'1w')} resolution - Segment duration
- * @param {Number} period - Period in days
- * @param {Number} [limit] - Max number of records to fetch
+ * @param {number} period - Period in days
+ * @param {number} [limit] - Max number of records to fetch
  * @return {Promise<TradeAggregationRecord>}
  */
 export function loadTradesAggregation({base, counter, resolution, period, limit = 200}) {

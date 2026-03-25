@@ -30,7 +30,7 @@ const operationTypeMap = {
 
 export class TypeFilterMatcher {
     /**
-     * @param {String[]} filters
+     * @param {string[]} filters
      */
     constructor(filters) {
         if (!filters?.length)
@@ -50,14 +50,14 @@ export class TypeFilterMatcher {
 
     /**
      * Get unique set of type filters
-     * @return {Boolean}
+     * @return {boolean}
      */
     match(operationType) {
         return !this.types || this.types.has(operationTypeMap[operationType])
     }
 
     /**
-     * @param {String} filter
+     * @param {string} filter
      * @private
      */
     processFilter(filter) {
@@ -67,7 +67,7 @@ export class TypeFilterMatcher {
     }
 
     /**
-     * @param {String} filter
+     * @param {string} filter
      * @private
      */
     decodeFilter(filter) {

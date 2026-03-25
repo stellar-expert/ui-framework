@@ -8,10 +8,10 @@ function ensureDependencies(dependencies) {
 
 /**
  * React hook that automatically re-inits state when one of the dependencies changed
- * @param {Function|any} stateInitializer
+ * @param {function|any} stateInitializer
  * @param {Array} dependencies
- * @param {Function} [finalizer]
- * @returns {[Object, Function]}
+ * @param {function} [finalizer]
+ * @returns {[Object, function]}
  */
 export function useDependantState(stateInitializer, dependencies, finalizer) {
     //ensureDependencies(dependencies)
@@ -50,7 +50,7 @@ export function useDependantState(stateInitializer, dependencies, finalizer) {
 
 /**
  * Simple force update hook.
- * @return {Function}
+ * @return {function}
  */
 export function useForceUpdate() {
     const [, updateNonce] = useState(0)
@@ -61,7 +61,7 @@ export function useForceUpdate() {
 
 /**
  * React hook that automatically reacts on dependency changes using deep comparison
- * @param {Function} effect
+ * @param {function} effect
  * @param {Array} dependencies
  */
 export function useDeepEffect(effect, dependencies) {

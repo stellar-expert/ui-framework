@@ -1,8 +1,8 @@
 import {StrKey} from '@stellar/stellar-base'
 
 /**
- * @param {String} key
- * @return {{address: String, type: ('muxed'|'ed25519'|'hash'|'tx'|'contract'), [muxedId]: BigInt}|null}
+ * @param {string} key
+ * @return {{address: string, type: ('muxed'|'ed25519'|'hash'|'tx'|'contract'), [muxedId]: bigint}|null}
  * @internal
  */
 export function decodeKeyType(key) {
@@ -65,8 +65,8 @@ function checkLength(key, length = 56) {
 
 /**
  * Parse multiplexed account address
- * @param {String} muxedAddress - Multiplexed Stellar address
- * @return {{address: String, muxedId: BigIint}}
+ * @param {string} muxedAddress - Multiplexed Stellar address
+ * @return {{address: string, muxedId: bigint}}
  */
 export function parseMuxedAccount(muxedAddress) {
     const muxed = StrKey.decodeMed25519PublicKey(muxedAddress)
@@ -78,9 +78,9 @@ export function parseMuxedAccount(muxedAddress) {
 
 /**
  * Encode address and identifier into a multiplexed address
- * @param {String} address - StrKey-encode Stellar account address
- * @param {BigInt} muxedId - Multiplexed int64 id
- * @return {String}
+ * @param {string} address - StrKey-encode Stellar account address
+ * @param {bigint} muxedId - Multiplexed int64 id
+ * @return {string}
  */
 export function encodeMuxedAccount(address, muxedId) {
     const raw = Buffer.allocUnsafe(40)

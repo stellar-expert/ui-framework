@@ -7,8 +7,8 @@ const loadedModules = new Map()
 export const DynamicModule = withErrorBoundary(
     /**
      * Dynamically loadable module
-     * @param {Function} load - Dynamic load function, e.g. ()=>import('./dynamic_module_import')
-     * @param {String} module - Module unique name for aching purpose
+     * @param {function} load - Dynamic load function, e.g. ()=>import('./dynamic_module_import')
+     * @param {string} module - Module unique name for aching purpose
      * @param {*} [otherProps]
      * @constructor
      */

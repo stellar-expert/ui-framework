@@ -2,7 +2,7 @@ import {applyListQueryParameters, loadAllHorizonRecords, initHorizon} from './ho
 
 /**
  * Retrieve account status from Horizon
- * @param {String} accountAddress
+ * @param {string} accountAddress
  * @returns {Promise<AccountResponse>}
  */
 export function loadAccount(accountAddress) {
@@ -12,7 +12,7 @@ export function loadAccount(accountAddress) {
 
 /**
  * Load assets issued by the account from Horizon
- * @param {String} account - Account address
+ * @param {string} account - Account address
  * @param {ListQueryParams} [queryParams] - Query parameters (optional)
  * @return {Promise<Array<Object>>}
  */
@@ -29,7 +29,7 @@ export function loadIssuedAssets(account, queryParams = null) {
 
 /**
  * Load offer from Horizon for the particular account
- * @param {String} account - Account address
+ * @param {string} account - Account address
  * @param {ListQueryParams} [queryParams] - Query parameters (optional)
  * @return {Promise<Array<Object>>}
  */
@@ -42,7 +42,7 @@ export function loadAccountOffers(account, queryParams = null) {
 
 /**
  * Load pending claimable balances for a given account pubkey
- * @param {String} account - Account address
+ * @param {string} account - Account address
  * @return {Promise<Array<Object>>}
  */
 export function loadAccountClaimableBalances(account) {
@@ -78,8 +78,8 @@ export function getAccountLockStatus(account) {
 /**
  * Retrieve balance for a given Horizon account info
  * @param {AccountResponse} account - Account Horizon info
- * @param {{code: String, issuer: String}} asset - Asset or null (for XLM)
- * @returns {{total: Number, available: Number, [asset]: {code: String, issuer: String}}}
+ * @param {{code: string, issuer: string}} asset - Asset or null (for XLM)
+ * @returns {{total: number, available: number, [asset]: {code: string, issuer: string}}}
  */
 export function getAccountBalance(account, asset = null) {
     if (!account.balances) return {asset, total: 0, available: 0}

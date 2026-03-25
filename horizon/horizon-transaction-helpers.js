@@ -13,10 +13,10 @@ export function loadTransactions(queryParams = null) {
 
 /**
  * Stream operations from Horizon
- * @param {String} cursor - Cursor to start from
- * @param {Function} onNewTx - Callback to invoke when new operation arrives
- * @param {Boolean} includeFailed - Include failed transactions into the stream
- * @return {Function}
+ * @param {string} cursor - Cursor to start from
+ * @param {function} onNewTx - Callback to invoke when new operation arrives
+ * @param {boolean} includeFailed - Include failed transactions into the stream
+ * @return {function}
  */
 export function streamTransactions(cursor, onNewTx, includeFailed) {
     return initHorizon().transactions().includeFailed(!!includeFailed)

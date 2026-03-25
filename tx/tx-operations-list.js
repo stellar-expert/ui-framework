@@ -57,10 +57,10 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
 
 /**
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
- * @param {Function} [filter] - Filter matcher function
- * @param {Boolean} [showFees] - Whether to display transaction fees
- * @param {Boolean} [showEffects] - Whether to show operation effects
- * @param {Boolean} [compact] - Compact view (without fee charges and accounting changes effects)
+ * @param {function} [filter] - Filter matcher function
+ * @param {boolean} [showFees] - Whether to display transaction fees
+ * @param {boolean} [showEffects] - Whether to show operation effects
+ * @param {boolean} [compact] - Compact view (without fee charges and accounting changes effects)
  */
 export const TxOperationsList = React.memo(function TxOperationsList({
                                                                          parsedTx,

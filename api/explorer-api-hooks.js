@@ -15,7 +15,7 @@ export class ExplorerApiResult {
 
     /**
      * Relative API URL
-     * @type {String}
+     * @type {string}
      */
     apiEndpoint
 
@@ -27,24 +27,24 @@ export class ExplorerApiResult {
 
     /**
      * Response error if any
-     * @type {String}
+     * @type {string}
      */
     error
 
     /**
-     * @type {Number}
+     * @type {number}
      */
     status = 200
 
     /**
      * Response timestamp
-     * @type {Number}
+     * @type {number}
      */
     fetchedAt = 0
 
     /**
      * Response result
-     * @return {Boolean}
+     * @return {boolean}
      */
     get loaded() {
         return !!this.data || !!this.error
@@ -147,11 +147,11 @@ export function fetchData(url, ttl, processResult) {
 
 /**
  *
- * @param {String|APIEndpointParams} apiEndpoint - Server API endpoint to use as a data source.
- * @param {Number} [refreshInterval] - Auto-refresh interval in seconds for dynamic data.
- * @param {Number} [ttl] - Cache time-to-live in seconds.
- * @param {Function} [processResult] - Callback to process a fetch result.
- * @param {Boolean} [allowStaleDataTransition] - Allow stale data to be returned when the url changed and the new data has not been loaded yet.
+ * @param {string|APIEndpointParams} apiEndpoint - Server API endpoint to use as a data source.
+ * @param {number} [refreshInterval] - Auto-refresh interval in seconds for dynamic data.
+ * @param {number} [ttl] - Cache time-to-live in seconds.
+ * @param {function} [processResult] - Callback to process a fetch result.
+ * @param {boolean} [allowStaleDataTransition] - Allow stale data to be returned when the url changed and the new data has not been loaded yet.
  * @return {ExplorerApiResult}
  */
 export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processResult, allowStaleDataTransition = false} = {}) {
@@ -205,6 +205,6 @@ export function useExplorerApi(apiEndpoint, {refreshInterval, ttl = 60, processR
 
 /**
  * @typedef {Object} APIEndpointParams
- * @property {String} path
- * @property {Object} query
+ * @property {string} path
+ * @property {{}} query
  */

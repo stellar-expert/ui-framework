@@ -13,16 +13,16 @@ function inverseOrder(order) {
 class PaginatedListViewModel {
     /**
      * Create new instance of PaginatedListViewModel
-     * @param {String} endpoint - API endpoint
+     * @param {string} endpoint - API endpoint
      * @param {Object} [props] - Extra model params
-     * @param {Number} [props.ttl] - Cache time-to-live period
-     * @param {Number} [props.limit] - Rows limit
-     * @param {Boolean} [props.autoReverseRecordsOrder] - Reverse order to match default grid order
-     * @param {Boolean} [props.autoLoadLastPage] - Whether to load last page flag
+     * @param {number} [props.ttl] - Cache time-to-live period
+     * @param {number} [props.limit] - Rows limit
+     * @param {boolean} [props.autoReverseRecordsOrder] - Reverse order to match default grid order
+     * @param {boolean} [props.autoLoadLastPage] - Whether to load last page flag
      * @param {'asc'|'desc'} [props.defaultSortOrder] - Results sorting order
      * @param {Object} [props.defaultQueryParams] - Default query values - query params not set if default
-     * @param {Function} [props.dataProcessingCallback] - Callback called for the fetched data
-     * @param {Boolean|Function} [props.updateLocation] - Whether to update browser location
+     * @param {function} [props.dataProcessingCallback] - Callback called for the fetched data
+     * @param {boolean|function} [props.updateLocation] - Whether to update browser location
      */
     constructor(endpoint, props = {limit: 20}) {
         this.endpoint = endpoint
@@ -52,54 +52,55 @@ class PaginatedListViewModel {
 
     /**
      * API endpoint
-     * @type {String}
+     * @type {string}
+     * @readonly
      */
     endpoint = ''
 
     /**
      * Batch size
-     * @type {Number}
+     * @type {number}
      */
     limit = 20
 
     /**
      * Time-to-live cache period (in seconds)
-     * @type {Number}
+     * @type {number}
      */
     ttl = 30
 
     /**
      *
-     * @type {Function|Object}
+     * @type {function|Object}
      */
     query = null
 
     /**
      * Automatically reverse records order
-     * @type {Boolean}
+     * @type {boolean}
      */
     autoReverseRecordsOrder = false
 
     /**
      * Sorting order
-     * @type {String}
+     * @type {string}
      */
     defaultSortOrder = 'desc'
 
     /**
      * Load last meaningful page if now results returned from the server
-     * @type {Boolean}
+     * @type {boolean}
      */
     autoLoadLastPage = true
 
     /**
      * Function used to process data retrieved from the server
-     * @type {Function}
+     * @type {function}
      */
     dataProcessingCallback = null
 
     /**
-     * @type {Function}
+     * @type {function}
      */
     onError = null
 
@@ -111,43 +112,43 @@ class PaginatedListViewModel {
 
     /**
      * Response loaded flag
-     * @type {Boolean}
+     * @type {boolean}
      */
     loaded = false
 
     /**
      * Fetch-in-progress flag
-     * @type {Boolean}
+     * @type {boolean}
      */
     loading = false
 
     /**
      * Whether the next page is available
-     * @type {Boolean}
+     * @type {boolean}
      */
     canLoadNextPage = false
 
     /**
      * Whether the prev page is available
-     * @type {Boolean}
+     * @type {boolean}
      */
     canLoadPrevPage = false
 
     /**
      * Next page cursor
-     * @type {String}
+     * @type {string}
      */
     nextCursor
 
     /**
      * Previous page cursor
-     * @type {String}
+     * @type {string}
      */
     prevCursor
 
     /**
      * @private
-     * @type {Function}
+     * @type {function}
      */
     updateApiResponseData = null
 
@@ -220,7 +221,7 @@ class PaginatedListViewModel {
 
     /**
      * Retrieve and convert data from the API response
-     * @param {String} endpointWithQuery
+     * @param {string} endpointWithQuery
      * @param {{}} data
      * @param {{}} queryParams
      * @private
@@ -263,9 +264,9 @@ class PaginatedListViewModel {
 
     /**
      * Update navigation links retrieved from the response
-     * @param {String} self
-     * @param {String} next
-     * @param {String} prev
+     * @param {string} self
+     * @param {string} next
+     * @param {string} prev
      * @private
      */
     updateNav({self, next, prev}) {
@@ -325,7 +326,7 @@ class PaginatedListViewModel {
 
     /**
      * Convert model to a plain object representation
-     * @return {{loaded: Boolean, data: ({}[]), load: function, reset: function loading: Boolean, canLoadNextPage: Boolean, canLoadPrevPage: Boolean}}
+     * @return {{loaded: boolean, data: ({}[]), load: function, reset: function loading: boolean, canLoadNextPage: boolean, canLoadPrevPage: boolean}}
      */
     toJSON() {
         return {
@@ -359,25 +360,25 @@ class PaginatedListViewModel {
 /**
  * @typedef {Object} ExplorerApiListResponse
  * @property {Object[]} data - Data retrieved from the server
- * @property {Boolean} loaded - Response result loaded flag
- * @property {Function} load - Load page function
- * @property {Boolean} canLoadPrevPage - Whether the prev page is available
- * @property {Boolean} canLoadNextPage - Whether the next page is available
+ * @property {boolean} loaded - Response result loaded flag
+ * @property {function} load - Load page function
+ * @property {boolean} canLoadPrevPage - Whether the prev page is available
+ * @property {boolean} canLoadNextPage - Whether the next page is available
  */
 
 /**
  *
- * @param {String|APIEndpointParams} apiEndpoint - Server API endpoint to use as a data source.
- * @param {Number} [ttl] - Cache time-to-live in seconds.
- * @param {Number} [limit] - Rows per batch limit.
- * @param {Boolean} [autoReverseRecordsOrder] - Reverse order to match default grid order.
+ * @param {string|APIEndpointParams} apiEndpoint - Server API endpoint to use as a data source.
+ * @param {number} [ttl] - Cache time-to-live in seconds.
+ * @param {number} [limit] - Rows per batch limit.
+ * @param {boolean} [autoReverseRecordsOrder] - Reverse order to match default grid order.
  * @param {'asc'|'desc'} [defaultSortOrder] - Reverse order to match default grid order.
- * @param {Boolean} [autoLoadLastPage] - Load last meaningful page if now results returned from the server.
- * @param {Boolean} [includeNetwork] - Whether to include network prefix in the endpoint path.
- * @param {Function} [dataProcessingCallback] - Callback called for the fetched data.
+ * @param {boolean} [autoLoadLastPage] - Load last meaningful page if now results returned from the server.
+ * @param {boolean} [includeNetwork] - Whether to include network prefix in the endpoint path.
+ * @param {function} [dataProcessingCallback] - Callback called for the fetched data.
  * @param {Object} [defaultQueryParams] - Default query values - query params not set if default.
- * @param {Boolean} [autoLoad] - Default query values - query params not set if default.
- * @param {Boolean} [updateLocation] - Automatically update browser query string on navigation.
+ * @param {boolean} [autoLoad] - Default query values - query params not set if default.
+ * @param {boolean} [updateLocation] - Automatically update browser query string on navigation.
  * @param {Array} [dependencies] - Additional dependencies to track for state updates.
  * @return {ExplorerApiListResponse}
  */

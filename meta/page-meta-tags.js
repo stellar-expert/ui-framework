@@ -14,7 +14,7 @@ setOrigin(window.location.origin)
 
 /**
  * Initialize default meta properties for the application
- * @param {{serviceTitle: String, description: String, origin: String, [image]: String, [imageEndpoint]: String}} appMetaProps
+ * @param {{serviceTitle: string, description: string, origin: string, [image]: string, [imageEndpoint]: string}} appMetaProps
  */
 export function initMeta(appMetaProps) {
     const {origin, ...props} = appMetaProps
@@ -229,15 +229,15 @@ export function setPageNoIndex(noIndex) {
 
 /**
  * @typedef {Object} PageMeta
- * @property {String} title - Page title
- * @property {String} description - Contents description
- * @property {String} [image] - Page image url
+ * @property {string} title - Page title
+ * @property {string} description - Contents description
+ * @property {string} [image] - Page image url
  * @property {MetaTagReplacement} [customMeta] - Custom metadata tags
  */
 
 /**
  * @typedef {Object} MetaTagReplacement
- * @property {String} [tag] - Tag name to search for ("meta" by default)
- * @property {String} locator - Tag attribute to match
- * @property {{name: String, content: String, [attribute]: String}[]} tags - Tag properties to set
+ * @property {string} [tag] - Tag name to search for ("meta" by default)
+ * @property {string} locator - Tag attribute to match
+ * @property {{name: string, content: string, [attribute]: string}[]} tags - Tag properties to set
  */

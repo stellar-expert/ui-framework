@@ -2,9 +2,9 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
  * @param {'account'|'asset'|'ledger'|'tx'|'op'|'offer'|'contract'|'liquidity-pool'|'claimable-balance'} type
- * @param {String|Number} id
- * @param {String} [network]
- * @return {String}
+ * @param {string|number} id
+ * @param {string} [network]
+ * @return {string}
  */
 export function formatExplorerLink(type, id, network = null) {
     if (typeof window.explorerLinkFormatter === 'function') {

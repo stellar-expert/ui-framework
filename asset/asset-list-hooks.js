@@ -20,7 +20,7 @@ function getCurrentCursor(data) {
 /**
  *
  * @param {Object} params
- * @return {{assets: Array<Object>, loadPage: Function, loading: Boolean}}
+ * @return {{assets: Array<Object>, loadPage: function, loading: boolean}}
  */
 export function useAssetList(params) {
     const [loading, setLoading] = useState(false),

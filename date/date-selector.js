@@ -3,10 +3,10 @@ import {debounce} from 'throttle-debounce'
 import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
 
 /**
- * @param {String} value - Current input value
+ * @param {string} value - Current input value
  * @param {DateSelector~OnChange} onChange - Onchange event handler
- * @param {String} [min] - Minimum allowed date
- * @param {String} [max] - Maximum allowed date
+ * @param {string} [min] - Minimum allowed date
+ * @param {string} [max] - Maximum allowed date
  * @param {*} [ref]
  */
 export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
@@ -37,8 +37,8 @@ export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
 }
 
 /**
- * @param {Date|Number} date
- * @return {String}
+ * @param {Date|number} date
+ * @return {string}
  */
 export function trimIsoDateSeconds(date) {
     if (typeof date === 'number') {

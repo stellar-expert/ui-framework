@@ -1,15 +1,15 @@
 /**
  * @typedef {Object} ParsedStellarId
  * @property {('unknown'|'ledger'|'transaction'|'operation')} type - Parsed id type
- * @property {String} [id] - Parsed id
- * @property {Number} [ledger] - Ledger sequence
- * @property {String} [tx] - Transaction id
- * @property {Number} [operationOrder] - Operation order within a transaction
+ * @property {string} [id] - Parsed id
+ * @property {number} [ledger] - Ledger sequence
+ * @property {string} [tx] - Transaction id
+ * @property {number} [operationOrder] - Operation order within a transaction
  */
 
 /**
  * Parse stellar generic id
- * @param {String} id
+ * @param {string} id
  * @returns {ParsedStellarId}
  */
 export function parseStellarGenericId(id) {

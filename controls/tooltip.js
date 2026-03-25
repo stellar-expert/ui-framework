@@ -8,7 +8,7 @@ import './tooltip.scss'
  * @param {Element} node - Tooltip object
  * @param {'top'|'bottom'|'left'|'right'} desiredPlace - Desired tooltip place
  * @param {Object} offset
- * @return {{place: String, position: {top: Number, left: Number}}}
+ * @return {{place: string, position: {top: number, left: number}}}
  */
 function calculateTooltipPosition(target, node, desiredPlace, offset) {
     //dimensions of node and target
@@ -78,7 +78,7 @@ function getBoundingRect(node) {
 
 /**
  * @param {Element} element
- * @return {{mouseX: Number, mouseY: Number}}
+ * @return {{mouseX: number, mouseY: number}}
  */
 function getMouseOffset(element) {
     const {width, height, top, left} = getBoundingRect(element)
@@ -89,10 +89,10 @@ function getMouseOffset(element) {
 }
 
 /**
- * @param {Number} targetWidth
- * @param {Number} targetHeight
- * @param {Number} tipWidth
- * @param {Number} tipHeight
+ * @param {number} targetWidth
+ * @param {number} targetHeight
+ * @param {number} tipWidth
+ * @param {number} tipHeight
  *  */
 function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
     const notchSize = 4
@@ -126,7 +126,7 @@ function getDefaultPosition(targetWidth, targetHeight, tipWidth, tipHeight) {
 
 /**
  * @param {PositionOffset} offset
- * @return {{offsetX: Number, offsetY: Number}}
+ * @return {{offsetX: number, offsetY: number}}
  */
 function parseOffset(offset) {
     let offsetX = 0,
@@ -154,7 +154,7 @@ function parseOffset(offset) {
  * @param {PositionDescriptor} desiredPlace
  * @param {PositionOffset} [offset]
  * @param {'hover'|'click'} [activation]
- * @param {String} [maxWidth]
+ * @param {string} [maxWidth]
  * @param {*} [children]
  * @constructor
  */
@@ -227,15 +227,15 @@ export const Tooltip = React.memo(function Tooltip({
  */
 /**
  * @typedef {Object} PositionRect
- * @property {Number} top - Top offset
- * @property {Number} left - Left offset
- * @property {Number} width - Element width
- * @property {Number} height - Element height
+ * @property {number} top - Top offset
+ * @property {number} left - Left offset
+ * @property {number} width - Element width
+ * @property {number} height - Element height
  */
 /**
  * @typedef {Object} PositionOffset
- * @property {Number} [top] - Top offset
- * @property {Number} [bottom] - Bottom offset
- * @property {Number} [left] - Left offset
- * @property {Number} [right] - Right offset
+ * @property {number} [top] - Top offset
+ * @property {number} [bottom] - Bottom offset
+ * @property {number} [left] - Left offset
+ * @property {number} [right] - Right offset
  */

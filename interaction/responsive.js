@@ -3,7 +3,7 @@ import {throttle} from 'throttle-debounce'
 
 /**
  * Measures window client width
- * @return {Number}
+ * @return {number}
  */
 export function useWindowWidth() {
     const [width, setWidth] = useState(window.innerWidth)

@@ -3,7 +3,7 @@ import {Keypair} from '@stellar/stellar-base'
 /**
  * Convert the signature hint to the StrKey mask
  * @param {Buffer} hint - Hint to convert
- * @return {String}
+ * @return {string}
  */
 export function signatureHintToMask(hint) {
     const partialPublicKey = Buffer.concat([new Buffer(28).fill(0), hint]),
@@ -25,8 +25,8 @@ export function formatSignatureHint(hint) {
 /**
  * Check if the hint matches the specific key
  * @param {Buffer} hint - Hint to check
- * @param {String} key - Key to compare
- * @return {Boolean}
+ * @param {string} key - Key to compare
+ * @return {boolean}
  */
 export function singatureHintMatchesKey(hint, key) {
     return signatureHintToMask(hint).substring(47, 52) === key.substring(47, 52)
@@ -35,8 +35,8 @@ export function singatureHintMatchesKey(hint, key) {
 /**
  * Find a key by the signature hint
  * @param {Buffer} hint - Hint to look for
- * @param {Array<String>} allKeys - Array of potentially matching keys
- * @return {String|null}
+ * @param {Array<string>} allKeys - Array of potentially matching keys
+ * @return {string|null}
  */
 export function findKeyBySignatureHint(hint, allKeys) {
     return allKeys.find(key => singatureHintMatchesKey(hint, key))
@@ -44,7 +44,7 @@ export function findKeyBySignatureHint(hint, allKeys) {
 
 /**
  * Find tx signature for a given signer key
- * @param {String} key
+ * @param {string} key
  * @param {Signature} allSignatures
  * @returns {Signature}
  */
@@ -55,8 +55,8 @@ export function findSignatureByKey(key, allSignatures = []) {
 /**
  * Check if the hint matches any of the provided keys
  * @param {Buffer} signature - Tx signature
- * @param {Array<String>} publicKeys - Array of available public keys
- * @returns {Array<String>}
+ * @param {Array<string>} publicKeys - Array of available public keys
+ * @returns {Array<string>}
  */
 export function findKeysBySignatureHint(signature, keys) {
     const mask = signatureHintToMask(signature.hint())

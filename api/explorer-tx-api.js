@@ -4,7 +4,7 @@ import {fetchExplorerApi} from './explorer-api-call'
 
 /**
  * Load transaction from API
- * @param {String} txHashOrId - Transaction hash or generic id
+ * @param {string} txHashOrId - Transaction hash or generic id
  * @return {Promise<Object>}
  */
 export function loadTransaction(txHashOrId) {
@@ -21,7 +21,7 @@ export function loadTransaction(txHashOrId) {
 
 /**
  * Load transactions included into the ledger
- * @param {Number} sequence - Ledger sequence
+ * @param {number} sequence - Ledger sequence
  * @return {Promise<Array<Object>>}
  */
 export function loadLedgerTransactions(sequence) {

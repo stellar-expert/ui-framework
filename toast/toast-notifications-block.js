@@ -36,7 +36,7 @@ function ToastNotificationsBlock() {
         /**
          * Show toast notification popup
          * @param {'info'|'success'|'warning'|'error'} type - Notification type
-         * @param {String} message - Message to show
+         * @param {string} message - Message to show
          */
         window.notify = function ({type, message}) {
             const newNotification = new ToastNotificationInstance({

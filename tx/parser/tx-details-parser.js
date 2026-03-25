@@ -6,22 +6,22 @@ import TxMatcher from './tx-matcher'
  * @typedef {Object} ParsedTxDetails - Parsed transaction
  * @property {OperationDescriptor[]} operations - Parsed operation descriptors
  * @property {Transaction|FeeBumpTransaction} tx - Parsed transaction
- * @property {String} txHash - Transaction hash
- * @property {String} context - Account address, asset name, offer id
- * @property {String} contextType - Resolved context type
- * @property {Boolean} isEphemeral - True if transaction has not been submitted or rejected
- * @property {Boolean} unmatched - Whether transaction matches context and filter
- * @property {Boolean} [successful] - Whether the transaction has been executed successfully or failed during execution
+ * @property {string} txHash - Transaction hash
+ * @property {string} context - Account address, asset name, offer id
+ * @property {string} contextType - Resolved context type
+ * @property {boolean} isEphemeral - True if transaction has not been submitted or rejected
+ * @property {boolean} unmatched - Whether transaction matches context and filter
+ * @property {boolean} [successful] - Whether the transaction has been executed successfully or failed during execution
  * @property {{}[]} [effects] - Transaction-level effects (including fee charges)
- * @property {String} [createdAt] - Ledger application timestamp
+ * @property {string} [createdAt] - Ledger application timestamp
  */
 
 /**
  * @typedef {Object} TxFiltersContext
- * @property {String[]} [type]
- * @property {String[]} [account]
- * @property {String[]} [source]
- * @property {String[]} [destination]
+ * @property {string[]} [type]
+ * @property {string[]} [account]
+ * @property {string[]} [source]
+ * @property {string[]} [destination]
  * @property {String[]} [asset]
  * @property {String[]} [src_asset]
  * @property {String[]} [dest_asset]
@@ -38,8 +38,8 @@ import TxMatcher from './tx-matcher'
  * @param {String} [id] - Unique transaction id
  * @param {TxFiltersContext} [context] - Filters applied to transactions search
  * @param {String} [createdAt] - Ledger execution timestamp
- * @param {Boolean} [skipUnrelated] - Ledger execution timestamp
- * @param {Number} [protocol] – Specific Stellar protocol version for the executed transaction
+ * @param {boolean} [skipUnrelated] - Ledger execution timestamp
+ * @param {number} [protocol] – Specific Stellar protocol version for the executed transaction
  * @return {ParsedTxDetails}
  */
 export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated, protocol}) {

@@ -56,9 +56,9 @@ export async function getDirectoryEntry(address, options) {
 
 /**
  *
- * @param {String} address
- * @param {{[forceRefresh]: Boolean}} [options]
- * @return {String|null}
+ * @param {string} address
+ * @param {{[forceRefresh]: boolean}} [options]
+ * @return {string|null}
  */
 export function useDirectory(address, options) {
     const {forceRefresh = false} = options || {}

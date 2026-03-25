@@ -25,12 +25,12 @@ export default class TxMatcher {
      */
     filters
     /**
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      */
     noFilters = true
     /**
-     * @type {Boolean}
+     * @type {boolean}
      * @private
      */
     skipUnrelated
@@ -42,7 +42,7 @@ export default class TxMatcher {
 
     /**
      * @param {OperationDescriptor} od
-     * @return {Boolean}
+     * @return {boolean}
      */
     matchOperation(od) {
         if (this.noFilters)
@@ -56,7 +56,7 @@ export default class TxMatcher {
 
     /**
      * @param {TransactionBase} tx
-     * @return {Boolean}
+     * @return {boolean}
      */
     matchTxFee(tx) {
         if (!this.filter.asset?.includes('XLM'))
@@ -69,7 +69,7 @@ export default class TxMatcher {
 
     /**
      * @param {OperationDescriptor} od
-     * @return {Boolean}
+     * @return {boolean}
      * @private
      */
     matchOperationProps(od) {
@@ -367,6 +367,6 @@ export default class TxMatcher {
  * Callback for matching operation by type
  * @callback TypeMatcherCallback
  * @param {OperationDescriptor} op - Operation descriptor to match
- * @return {Boolean}
+ * @return {boolean}
  * @internal
  */

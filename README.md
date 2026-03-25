@@ -77,9 +77,9 @@ React hook that auto-reinitializes state when dependencies change using deep com
 
 | Param | Type | Description |
 |-------|------|-------------|
-| `stateInitializer` | `Function\|any` | Initial state or initializer function receiving `(dependencies, prevState)` |
+| `stateInitializer` | `function\|any` | Initial state or initializer function receiving `(dependencies, prevState)` |
 | `dependencies` | `any[]` | Dependencies array (deep compared) |
-| `finalizer` | `Function` | Optional cleanup function |
+| `finalizer` | `function` | Optional cleanup function |
 
 Returns `[state, setState]` — setState also uses deep comparison.
 
@@ -250,7 +250,7 @@ React hook for fetching data from the StellarExpert API with caching and auto-re
 |--------|------|---------|-------------|
 | `refreshInterval` | `number` | — | Auto-refresh interval in seconds |
 | `ttl` | `number` | `60` | Cache TTL in seconds |
-| `processResult` | `Function` | — | Transform the response data |
+| `processResult` | `function` | — | Transform the response data |
 | `allowStaleDataTransition` | `boolean` | `false` | Show stale data during URL transitions |
 
 ```jsx
@@ -281,9 +281,9 @@ React hook for paginated API data with cursor-based navigation.
 | `defaultSortOrder` | `'asc'\|'desc'` | `'desc'` | Default sort order |
 | `autoLoadLastPage` | `boolean` | `true` | Load last page if empty |
 | `includeNetwork` | `boolean` | `true` | Prefix endpoint with network |
-| `dataProcessingCallback` | `Function` | — | Post-process records |
+| `dataProcessingCallback` | `function` | — | Post-process records |
 | `autoLoad` | `boolean` | `true` | Auto-load on mount |
-| `updateLocation` | `boolean\|Function` | `true` | Update browser query string |
+| `updateLocation` | `boolean\|function` | `true` | Update browser query string |
 
 Returns `ExplorerApiListResponse` with `data`, `loaded`, `loading`, `load(page)`, `reset()`, `canLoadNextPage`, `canLoadPrevPage`.
 
@@ -382,7 +382,7 @@ Versatile button rendered as `<button>` or `<a>`.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `href` | `string` | — | Renders as `<a>` tag |
-| `onClick` | `Function` | — | Click handler |
+| `onClick` | `function` | — | Click handler |
 | `block` | `boolean` | `false` | Block-level |
 | `outline` | `boolean` | `false` | Outline style |
 | `clear` | `boolean` | `false` | Text only |
@@ -416,7 +416,7 @@ Customizable dropdown select component.
 |------|------|---------|-------------|
 | `options` | `Array<DropdownOption\|string>` | — | Available options |
 | `value` | `string\|number` | — | Selected value |
-| `onChange` | `Function` | — | Change handler |
+| `onChange` | `function` | — | Change handler |
 | `title` | `any` | — | Display title |
 | `disabled` | `boolean` | `false` | Disabled state |
 | `showToggle` | `boolean` | `true` | Toggle arrow |
@@ -438,7 +438,7 @@ Tabbed interface with optional URL query parameter sync.
 |------|------|-------------|
 | `tabs` | `TabDescriptor[]` | Tab definitions (`{name, title, render?, isDefault?}`) |
 | `selectedTab` | `string` | Controlled selected tab |
-| `onChange` | `Function` | Tab change handler |
+| `onChange` | `function` | Tab change handler |
 | `queryParam` | `string` | Query parameter for URL sync |
 | `right` | `boolean` | Right-align tabs |
 
@@ -514,7 +514,7 @@ Range input slider with optional category labels.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `value` | `number` | `min` | Current value |
-| `onChange` | `Function` | — | Change handler (throttled) |
+| `onChange` | `function` | — | Change handler (throttled) |
 | `min` | `number` | `0` | Minimum |
 | `max` | `number` | `100` | Maximum |
 | `step` | `number` | `1` | Step |
@@ -575,7 +575,7 @@ Expandable/collapsible content toggle.
 | `expanded` | `boolean` | `false` | Initial state |
 | `showMore` | `string` | `'Show more'` | Expand label |
 | `showLess` | `string` | `'Show less'` | Collapse label |
-| `onChange` | `Function` | — | Toggle callback |
+| `onChange` | `function` | — | Toggle callback |
 | `micro` | `boolean` | — | Icon-only mode |
 | `children` | `ReactNode` | — | Hidden content |
 
@@ -722,7 +722,7 @@ Date/time input selector.
 | Prop | Type | Description |
 |------|------|-------------|
 | `value` | `string\|number\|Date` | Current date value |
-| `onChange` | `Function` | Returns Unix timestamp or null |
+| `onChange` | `function` | Returns Unix timestamp or null |
 | `min` | `string` | Min date |
 | `max` | `string` | Max date |
 
@@ -856,7 +856,7 @@ Asset search and selection dropdown.
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `onChange` | `Function` | Selection callback |
+| `onChange` | `function` | Selection callback |
 | `value` | `string` | Selected asset |
 | `predefinedAssets` | `string[]` | Assets shown at top |
 | `restricted` | `boolean` | Limit to predefined list |
@@ -952,7 +952,7 @@ Renders a list of transaction operations with optional effects.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `parsedTx` | `ParsedTxDetails` | — | Parsed transaction |
-| `filter` | `Function` | — | Filter operations |
+| `filter` | `function` | — | Filter operations |
 | `showFees` | `boolean` | `true` | Show fee effects |
 | `compact` | `boolean` | `false` | Compact view |
 | `showEffects` | `boolean` | — | Show effects toggle |

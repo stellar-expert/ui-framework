@@ -4,7 +4,7 @@ import {AccountAddress} from './account-address'
 
 /**
  * @param {Signer} signer
- * @return {{key: String, weight: Number}|null}
+ * @return {{key: string, weight: number}|null}
  * @internal
  */
 function decodeSigner(signer) {
@@ -49,9 +49,9 @@ function decodeSigner(signer) {
 /**
  * Account signer key description
  * @param {Signer} signer - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
- * @param {String} [name] - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
- * @param {String} [className] - Optional CSS class attribute
- * @param {Boolean} [showWeight] - Whether to display weight attribute
+ * @param {string} [name] - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
+ * @param {string} [className] - Optional CSS class attribute
+ * @param {boolean} [showWeight] - Whether to display weight attribute
  * @constructor
  */
 export const SignerKey = React.memo(function SignerKey({signer, name, className, showWeight = true}) {

@@ -3,7 +3,7 @@ const manageOfferOpTypes = ['manageSellOffer', 'manageBuyOffer', 'createPassiveS
 /**
  * Calculate operation resulting balance changes
  * @param {{}} op - Operation descriptor
- * @return {{amount: String, source: String, type: String, asset: String}[]}
+ * @return {{amount: string, source: string, type: string, asset: string}[]}
  */
 export function retrieveOpBalanceChanges(op) {
     const account = op.tx?.context?.account

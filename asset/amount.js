@@ -6,13 +6,13 @@ import {AssetLink} from './asset-link'
 
 /**
  * Formatted tokens amount
- * @param {String|Number} amount - Amount of tokens
- * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
- * @param {String|Number|'auto'} decimals - Number of decimals to show for a formatted numeric value
- * @param {Boolean} [adjust] - Treat amount value as raw Int64 stroops amount
- * @param {Boolean|'floor'} [round] - Round the amount
- * @param {Boolean} [issuer] - Whether to show asset issuer
- * @param {Boolean} [icon] - Whether to show asset icon
+ * @param {string|number} amount - Amount of tokens
+ * @param {string|AssetDescriptor|Asset} asset - Asset name/descriptor
+ * @param {string|number|'auto'} decimals - Number of decimals to show for a formatted numeric value
+ * @param {boolean} [adjust] - Treat amount value as raw Int64 stroops amount
+ * @param {boolean|'floor'} [round] - Round the amount
+ * @param {boolean} [issuer] - Whether to show asset issuer
+ * @param {boolean} [icon] - Whether to show asset icon
  * @constructor
  */
 export const Amount = React.memo(function Amount({amount, asset, decimals, adjust, round, issuer, icon}) {

@@ -12,11 +12,11 @@ import './asset-link.scss'
 
 /**
  * Explorer asset link
- * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
- * @param {Boolean|String} [link] - Reference link
- * @param {Boolean} [issuer] - Whether to show asset issuer
- * @param {Boolean} [icon] - Whether to show asset icon
- * @param {String} [className] - Optional CSS class name
+ * @param {string|AssetDescriptor|Asset} asset - Asset name/descriptor
+ * @param {boolean|string} [link] - Reference link
+ * @param {boolean} [issuer] - Whether to show asset issuer
+ * @param {boolean} [icon] - Whether to show asset icon
+ * @param {string} [className] - Optional CSS class name
  * @param {{}} [style] - Optional CSS style
  * @param {*} [children] - Optional inner link text
  * @constructor

@@ -51,7 +51,7 @@ const opIconMapping = {
 /**
  * Transaction operation icon
  * @param {OperationDescriptor|'feeCharge'} op - Operation descriptor
- * @param {Boolean} failed - Whether the transaction failed during execution
+ * @param {boolean} failed - Whether the transaction failed during execution
  * @constructor
  */
 export const OpIcon = React.memo(function OpIcon({op, failed = false}) {

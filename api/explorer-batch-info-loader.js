@@ -17,12 +17,25 @@ export class ExplorerBatchInfoLoader {
         this.processResponseCallback = processResponseCallback
     }
 
+    /**
+     * @type {{}}
+     * @private
+     */
     pendingRequests
-
+    /**
+     * @type {[]}
+     * @private
+     */
     requestsQueue = []
-
+    /**
+     * @type {function}
+     * @private
+     */
     fetchCallback
-
+    /**
+     * @type {function}
+     * @private
+     */
     processResponseCallback
 
     /**

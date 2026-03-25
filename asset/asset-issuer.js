@@ -5,7 +5,7 @@ import {useAssetMeta} from './asset-meta-hooks'
 
 /**
  * Inline asset issuer
- * @param {String|AssetDescriptor|Asset} asset - Asset name/descriptor
+ * @param {string|AssetDescriptor|Asset} asset - Asset name/descriptor
  * @constructor
  */
 export const AssetIssuer = React.memo(function AssetIssuer({asset}) {

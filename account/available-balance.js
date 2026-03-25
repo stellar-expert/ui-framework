@@ -5,9 +5,9 @@ import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
  * Calculate available balance for a given account balance trustline
  * @param {AccountResponse} account
  * @param {Horizon.BalanceLine} balance
- * @param {Number} [additionalReserves]
- * @param {Number} [decimals=7]
- * @return {String}
+ * @param {number} [additionalReserves]
+ * @param {number} [decimals=7]
+ * @return {string}
  */
 export function calculateAvailableBalance(account, balance, additionalReserves = null, decimals = 7) {
     let available = toStroops(balance.balance) - toStroops(balance.selling_liabilities || 0)

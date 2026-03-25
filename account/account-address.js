@@ -45,16 +45,16 @@ function AccountDisplayName({type, address, name}) {
 
 /**
  * Explorer link for Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
- * @param {String} account - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
- * @param {Number|'all'} [chars] - Visible address characters count
- * @param {Bool|String} [name] - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
- * @param {Bool|String} [link] - Explicit link; if false, the component is rendered without a link
- * @param {Boolean} [icon] - Whether to show/hide account identicon
- * @param {String} [network] - Stellar network identifier
+ * @param {string} account - StrKey-encoded Account/MuxedAccount/Sha256Hash/PreAuthTx/SignedPayload
+ * @param {number|'all'} [chars] - Visible address characters count
+ * @param {boolean|string} [name] - Explicit account name that overrides the name from Directory; if false, friendly name is ignored
+ * @param {boolean|string} [link] - Explicit link; if false, the component is rendered without a link
+ * @param {boolean} [icon] - Whether to show/hide account identicon
+ * @param {string} [network] - Stellar network identifier
  * @param {*} [prefix] - Link prefix
  * @param {*} [suffix] - Link suffix
  * @param {{}} [style] - Optional CSS inline style
- * @param {String} [className] - Optional CSS class attribute
+ * @param {string} [className] - Optional CSS class attribute
  * @param {...*} [otherProps] - Optional container parameters
  * @constructor
  */

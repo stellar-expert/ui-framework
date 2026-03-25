@@ -25,7 +25,7 @@ function getAccountPredefinedDisplayName(address) {
 
 /**
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function OpSourceAccount({op, compact}) {
@@ -49,7 +49,7 @@ function OpSourceAccount({op, compact}) {
 
 /**
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function CreateAccountDescriptionView({op, compact}) {
@@ -67,7 +67,7 @@ function CreateAccountDescriptionView({op, compact}) {
 /**
  * Type: 1
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function PaymentDescriptionView({op, compact}) {
@@ -85,7 +85,7 @@ function PaymentDescriptionView({op, compact}) {
 /**
  * Type: 2, 13
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function PathPaymentDescriptionView({op, compact}) {
@@ -157,7 +157,7 @@ function PathPaymentDescriptionView({op, compact}) {
 /**
  * Type: 3, 4, 12
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ManageOfferDescriptionView({op, compact}) {
@@ -234,7 +234,7 @@ function AccountFlags({flags}) {
 /**
  * Type: 5
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function SetOptionsDescriptionView({op, compact}) {
@@ -307,7 +307,7 @@ function SetOptionsDescriptionView({op, compact}) {
 /**
  * Type: 6
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ChangeTrustDescriptionView({op, compact}) {
@@ -340,7 +340,7 @@ function ChangeTrustDescriptionView({op, compact}) {
 /**
  * Type: 7
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function AllowTrustDescriptionView({op, compact}) {
@@ -362,7 +362,7 @@ function AllowTrustDescriptionView({op, compact}) {
 /**
  * Type: 8
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function MergeAccountDescriptionView({op, compact}) {
@@ -380,7 +380,7 @@ function MergeAccountDescriptionView({op, compact}) {
 /**
  * Type: 9
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function InflationDescriptionView({op, compact}) {
@@ -396,7 +396,7 @@ function InflationDescriptionView({op, compact}) {
 /**
  * Type: 10
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ManageDataDescriptionView({op, compact}) {
@@ -424,7 +424,7 @@ function ManageDataDescriptionView({op, compact}) {
 /**
  * Type: 11
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function BumpSequenceDescriptionView({op, compact}) {
@@ -441,7 +441,7 @@ function BumpSequenceDescriptionView({op, compact}) {
 /**
  * Type: 14
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function CreateClaimableBalanceDescriptionView({op, compact}) {
@@ -466,7 +466,7 @@ function CreateClaimableBalanceDescriptionView({op, compact}) {
 /**
  * Type: 15
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ClaimClaimableBalanceDescriptionView({op, compact}) {
@@ -484,7 +484,7 @@ function ClaimClaimableBalanceDescriptionView({op, compact}) {
 /**
  * Type: 16
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function BeginSponsoringFutureReservesDescriptionView({op, compact}) {
@@ -501,7 +501,7 @@ function BeginSponsoringFutureReservesDescriptionView({op, compact}) {
 /**
  * Type: 17
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function EndSponsoringFutureReservesDescriptionView({op, compact}) {
@@ -517,7 +517,7 @@ function EndSponsoringFutureReservesDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeAccountSponsorshipDescriptionView({op, compact}) {
@@ -534,7 +534,7 @@ function RevokeAccountSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeSignerSponsorshipDescriptionView({op, compact}) {
@@ -554,7 +554,7 @@ function RevokeSignerSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeTrustlineSponsorshipDescriptionView({op, compact}) {
@@ -573,7 +573,7 @@ function RevokeTrustlineSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeOfferSponsorshipDescriptionView({op, compact}) {
@@ -592,7 +592,7 @@ function RevokeOfferSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeDataSponsorshipDescriptionView({op, compact}) {
@@ -611,7 +611,7 @@ function RevokeDataSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeClaimableBalanceSponsorshipDescriptionView({op, compact}) {
@@ -629,7 +629,7 @@ function RevokeClaimableBalanceSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 18
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RevokeLiquidityPoolSponsorshipDescriptionView({op, compact}) {
@@ -647,7 +647,7 @@ function RevokeLiquidityPoolSponsorshipDescriptionView({op, compact}) {
 /**
  * Type: 19
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ClawbackDescriptionView({op, compact}) {
@@ -666,7 +666,7 @@ function ClawbackDescriptionView({op, compact}) {
 /**
  * Type: 20
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ClawbackClaimableBalanceDescriptionView({op, compact}) {
@@ -683,7 +683,7 @@ function ClawbackClaimableBalanceDescriptionView({op, compact}) {
 /**
  * Type: 21
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function SetTrustLineFlagsDescriptionView({op, compact}) {
@@ -716,7 +716,7 @@ function SetTrustLineFlagsDescriptionView({op, compact}) {
 /**
  * Type: 22
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function DepositLiquidityDescriptionView({op, compact}) {
@@ -741,7 +741,7 @@ function DepositLiquidityDescriptionView({op, compact}) {
 /**
  * Type: 23
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function WithdrawLiquidityDescriptionView({op, compact}) {
@@ -766,7 +766,7 @@ function WithdrawLiquidityDescriptionView({op, compact}) {
 /**
  * Type: 24
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function InvokeHostFunctionView({op, compact}) {
@@ -858,7 +858,7 @@ function InvokeHostFunctionView({op, compact}) {
 /**
  * Type: 25
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function ExtendFootprintTTLView({op}) {
@@ -876,7 +876,7 @@ function ExtendFootprintTTLView({op}) {
 /**
  * Type: 26
  * @param {OperationDescriptor} op
- * @param {Boolean} compact
+ * @param {boolean} compact
  * @constructor
  */
 function RestoreFootprintView({op}) {
@@ -929,7 +929,7 @@ const typeMapping = {
 /**
  * Text description of a tx operation
  * @param {OperationDescriptor} op
- * @param {Boolean} [compact]
+ * @param {boolean} [compact]
  * @constructor
  */
 export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {

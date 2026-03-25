@@ -5,22 +5,22 @@ export default class OperationDescriptor {
      */
     operation
     /**
-     * @type {String} - Parent transaction hash
+     * @type {string} - Parent transaction hash
      * @readonly
      */
     txHash
     /**
-     * @type {Number} - Application order
+     * @type {number} - Application order
      * @readonly
      */
     order
     /**
-     * @type {Boolean} - True for unsubmitted|unsuccessful transactions
+     * @type {boolean} - True for unsubmitted|unsuccessful transactions
      * @readonly
      */
     isEphemeral
     /**
-     * @type {Boolean} - Whether the enclosing transaction has been successfully executed
+     * @type {boolean} - Whether the enclosing transaction has been successfully executed
      * @readonly
      */
     successful
@@ -28,9 +28,9 @@ export default class OperationDescriptor {
     /**
      * Prepare descriptors for transaction operations
      * @param {BaseOperation[]} operations
-     * @param {String} txHash
-     * @param {Boolean} isEphemeral
-     * @param {Boolean} successful
+     * @param {string} txHash
+     * @param {boolean} isEphemeral
+     * @param {boolean} successful
      * @return {OperationDescriptor[]}
      */
     static parseOperations(operations, txHash, isEphemeral, successful) {

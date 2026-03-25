@@ -13,7 +13,7 @@ if (preferredTheme) {
 }
 
 /**
- * @returns {[colorTheme: String, setTheme: Function]}
+ * @returns {[colorTheme: string, setTheme: function]}
  */
 export function useTheme() {
     const [theme, setTheme] = useState(localStorage.getItem('preferred-color-theme') || 'day')

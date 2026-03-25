@@ -13,7 +13,7 @@ export function loadLedgers(queryParams = null) {
 
 /**
  * Load ledger by its sequence
- * @param {Number} sequence - Sequence of the ledger to fetch
+ * @param {number} sequence - Sequence of the ledger to fetch
  * @return {Object}
  */
 export function loadLedger(sequence) {
@@ -24,9 +24,9 @@ export function loadLedger(sequence) {
 
 /**
  * Stream ledgers from Horizon
- * @param {String} cursor - Cursor to start from
- * @param {Function} onNewLedger - Callback to invoke when new ledger arrives
- * @return {Function}
+ * @param {string} cursor - Cursor to start from
+ * @param {function} onNewLedger - Callback to invoke when new ledger arrives
+ * @return {function}
  */
 export function streamLedgers(cursor, onNewLedger) {
     return initHorizon().ledgers()

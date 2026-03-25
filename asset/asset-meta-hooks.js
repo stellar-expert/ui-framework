@@ -8,16 +8,16 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 
 /**
  * @typedef AssetBasicTomlInfo
- * @property {String} name
- * @property {String} orgName
- * @property {String} image
- * @property {Number} decimals
+ * @property {string} name
+ * @property {string} orgName
+ * @property {string} image
+ * @property {number} decimals
  */
 
 /**
  * @typedef AssetMeta
- * @property {String} name
- * @property {String} domain
+ * @property {string} name
+ * @property {string} domain
  * @property {AssetBasicTomlInfo} toml_info
  */
 
@@ -55,7 +55,7 @@ function normalizeAssetName(asset) {
 
 /**
  *
- * @param {AssetDescriptor|String} asset
+ * @param {AssetDescriptor|string} asset
  * @return {AssetMeta}
  */
 export function useAssetMeta(asset) {

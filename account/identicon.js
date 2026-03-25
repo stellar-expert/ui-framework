@@ -40,9 +40,9 @@ function decodeBase32(input) {
 
 /**
  * Draw Stellar address identicon on the given canvas
- * @param {String} address - StrKey-encoded account address
- * @param {Number} [size] - Identicon painting area size, in pixels (by default 448)
- * @return {String}
+ * @param {string} address - StrKey-encoded account address
+ * @param {number} [size] - Identicon painting area size, in pixels (by default 448)
+ * @return {string}
  */
 export function drawIdenticon(address, size = SIZE) {
     //take 16 meaningful bytes from the raw pub key
@@ -70,8 +70,8 @@ export function drawIdenticon(address, size = SIZE) {
 
 /**
  * Renders account-specific identicon
- * @param {String} address - StrKey-encoded account address
- * @param {Number} size - Identicon size
+ * @param {string} address - StrKey-encoded account address
+ * @param {number} size - Identicon size
  * @constructor
  */
 export const AccountIdenticon = React.memo(function AccountIdenticon({address, size}) {

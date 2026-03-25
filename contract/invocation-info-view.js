@@ -45,13 +45,13 @@ const ExtendedInvocationInfoView = React.memo(function ({contract, func, args, r
     const fd = meta.functions[func]
     if (!fd)
         return <div className="error"><i className="icon-warning-circle"/> Failed to parse contract code</div>
-    const shouldIndent = args.length > 2 || Object.values(fd.inputs).some(i => !primitiveTypes.has(i.type)) // multi-line display for large argument number or complex types
+    const shouldIndent = args.length > 2 || fd.inputs.some(i => !primitiveTypes.has(i.type)) // multi-line display for large argument number or complex types
     const contractInfo = sac ?
         <> from asset <AssetLink asset={sac}/></> :
         <span className="text-tiny dimmed">
             &emsp;SDK v{meta.sdkVersion.split('#')[0]}&emsp;RUST v{shortenString(meta.rustVersion, 12)}
         </span>
-    const contractArgNames = Object.keys(fd.inputs)
+    const contractArgNames = fd.inputs.map(i => i.name)
     //TODO: show contract validation info
     return <div>
         <div>

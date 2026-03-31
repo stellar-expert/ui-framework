@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {forwardRef, useCallback, useEffect, useState} from 'react'
 import {debounce} from 'throttle-debounce'
 import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
 
@@ -10,7 +10,7 @@ import {normalizeDate, toUnixTimestamp} from '@stellar-expert/formatter'
  * @param {string} [max] - Maximum allowed date
  * @param {*} [ref]
  */
-export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
+export const DateSelector = forwardRef(({value, onChange, min, max, ...otherProps}, ref) => {
     const [date, setDate] = useState(value ? trimIsoDateSeconds(normalizeDate(value)) : '')
     useEffect(() => {
         if (value) {
@@ -35,7 +35,7 @@ export function DateSelector({value, onChange, min, max, ref, ...otherProps}) {
     return <input type="datetime-local" value={date} className="date-selector condensed" step={60} ref={ref}
                   min={min || minSelectableValue} max={max} onChange={e => selectDate(e.target.value)}
                   style={{width: '11em', overflow: 'hidden'}} {...otherProps}/>
-}
+})
 
 /**
  * Trim seconds and milliseconds for basic ISO date format representation

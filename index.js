@@ -87,6 +87,8 @@ export * from './tx/tx-list-hooks'
 export * from './effect/effect-description'
 //contract-related components
 export * from './contract/contract-api'
+//filter component
+export * from './filter/filter-view'
 //Stellar-specific utils
 export * from './stellar/key-type'
 export * from './stellar/signature-hint-utils'

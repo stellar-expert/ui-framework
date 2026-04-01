@@ -1180,6 +1180,36 @@ export const ScValStruct: React.FC<ScValStructProps>;
 export const primitiveTypes: Set<string>;
 
 // ============================================================================
+// Filters
+// ============================================================================
+
+export interface FilterFieldDescriptor {
+    /** Icon CSS class suffix (prepended with "icon-") */
+    icon: string;
+    /** Short title displayed in the filter condition */
+    title: string;
+    /** Description shown in the "Add filter" dropdown and as tooltip */
+    description: string;
+    /** Whether multiple values are allowed for this field (default true) */
+    multi?: boolean;
+}
+
+export interface FilterViewProps {
+    /** Initial base filters that are always applied */
+    presetFilter?: Record<string, any>;
+    /** Filter field definitions keyed by field name */
+    fields?: Record<string, FilterFieldDescriptor>;
+    /** Callback triggered when filters change, receives merged preset + user filters */
+    onChange?: (mergedFilters: Record<string, any>) => void;
+}
+
+/** Composable filter panel for managing search filters with URL query sync */
+export function FilterView(props: FilterViewProps): React.ReactElement;
+
+/** Parse and validate filter parameters from the current URL query string */
+export function parseFiltersFromQuery(): Record<string, any>;
+
+// ============================================================================
 // Stellar Utilities
 // ============================================================================
 
@@ -1208,7 +1238,7 @@ export function signatureHintToMask(hint: Buffer): string;
 export function formatSignatureHint(hint: Buffer): string;
 
 /** Check if a hint matches a specific key (note: function name has a typo) */
-export function singatureHintMatchesKey(hint: Buffer, key: string): boolean;
+export function signatureHintMatchesKey(hint: Buffer, key: string): boolean;
 
 /** Find a key matching a signature hint */
 export function findKeyBySignatureHint(hint: Buffer, allKeys: string[]): string | null;

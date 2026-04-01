@@ -1011,6 +1011,49 @@ React hook for transaction details by ID or hash.
 
 ---
 
+### Filters
+
+#### `FilterView`
+
+Composable filter panel for managing search filters with URL query parameter sync. Supports multiple filter types including accounts, assets, operation types, timestamps, offers, and liquidity pools.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `presetFilter` | `object` | — | Initial base filters always applied |
+| `fields` | `object` | `{}` | Filter field definitions keyed by field name |
+| `onChange` | `function` | — | Callback receiving merged preset + user filters |
+
+Each entry in `fields` is a `FilterFieldDescriptor`:
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `icon` | `string` | — | Icon class suffix (prepended with `icon-`) |
+| `title` | `string` | — | Short title in filter condition |
+| `description` | `string` | — | Tooltip / "Add filter" dropdown text |
+| `multi` | `boolean` | `true` | Allow multiple values for this field |
+
+Supported field keys: `type`, `account`, `source`, `destination`, `asset`, `src_asset`, `dest_asset`, `from`, `to`, `memo`, `offer`, `pool`, `topic`.
+
+```jsx
+import {FilterView, parseFiltersFromQuery} from '@stellar-expert/ui-framework'
+
+<FilterView
+    presetFilter={{account: [address]}}
+    fields={{
+        type: {icon: 'hexagon', title: 'Type', description: 'Operation type'},
+        asset: {icon: 'asset', title: 'Asset', description: 'Asset involved'},
+        from: {icon: 'clock', title: 'From', description: 'Start date', multi: false},
+        to: {icon: 'clock', title: 'To', description: 'End date', multi: false}
+    }}
+    onChange={filters => setActiveFilters(filters)}/>
+```
+
+#### `parseFiltersFromQuery()`
+
+Parses and validates filter parameters from the current URL query string against registered field definitions. Returns an object with matched filter key-value pairs.
+
+---
+
 ### Effects
 
 #### `EffectDescription`
@@ -1098,9 +1141,9 @@ Convert a signature hint Buffer to a StrKey mask string.
 
 Format a signature hint for display.
 
-#### `singatureHintMatchesKey(hint, key)`
+#### `signatureHintMatchesKey(hint, key)`
 
-Check if a hint matches a key. Note: function name contains a typo ("singature").
+Check if a hint matches a key.
 
 #### `findKeyBySignatureHint(hint, allKeys)`
 

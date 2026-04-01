@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.18.0",
+  "version": "1.19.0",
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "module": "./index.js",
@@ -28,8 +28,8 @@
     "deepmerge": "^4.3.1",
     "prop-types": ">=15",
     "qrcode.react": "^4.2.0",
-    "react": ">=17",
-    "react-dom": ">=17",
+    "react": ">=17 <18.0.0",
+    "react-dom": ">=17 <18.0.0",
     "react-fast-compare": ">=3",
     "throttle-debounce": ">=5.0.0"
   },
@@ -38,5 +38,34 @@
     "history": "^4.10.1",
     "react-copy-to-clipboard": "^5.1.0",
     "react-timeago": "^7.2.0"
-  }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "index.scss",
+    ".npmrc",
+    "account/*",
+    "api/*",
+    "asset/*",
+    "basic-styles/*",
+    "claimable-balance/*",
+    "contract/*",
+    "controls/*",
+    "date/*",
+    "dex/*",
+    "directory/*",
+    "effect/*",
+    "errors/*",
+    "filter/*",
+    "fonts/*",
+    "horizon/*",
+    "interaction/*",
+    "ledger/*",
+    "meta/*",
+    "module/*",
+    "state/*",
+    "stellar/*",
+    "toast/*",
+    "tx/*"
+  ]
 }

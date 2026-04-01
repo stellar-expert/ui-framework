@@ -28,7 +28,7 @@ export function formatSignatureHint(hint) {
  * @param {string} key - Key to compare
  * @return {boolean}
  */
-export function singatureHintMatchesKey(hint, key) {
+export function signatureHintMatchesKey(hint, key) {
     return signatureHintToMask(hint).substring(47, 52) === key.substring(47, 52)
 }
 
@@ -39,7 +39,7 @@ export function singatureHintMatchesKey(hint, key) {
  * @return {string|null}
  */
 export function findKeyBySignatureHint(hint, allKeys) {
-    return allKeys.find(key => singatureHintMatchesKey(hint, key))
+    return allKeys.find(key => signatureHintMatchesKey(hint, key))
 }
 
 /**
@@ -49,7 +49,7 @@ export function findKeyBySignatureHint(hint, allKeys) {
  * @returns {Signature}
  */
 export function findSignatureByKey(key, allSignatures = []) {
-    return allSignatures.find(sig => singatureHintMatchesKey(sig.hint(), key))
+    return allSignatures.find(sig => signatureHintMatchesKey(sig.hint(), key))
 }
 
 /**

@@ -32,14 +32,15 @@ function FilterCondition({field, value, setValue, removeFilter, edit}) {
 }
 /**
  * Parses and validates filter parameters from the current URL query string
+ * @param {object} [fields] - Custom filter field definitions
  * @return {object}
  */
-export function parseFiltersFromQuery() {
+export function parseFiltersFromQuery(fields = fieldDescriptionMapping) {
     const params = parseQuery()
     const filters = {}
     let isEmpty = true
     for (const [key, value] of Object.entries(params)) {
-        const filterDescriptor = fieldDescriptionMapping[key]
+        const filterDescriptor = fields[key]
         if (!filterDescriptor)
             continue //skip unrelated query parameters
         filters[key] = value
@@ -124,10 +125,10 @@ export function FilterView({presetFilter, fields = {}, onChange}) {
     }, [onChange])
 
     useEffect(() => {
-        const queryParams = parseFiltersFromQuery()
+        const queryParams = parseFiltersFromQuery(fields)
         setFilters(queryParams)
         updateExternalFilters(queryParams)
-    }, [])
+    }, [fields])
 
 
     const replaceFilter = useCallback((field, value) => setTimeout(() => setFilters(prev => {

@@ -1207,7 +1207,7 @@ export interface FilterViewProps {
 export function FilterView(props: FilterViewProps): React.ReactElement;
 
 /** Parse and validate filter parameters from the current URL query string */
-export function parseFiltersFromQuery(): Record<string, any>;
+export function parseFiltersFromQuery(fields: FilterFieldDescriptor): Record<string, any>;
 
 // ============================================================================
 // Stellar Utilities

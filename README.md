@@ -1048,9 +1048,9 @@ import {FilterView, parseFiltersFromQuery} from '@stellar-expert/ui-framework'
     onChange={filters => setActiveFilters(filters)}/>
 ```
 
-#### `parseFiltersFromQuery()`
+#### `parseFiltersFromQuery(fields)`
 
-Parses and validates filter parameters from the current URL query string against registered field definitions. Returns an object with matched filter key-value pairs.
+Parses and validates filter parameters from the current URL query string against passed field definitions. Returns an object with matched filter key-value pairs.
 
 ---
 

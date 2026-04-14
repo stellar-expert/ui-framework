@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {parseQuery} from '@stellar-expert/navigation'
+import {navigation, parseQuery} from '@stellar-expert/navigation'
 import deepmerge from 'deepmerge'
 import {Dropdown} from '../controls/dropdown'
 import {resolveFilterEditor} from './filter-editors'
@@ -10,10 +10,16 @@ let fieldDescriptionMapping = {}
 function FilterCondition({field, value, setValue, removeFilter, edit}) {
     const updateValue = useCallback(function (value) {
         setValue(field, value)
+        //reset cursor when apply filter
+        navigation.updateQuery({cursor: undefined})
     }, [field, setValue])
 
     const removeValue = useCallback(function () {
         removeFilter(field, value)
+        //reset cursor when remove applied filter
+        if (!!value) {
+            navigation.updateQuery({cursor: undefined})
+        }
     }, [field, value, removeFilter])
 
     const childProps = {value, edit}
@@ -27,7 +33,9 @@ function FilterCondition({field, value, setValue, removeFilter, edit}) {
     return <span className="filter-condition condensed" title={edit ? '' : filter.description}>
         <span className={'icon-' + filter.icon}/>
         {title} {React.createElement(editor, childProps)}
-        {removeFilter ? <a href="#" className="icon-delete-circle" onClick={removeValue} title="Remove filter"/> : <>&emsp;</>}
+        {removeFilter ?
+            <a href="#" className="icon-delete-circle" onClick={removeValue} title="Remove filter"/> :
+            !!setValue ? <>&emsp;&nbsp;&nbsp;</> : <>&emsp;</>}
     </span>
 }
 /**
@@ -203,7 +211,7 @@ export function FilterView({presetFilter, fields = {}, onChange}) {
         <div className="mobile-only micro-space"/>
         <span className="icon-filter"/>&nbsp;Filters&emsp;
         <FiltersGroup filters={presetFilter}/>
-        <FiltersGroup filters={readyFilters} replaceFilter={replaceFilter} removeFilter={removeFilter}/>
+        <FiltersGroup filters={readyFilters} replaceFilter={replaceFilter} removeFilter={!editorMode ? removeFilter : null}/>
         {!editorMode ?
             <Dropdown title={title} options={availableFields} onChange={addFilter}/> :
             <div className="micro-space">

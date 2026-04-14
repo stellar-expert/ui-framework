@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import {parseQuery} from '@stellar-expert/navigation'
+import {navigation, parseQuery} from '@stellar-expert/navigation'
 import deepmerge from 'deepmerge'
 import {Dropdown} from '../controls/dropdown'
 import {resolveFilterEditor} from './filter-editors'
@@ -10,10 +10,16 @@ let fieldDescriptionMapping = {}
 function FilterCondition({field, value, setValue, removeFilter, edit}) {
     const updateValue = useCallback(function (value) {
         setValue(field, value)
+        //reset cursor when apply filter
+        navigation.updateQuery({cursor: undefined})
     }, [field, setValue])
 
     const removeValue = useCallback(function () {
         removeFilter(field, value)
+        //reset cursor when remove applied filter
+        if (!!value) {
+            navigation.updateQuery({cursor: undefined})
+        }
     }, [field, value, removeFilter])
 
     const childProps = {value, edit}
@@ -27,19 +33,22 @@ function FilterCondition({field, value, setValue, removeFilter, edit}) {
     return <span className="filter-condition condensed" title={edit ? '' : filter.description}>
         <span className={'icon-' + filter.icon}/>
         {title} {React.createElement(editor, childProps)}
-        {removeFilter ? <a href="#" className="icon-delete-circle" onClick={removeValue} title="Remove filter"/> : <>&emsp;</>}
+        {removeFilter ?
+            <a href="#" className="icon-delete-circle" onClick={removeValue} title="Remove filter"/> :
+            !!setValue ? <>&emsp;&nbsp;&nbsp;</> : <>&emsp;</>}
     </span>
 }
 /**
  * Parses and validates filter parameters from the current URL query string
+ * @param {object} [fields] - Custom filter field definitions
  * @return {object}
  */
-export function parseFiltersFromQuery() {
+export function parseFiltersFromQuery(fields = fieldDescriptionMapping) {
     const params = parseQuery()
     const filters = {}
     let isEmpty = true
     for (const [key, value] of Object.entries(params)) {
-        const filterDescriptor = fieldDescriptionMapping[key]
+        const filterDescriptor = fields[key]
         if (!filterDescriptor)
             continue //skip unrelated query parameters
         filters[key] = value
@@ -124,10 +133,10 @@ export function FilterView({presetFilter, fields = {}, onChange}) {
     }, [onChange])
 
     useEffect(() => {
-        const queryParams = parseFiltersFromQuery()
+        const queryParams = parseFiltersFromQuery(fields)
         setFilters(queryParams)
         updateExternalFilters(queryParams)
-    }, [])
+    }, [fields])
 
 
     const replaceFilter = useCallback((field, value) => setTimeout(() => setFilters(prev => {
@@ -202,7 +211,7 @@ export function FilterView({presetFilter, fields = {}, onChange}) {
         <div className="mobile-only micro-space"/>
         <span className="icon-filter"/>&nbsp;Filters&emsp;
         <FiltersGroup filters={presetFilter}/>
-        <FiltersGroup filters={readyFilters} replaceFilter={replaceFilter} removeFilter={removeFilter}/>
+        <FiltersGroup filters={readyFilters} replaceFilter={replaceFilter} removeFilter={!editorMode ? removeFilter : null}/>
         {!editorMode ?
             <Dropdown title={title} options={availableFields} onChange={addFilter}/> :
             <div className="micro-space">

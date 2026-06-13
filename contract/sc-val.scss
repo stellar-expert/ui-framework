@@ -1,3 +1,5 @@
 .sc-val {
   line-height: 1;
+  // Break long byte/hash values so they don't overflow the screen on mobile.
+  overflow-wrap: anywhere;
 }

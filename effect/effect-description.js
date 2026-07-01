@@ -219,7 +219,7 @@ export function EffectDescription({effect, operation}) {
         case 'contractCodeUploaded':
         case 'contractCodeRestored':
             return <>Contract code {getEffectAction(effect, 'contractCode')}
-                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasm || effect.wasmHash}/></LedgerKeyHint></>
+                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasmHash || effect.wasm}/></LedgerKeyHint></>
         case 'contractCreated':
         case 'contractUpdated':
         case 'contractRestored':

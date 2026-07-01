@@ -1269,3 +1269,39 @@ declare global {
     var explorerApiOrigin: string;
     var horizonOrigin: string;
 }
+
+export interface ChartProps {
+    /** Chart data and options */
+    options?: Record<string, any>;
+    /** Chart kind */
+    type?: 'Chart' | 'StockChart';
+    /** Chart title */
+    title?: React.ReactNode;
+    /** Render as inline-block (sparkline charts) */
+    inline?: boolean;
+    /** Apply data grouping */
+    grouped?: boolean;
+    /** Date range / range-selector */
+    range?: true | false | 'year' | 'month';
+    /** Hide the legend section */
+    noLegend?: boolean;
+    /** Container CSS class */
+    container?: string;
+    /** Additional CSS classes */
+    className?: string;
+    /** Inline styles */
+    style?: React.CSSProperties;
+    /** Additional engine modules */
+    modules?: Function[];
+    /** Optional header children */
+    children?: React.ReactNode;
+}
+
+/** In-house zero-dependency pure-JS SVG chart component */
+export const Chart: React.FC<ChartProps>;
+
+/** Charting engine namespace (Chart, StockChart, setOptions, getOptions, Color, Axis, merge) */
+export const ChartEngine: Record<string, any>;
+
+/** Placeholder shown while a chart's data is loading */
+export const ChartLoader: React.FC<{ title?: React.ReactNode; unavailable?: boolean; container?: string }>;

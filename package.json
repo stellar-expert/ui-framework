@@ -1,12 +1,13 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "1.19.2",
+  "version": "1.20.0",
   "description": "StellarExpert shared UI components library",
   "main": "index.js",
   "module": "./index.js",
   "types": "index.d.ts",
   "sideEffects": [
-    "*.scss"
+    "*.scss",
+    "./charts/chart-default-options.js"
   ],
   "keywords": [
     "StellarExpert",
@@ -48,6 +49,8 @@
     "api/*",
     "asset/*",
     "basic-styles/*",
+    "charts/*",
+    "charts/**/*",
     "claimable-balance/*",
     "contract/*",
     "controls/*",

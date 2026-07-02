@@ -93,3 +93,5 @@ export * from './filter/filter-view'
 export * from './stellar/key-type'
 export * from './stellar/signature-hint-utils'
 export * from './contract/sc-val'
+//charts
+export {default as Chart, ChartEngine, ChartLoader} from './charts'

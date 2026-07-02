@@ -1,0 +1,185 @@
+import {dateFormat} from '../core/time'
+import {isNumber, addThousandsSep} from '../core/utilities'
+
+function formatValue(v, tooltipOpts) {
+    if (!isNumber(v))
+        return '—'
+    let s
+    if (tooltipOpts && isNumber(tooltipOpts.valueDecimals)) {
+        s = v.toFixed(tooltipOpts.valueDecimals)
+    } else {
+        s = String(Math.round(v * 1000) / 1000)
+    }
+    s = addThousandsSep(s)
+    if (tooltipOpts && tooltipOpts.valuePrefix)
+        s = tooltipOpts.valuePrefix + s
+    if (tooltipOpts && tooltipOpts.valueSuffix)
+        s += tooltipOpts.valueSuffix
+    return s
+}
+
+const DAY = 24 * 3600 * 1000
+
+//Header for a hovered point: a single instant, or the grouped bucket range ("September-October 2021")
+//when data grouping carries a unit/multiple on the point.
+function pointHeader(point, key, xAxis) {
+    if (xAxis.type !== 'datetime')
+        return xAxis.categories ? xAxis.categories[key] : key
+    const unit = point && point.groupUnit
+    const mult = (point && point.groupMult) || 1
+    const d = new Date(key)
+    if (unit === 'year')
+        return mult > 1 ? `${d.getUTCFullYear()}-${d.getUTCFullYear() + mult - 1}` : `${d.getUTCFullYear()}`
+    if (unit === 'month') {
+        if (mult <= 1)
+            return dateFormat('%B %Y', key)
+        const end = Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + mult - 1, 1)
+        return `${dateFormat('%B', key)}-${dateFormat('%B', end)} ${new Date(end).getUTCFullYear()}`
+    }
+    if ((unit === 'week' || unit === 'day') && mult * (unit === 'week' ? 7 : 1) > 1) {
+        const span = (unit === 'week' ? 7 : 1) * mult
+        return `${dateFormat('%b %e', key)} - ${dateFormat('%b %e, %Y', key + (span - 1) * DAY)}`
+    }
+    //single day / sub-day instant
+    return dateFormat('%b %e, %Y', key)
+}
+
+export class Tooltip {
+    constructor(chart) {
+        this.chart = chart
+    }
+
+    bind() {
+        const chart = this.chart
+        if (!chart.options.tooltip.enabled)
+            return
+        this.overlay = chart.renderer.group('ix-tooltip-overlay').add(chart.renderer.root)
+        this.box = document.createElement('div')
+        Object.assign(this.box.style, {
+            position: 'absolute',
+            pointerEvents: 'none',
+            zIndex: 20,
+            display: 'none',
+            background: 'rgba(247,247,247,0.85)',
+            border: '1px solid var(--color-border-shadow)',
+            borderRadius: '3px',
+            padding: '5px 8px',
+            font: '12px Roboto Condensed,sans-serif',
+            color: '#15171a',
+            whiteSpace: 'nowrap',
+            boxShadow: '0 1px 6px rgba(0,0,0,0.3)'
+        })
+        chart.container.appendChild(this.box)
+        this.svg = chart.renderer.root.element
+        this.moveHandler = e => this.onMove(e)
+        this.leaveHandler = () => this.hide()
+        this.svg.addEventListener('mousemove', this.moveHandler)
+        this.svg.addEventListener('mouseleave', this.leaveHandler)
+    }
+
+    onMove(e) {
+        const chart = this.chart
+        const rect = this.svg.getBoundingClientRect()
+        const scaleX = chart.chartWidth / rect.width
+        const mx = (e.clientX - rect.left) * scaleX
+        const my = (e.clientY - rect.top) * (chart.chartHeight / rect.height)
+        if (mx < chart.plotLeft || mx > chart.plotLeft + chart.plotWidth ||
+            my < chart.plotTop || my > chart.plotTop + chart.plotHeight) {
+            this.hide()
+            return
+        }
+        const xAxis = chart.xAxis[0]
+        const span = (xAxis.max - xAxis.min) || 1
+        const xVal = xAxis.min + ((mx - xAxis.left) / xAxis.len) * span
+
+        //snap to the nearest DRAWN point (grouped buckets / columns), so the crosshair jumps column-to-column
+        //and the tooltip reports the group value — not the raw ungrouped sample
+        let key = null
+        for (const s of chart.series) {
+            if (!s.visible || !s.plotPoints.length) continue
+            let best = null, bd = Infinity
+            for (const p of s.plotPoints) {
+                const d = Math.abs(p.x - xVal)
+                if (d < bd) { bd = d; best = p }
+            }
+            if (best) { key = best.x; break }
+        }
+        if (key === null) { this.hide(); return }
+
+        const rows = []
+        const markers = []
+        for (const s of chart.series) {
+            if (!s.visible) continue
+            let best = null, bd = Infinity
+            for (const p of s.plotPoints) {
+                const d = Math.abs(p.x - key)
+                if (d < bd) { bd = d; best = p }
+            }
+            if (best && isNumber(best.y)) {
+                //series-level tooltip wins; fall back to the chart-level tooltip (e.g. OHLC pointFormatter)
+                const tOpts = s.options.tooltip || chart.options.tooltip
+                if (tOpts && typeof tOpts.pointFormatter === 'function') {
+                    rows.push(`<div><span style="color:${s.getColor()}">●</span> ${tOpts.pointFormatter.call(best)}</div>`)
+                } else {
+                    rows.push(`<div><span style="color:${s.getColor()}">●</span> ${s.name || ''}: <b>${formatValue(best.y, tOpts)}</b></div>`)
+                }
+                markers.push({s, p: best})
+            }
+        }
+        if (!rows.length) { this.hide(); return }
+
+        //crosshair
+        const cx = xAxis.toPixels(key)
+        this.overlay.element.innerHTML = ''
+        if (chart.options.tooltip.crosshairs !== false && xAxis.options.crosshair !== false) {
+            chart.renderer.line(cx, chart.plotTop, cx, chart.plotTop + chart.plotHeight, {'stroke-width': 1})
+                .css({stroke: 'var(--color-text)', 'stroke-opacity': 0.55}).add(this.overlay)
+        }
+        //highlight the hovered point — only on line/area series (columns show via the crosshair),
+        //a single point marker
+        for (const {s, p} of markers) {
+            if (/^(column|bar)$/.test(s.type))
+                continue
+            if (!isNumber(p.plotX) || !isNumber(p.plotY))
+                continue
+            const color = s.getColor()
+            //translucent halo behind the point
+            chart.renderer.circle(p.plotX, p.plotY, 8, {})
+                .css({fill: color, 'fill-opacity': 0.25, stroke: 'none'})
+                .add(this.overlay)
+            //the point marker: series-color fill with a white ring
+            chart.renderer.circle(p.plotX, p.plotY, 4, {})
+                .css({fill: color, stroke: '#fff', 'stroke-width': 2})
+                .add(this.overlay)
+        }
+
+        const header = pointHeader(markers[0] && markers[0].p, key, xAxis)
+        this.box.innerHTML = `<div style="opacity:.7;margin-bottom:2px">${header}</div>` + rows.join('')
+        this.box.style.display = 'block'
+
+        //position relative to container, flip side past mid-plot
+        const boxRect = this.box.getBoundingClientRect()
+        const pxCss = cx / scaleX
+        const left = pxCss > rect.width / 2 ? pxCss - boxRect.width - 14 : pxCss + 14
+        const top = Math.max(4, (e.clientY - rect.top) - boxRect.height / 2)
+        this.box.style.left = left + 'px'
+        this.box.style.top = top + 'px'
+    }
+
+    hide() {
+        if (this.box)
+            this.box.style.display = 'none'
+        if (this.overlay)
+            this.overlay.element.innerHTML = ''
+    }
+
+    destroy() {
+        if (this.svg) {
+            this.svg.removeEventListener('mousemove', this.moveHandler)
+            this.svg.removeEventListener('mouseleave', this.leaveHandler)
+        }
+        if (this.box && this.box.parentNode)
+            this.box.parentNode.removeChild(this.box)
+        this.box = null
+    }
+}

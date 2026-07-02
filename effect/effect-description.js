@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag, AuthClawbackEnabledFlag} from '@stellar/stellar-base'
+import {AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag, AuthClawbackEnabledFlag} from '@stellar/stellar-sdk'
 import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
 import {shortenString, formatWithAutoPrecision} from '@stellar-expert/formatter'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'

@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {StrKey} from '@stellar/stellar-base'
+import {StrKey} from '@stellar/stellar-sdk'
 import {shortenString} from '@stellar-expert/formatter'
 import {AssetLink} from '../asset/asset-link'
 import {useAutoFocusRef} from '../interaction/autofocus'

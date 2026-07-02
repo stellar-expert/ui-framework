@@ -1,5 +1,5 @@
 import React from 'react'
-import {StrKey} from '@stellar/stellar-base'
+import {StrKey} from '@stellar/stellar-sdk'
 import {AccountAddress} from './account-address'
 
 /**

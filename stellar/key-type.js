@@ -1,4 +1,4 @@
-import {StrKey} from '@stellar/stellar-base'
+import {StrKey} from '@stellar/stellar-sdk'
 
 /**
  * Decode StrKey-encoded Stellar key and determine its type

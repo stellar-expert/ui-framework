@@ -1,6 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
-import {xdr, scValToBigInt} from '@stellar/stellar-base'
+import {xdr, scValToBigInt} from '@stellar/stellar-sdk'
 import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'

@@ -1297,7 +1297,7 @@ export interface ChartProps {
     children?: React.ReactNode;
 }
 
-/** In-house zero-dependency pure-JS SVG chart component */
+/** Chart component */
 export const Chart: React.FC<ChartProps>;
 
 /** Charting engine namespace (Chart, StockChart, setOptions, getOptions, Color, Axis, merge) */

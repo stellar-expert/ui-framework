@@ -131,6 +131,21 @@ export class Axis {
         this.dataMax = dataMax
     }
 
+    //pixels at the top of the pane that must stay clear of drawn data — the floating range-selector
+    //buttons overlay the top ~26px of the plot, so the pane that starts at the plot top scales its
+    //max up until the tallest point (incl. candle wicks) renders below the controls
+    reservedTopPixels() {
+        const c = this.chart
+        if (this.isXAxis || c.chartType !== 'StockChart' || !c.options.rangeSelector)
+            return 0
+        if (!isNumber(this.len) || !isNumber(this.top) || !isNumber(c.plotTop))
+            return 0
+        //only the top pane sits under the controls; lower panes (e.g. a volume strip) are unaffected
+        if (this.top > c.plotTop + 1)
+            return 0
+        return 26
+    }
+
     setScale() {
         this.getSeriesExtremes()
         let min = pick(this.userMin, this.dataMin)
@@ -226,7 +241,12 @@ export class Axis {
                     drawn = drawn.slice(0, -1)
                 const nIntervals = drawn.length - 1
                 const dataSteps = r.interval > 0 ? (max - r.min) / r.interval : nIntervals
-                const M = Math.max(nIntervals + 0.7, dataSteps + 0.15)
+                let M = Math.max(nIntervals + 0.7, dataSteps + 0.15)
+                //widen the headroom so the data top maps below the reserved zoom-controls band:
+                //(M - dataSteps)/M of the pane height must be at least reserve/len
+                const reserve = this.reservedTopPixels()
+                if (reserve && this.len > reserve * 2)
+                    M = Math.max(M, dataSteps / (1 - reserve / this.len))
                 this.tickInterval = r.interval
                 this.tickPositions = drawn
                 this.labelledPositions = null

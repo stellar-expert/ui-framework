@@ -62,9 +62,15 @@ export class Chart {
         this.hideLoading()
         const el = document.createElement('div')
         el.className = 'ix-chart-loading'
-        el.textContent = text || 'Loading…'
+        if (text)
+            el.textContent = text
         Object.assign(el.style, {
-            position: 'absolute', inset: '0', display: 'flex', alignItems: 'center',
+            position: 'absolute',
+            left: (this.plotLeft || 0) + 'px',
+            top: (this.plotTop || 0) + 'px',
+            width: (this.plotWidth || 0) + 'px',
+            height: (this.plotHeight || 0) + 'px',
+            display: 'flex', alignItems: 'center',
             justifyContent: 'center', background: 'rgba(0,0,0,0.25)', color: 'var(--color-text)', zIndex: 15
         })
         this.container.appendChild(el)
@@ -266,6 +272,10 @@ export class Chart {
                 const nIntervals = s.drawn.length - 1
                 const dataSteps = s.interval > 0 ? (s.dataMax - s.base) / s.interval : nIntervals
                 M = Math.max(M, nIntervals + STEP_HEAD, dataSteps + 0.15)
+                //keep the data top below the reserved zoom-controls band (see Axis.reservedTopPixels)
+                const reserve = s.a.reservedTopPixels()
+                if (reserve && s.a.len > reserve * 2)
+                    M = Math.max(M, dataSteps / (1 - reserve / s.a.len))
             }
             for (const s of specs) {
                 s.a.tickInterval = s.interval

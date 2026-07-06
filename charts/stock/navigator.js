@@ -57,7 +57,8 @@ export class Navigator {
         const yToPx = v => top + height - ((v - yMin) / ((yMax - yMin) || 1)) * (height - 4) - 2
 
         //faint background
-        renderer.rect(left, top, width, height, {}).css({fill: 'var(--color-border-shadow)', 'fill-opacity': 0.15}).add(group)
+        const bg = renderer.rect(left, top, width, height, {}).css({fill: 'var(--color-border-shadow)', 'fill-opacity': 0.15, cursor: 'pointer'}).add(group)
+        this.bindBackground(bg)
         //time breakpoints across the full overview range, so it's clear where the selected window sits
         this.renderTimeAxis(group, top, height, dMin, dMax, xToPx)
         //overview as a thin line (no fill)
@@ -70,7 +71,7 @@ export class Navigator {
                 started = true
             }
         }
-        const lineEl = renderer.path(d.trim(), {'stroke-width': 1, fill: 'none'}).css({stroke: NAV_LINE}).add(group)
+        const lineEl = renderer.path(d.trim(), {'stroke-width': 1, fill: 'none'}).css({stroke: NAV_LINE, 'pointer-events': 'none'}).add(group)
 
         //selection window edges (clamped into the strip) — use the LOGICAL extremes (pre display-padding)
         const x0 = clamp(xToPx(viewMin(xAxis)), left, left + width)
@@ -129,6 +130,33 @@ export class Navigator {
         renderer.line(cx + 1.5, hy + 4, cx + 1.5, hy + HANDLE_H - 4, {'stroke-width': 1})
             .css({stroke: HANDLE_STROKE, 'pointer-events': 'none'}).add(group)
         return rect
+    }
+
+    //click on the unselected part of the strip: move the selection window (same span) so it centers
+    //on the clicked date, clamped to the data edges
+    bindBackground(bg) {
+        const chart = this.chart
+        const xAxis = chart.xAxis[0]
+        bg.on('mousedown', e => {
+            e.preventDefault()
+            const svg = chart.renderer.root.element
+            const rect = svg.getBoundingClientRect()
+            const scaleX = chart.chartWidth / rect.width
+            const px = (e.clientX - rect.left) * scaleX
+            const v = this.dataMin + ((px - this.left) / this.width) * (this.dataMax - this.dataMin)
+            const span = viewMax(xAxis) - viewMin(xAxis)
+            let min = v - span / 2
+            let max = v + span / 2
+            if (min < this.dataMin) {
+                min = this.dataMin
+                max = min + span
+            }
+            if (max > this.dataMax) {
+                max = this.dataMax
+                min = max - span
+            }
+            xAxis.setExtremes(min, max)
+        })
     }
 
     bindBand(band) {

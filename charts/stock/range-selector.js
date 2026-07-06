@@ -88,18 +88,40 @@ export class RangeSelector {
             this.zoomLabel.style.display = compact ? 'none' : ''
     }
 
+    //full data range, unioned with the navigator's own series. Views that lazy-load data on zoom replace
+    //the main series with just the visible sub-window (keeping the full lifespan only in navigator.series),
+    //so the axis' dataMin/dataMax shrink to the loaded slice — anchoring the buttons on those would make
+    //'All' re-select the current window instead of the whole history
+    getUnionExtremes() {
+        const xAxis = this.chart.xAxis[0]
+        let {dataMin, dataMax} = xAxis
+        const navSeries = this.chart.options.navigator && this.chart.options.navigator.series
+        const navData = navSeries && navSeries.data
+        if (navData && navData.length) {
+            for (const p of navData) {
+                const x = Array.isArray(p) ? p[0] : p && p.x
+                if (!isNumber(x))
+                    continue
+                if (!isNumber(dataMin) || x < dataMin) dataMin = x
+                if (!isNumber(dataMax) || x > dataMax) dataMax = x
+            }
+        }
+        return {dataMin, dataMax}
+    }
+
     apply(b, i) {
         const xAxis = this.chart.xAxis[0]
+        const {dataMin, dataMax} = this.getUnionExtremes()
         if (b.type === 'all') {
             this.selected = 'all'
             //explicit full extremes so the initial xAxis.range window doesn't re-apply
-            xAxis.setExtremes(xAxis.dataMin, xAxis.dataMax)
+            xAxis.setExtremes(dataMin, dataMax)
         } else {
             const count = b.count || 1
             //the window always ENDS at the last data point; going back a calendar
             //month/year/day for the start. Anchoring the end on dataMax keeps the right edge flush with the
             //data instead of snapping forward to the next month boundary (which left a gap on the right).
-            const max = xAxis.dataMax
+            const max = dataMax
             const d = new Date(max)
             if (b.type === 'year')
                 d.setUTCFullYear(d.getUTCFullYear() - count)

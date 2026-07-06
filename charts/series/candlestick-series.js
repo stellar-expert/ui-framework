@@ -40,7 +40,7 @@ export class CandlestickSeries extends Series {
                 continue
             const cx = xAxis.toPixels(p.x)
             const catW = Math.abs(xAxis.toPixels(p.x + pr) - xAxis.toPixels(p.x))
-            const w = Math.max(1, catW * 0.6)
+            const w = Math.max(1.5, catW * 0.8 - 0.5)
             const up = p.close >= p.open
             const color = up ? upColor : downColor
             const yHigh = yAxis.toPixels(p.high)

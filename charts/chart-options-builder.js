@@ -25,7 +25,9 @@ const groupedPlotOptions = {
     series: {
         dataGrouping: {
             units: groupingUnits,
-            groupPixelWidth: 16
+            //grouping is width-dependent: wider plots get proportionally finer buckets. 16.5px per
+            //bucket puts the 2-month↔6-month transition of a ~10y daily series at a ~540px plot area
+            groupPixelWidth: 16.5
         }
     }
 }

@@ -29,7 +29,7 @@ const UNIT_MS = {
     year: 365 * day
 }
 
-function chooseInterval(units, approxInterval, finerStep) {
+function chooseInterval(units, approxInterval) {
     //flatten the unit/multiple options into ascending candidate intervals
     const candidates = []
     for (const [unitName, multiples] of units)
@@ -40,18 +40,12 @@ function chooseInterval(units, approxInterval, finerStep) {
         return {unitName: 'day', mult: 1, ms: day}
     //pick the candidate NEAREST to the target (midpoint threshold) — not the first one >= target,
     //which over-coarsens (e.g. picks a 6-month bucket where 2-month fits better)
-    let idx = candidates.length - 1
     for (let i = 0; i < candidates.length; i++) {
         const next = candidates[i + 1]
-        if (!next || approxInterval <= (candidates[i].ms + next.ms) / 2) {
-            idx = i
-            break
-        }
+        if (!next || approxInterval <= (candidates[i].ms + next.ms) / 2)
+            return candidates[i]
     }
-    //one ladder step finer than the standard pick (e.g. 2-week buckets where a month would be used)
-    if (finerStep && idx > 0)
-        idx--
-    return candidates[idx]
+    return candidates[candidates.length - 1]
 }
 
 function bucketStart(x, unitName, mult) {
@@ -111,7 +105,7 @@ export function groupSeriesData(rawPoints, grouping, xMin, xMax, plotWidth, defa
     const groupCount = Math.max(1, Math.floor(plotWidth / groupPixelWidth))
     const approxInterval = (xMax - xMin) / groupCount
     const units = grouping.units || [['millisecond', [1]], ['second', [1]], ['minute', [1]], ['hour', [1]], ['day', [1]], ['week', [1]], ['month', [1]], ['year', [1]]]
-    const {unitName, mult} = chooseInterval(units, approxInterval, grouping.finerStep)
+    const {unitName, mult} = chooseInterval(units, approxInterval)
     const approximation = grouping.approximation || defaultApproximation || 'average'
 
     //OHLC series (candlestick/ohlc) aggregate open=first, high=max, low=min, close=last per bucket

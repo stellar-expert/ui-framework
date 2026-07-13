@@ -308,6 +308,17 @@ export class Chart {
                 grouping.groupPixelWidth = defaultGroupPixelWidth(s.type)
             return grouping
         })
+        //bucket density follows the VIEWPORT width rather than the (possibly column-constrained)
+        //container: a chart squeezed into a half-width dashboard column keeps the same bucket size
+        //it would get in a single-column layout, so side-by-side and full-width charts read alike.
+        //SINGLE_COLUMN_CHROME ≈ page paddings + axis margins around a full-width plot; the cap keeps
+        //very wide monitors from over-refining charts that are themselves capped by the page container
+        const SINGLE_COLUMN_CHROME = 238
+        const VIRTUAL_WIDTH_CAP = 1100
+        const virtualWidth = typeof window === 'undefined'
+            ? 0
+            : Math.min(window.innerWidth - SINGLE_COLUMN_CHROME, VIRTUAL_WIDTH_CAP)
+        const groupingWidth = Math.max(this.plotWidth, virtualWidth)
         let sharedPixelWidth = 0
         let doGrouping = false
         this.series.forEach((s, i) => {
@@ -315,18 +326,15 @@ export class Chart {
             if (!grouping || !s.visible)
                 return
             sharedPixelWidth = Math.max(sharedPixelWidth, grouping.groupPixelWidth)
-            if (grouping.forced || this.countVisiblePoints(s, xAxis) > this.plotWidth / grouping.groupPixelWidth)
+            if (grouping.forced || this.countVisiblePoints(s, xAxis) > groupingWidth / grouping.groupPixelWidth)
                 doGrouping = true
         })
-        const firstLoad = xAxis.userMin === undefined && xAxis.userMax === undefined &&
-            !isNumber(xAxis.options.range)
         this.series.forEach((s, i) => {
             const grouping = groupings[i]
             if (grouping && doGrouping) {
                 const defApprox = /column|bar/.test(s.type) ? 'sum' : 'average'
-                const finerStep = firstLoad && grouping.finerFirstLoad !== false
-                s.plotPoints = groupSeriesData(s.points, {...grouping, groupPixelWidth: sharedPixelWidth, finerStep},
-                    xAxis.min, xAxis.max, this.plotWidth, defApprox)
+                s.plotPoints = groupSeriesData(s.points, {...grouping, groupPixelWidth: sharedPixelWidth},
+                    xAxis.min, xAxis.max, groupingWidth, defApprox)
             } else {
                 s.plotPoints = s.points
             }

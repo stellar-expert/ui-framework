@@ -24,6 +24,46 @@ export class ZoomSelection {
         this.svg = this.chart.renderer.root.element
         this.downHandler = e => this.onDown(e)
         this.svg.addEventListener('mousedown', this.downHandler)
+        //charts without the range-selector button row get a floating "Reset zoom" control while
+        //a drag-selected range is active (the control survives redraws since bind() re-runs on each)
+        if (this.isZoomed())
+            this.showResetButton()
+    }
+
+    //user-driven extremes are active and there is no range selector to reset them with
+    isZoomed() {
+        const chart = this.chart
+        const xa = chart.xAxis && chart.xAxis[0]
+        return !chart.rangeSelector && !!xa && (xa.userMin !== undefined || xa.userMax !== undefined)
+    }
+
+    showResetButton() {
+        if (this.resetBtn)
+            return
+        const chart = this.chart
+        const btn = document.createElement('span')
+        btn.className = 'chart-reset-zoom'
+        btn.setAttribute('role', 'button')
+        btn.tabIndex = 0
+        btn.textContent = 'Reset zoom'
+        btn.style.top = (chart.plotTop + 6) + 'px'
+        btn.style.right = (Math.max(0, chart.chartWidth - chart.plotLeft - chart.plotWidth) + 6) + 'px'
+        const reset = () => chart.xAxis[0].setExtremes(null, null)
+        btn.addEventListener('click', reset)
+        btn.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                reset()
+            }
+        })
+        chart.container.appendChild(btn)
+        this.resetBtn = btn
+    }
+
+    removeResetButton() {
+        if (this.resetBtn && this.resetBtn.parentNode)
+            this.resetBtn.parentNode.removeChild(this.resetBtn)
+        this.resetBtn = null
     }
 
     toChartX(e) {
@@ -109,6 +149,7 @@ export class ZoomSelection {
 
     destroy() {
         this.cancel()
+        this.removeResetButton()
         if (this.svg && this.downHandler)
             this.svg.removeEventListener('mousedown', this.downHandler)
         this.svg = null

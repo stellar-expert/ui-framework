@@ -161,9 +161,8 @@ export class Axis {
         if (isNumber(this.options.ceiling))
             max = Math.min(max, this.options.ceiling)
 
-        //tick density: x adapts to width (denser, ~one per 42px → more labels when there's room),
-        //y ~one gridline per 72px
-        const targetCount = this.horiz ? Math.max(2, Math.round(this.lenForTicks() / 42))
+        const xTickSpacing = this.type === 'datetime' ? 100 : 42
+        const targetCount = this.horiz ? Math.max(2, Math.round(this.lenForTicks() / xTickSpacing))
             : Math.max(3, Math.round(this.lenForTicks() / 72))
 
         if (this.isLog) {

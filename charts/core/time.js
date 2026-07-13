@@ -56,16 +56,20 @@ const UNITS = [
 export function getDateTimeTickPositions(minTs, maxTs, targetCount) {
     const range = maxTs - minTs
     const approx = range / Math.max(1, targetCount)
-    //pick unit + multiple whose interval is closest to (>=) approx
+    //pick the unit + multiple NEAREST to the target interval —
+    //not the first one >= target, which over-coarsens (e.g. 5-year ticks where 2-year fit better)
+    const candidates = []
+    for (const unit of UNITS)
+        for (const mult of unit.multiples)
+            candidates.push({unit, mult, ms: unit.ms * mult})
     let chosen = UNITS[UNITS.length - 1]
     let chosenCount = chosen.multiples[chosen.multiples.length - 1]
-    outer: for (const unit of UNITS) {
-        for (const mult of unit.multiples) {
-            if (unit.ms * mult >= approx) {
-                chosen = unit
-                chosenCount = mult
-                break outer
-            }
+    for (let i = 0; i < candidates.length; i++) {
+        const next = candidates[i + 1]
+        if (!next || approx <= (candidates[i].ms + next.ms) / 2) {
+            chosen = candidates[i].unit
+            chosenCount = candidates[i].mult
+            break
         }
     }
 

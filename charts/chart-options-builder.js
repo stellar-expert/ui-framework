@@ -25,9 +25,7 @@ const groupedPlotOptions = {
     series: {
         dataGrouping: {
             units: groupingUnits,
-            //17 (not 16) so the bucket interval clears the weekly/bi-weekly rounding boundary at the 1y
-            //view — keeps the 1y window on monthly buckets instead of tipping to weekly
-            groupPixelWidth: 17
+            groupPixelWidth: 16
         }
     }
 }

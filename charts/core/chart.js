@@ -3,7 +3,8 @@ import {niceAlignedTicks} from '../axis/tick-positioner'
 import {createSeries} from '../series'
 import {Legend} from '../interaction/legend'
 import {Tooltip} from '../interaction/tooltip'
-import {groupSeriesData} from '../stock/data-grouping'
+import {ZoomSelection} from '../interaction/zoom'
+import {groupSeriesData, defaultGroupPixelWidth} from '../stock/data-grouping'
 import {RangeSelector} from '../stock/range-selector'
 import {renderPolar} from '../polar/polar-chart'
 import {renderPie} from '../pie/pie-chart'
@@ -24,6 +25,7 @@ export class Chart {
             return
         this.legend = new Legend(this)
         this.tooltip = new Tooltip(this)
+        this.zoomSelection = new ZoomSelection(this)
         this.init()
     }
 
@@ -297,16 +299,51 @@ export class Chart {
         const baseGrouping = this.chartType === 'StockChart' &&
             this.options.plotOptions && this.options.plotOptions.series && this.options.plotOptions.series.dataGrouping
         const xAxis = this.xAxis[0]
-        for (const s of this.series) {
+        const groupings = this.series.map(s => {
             const seriesGrouping = s.options.dataGrouping
-            if (baseGrouping || seriesGrouping) {
-                const grouping = merge(baseGrouping || {}, seriesGrouping || {})
+            if (!baseGrouping && !seriesGrouping)
+                return null
+            const grouping = merge(baseGrouping || {}, seriesGrouping || {})
+            if (!isNumber(grouping.groupPixelWidth))
+                grouping.groupPixelWidth = defaultGroupPixelWidth(s.type)
+            return grouping
+        })
+        let sharedPixelWidth = 0
+        let doGrouping = false
+        this.series.forEach((s, i) => {
+            const grouping = groupings[i]
+            if (!grouping || !s.visible)
+                return
+            sharedPixelWidth = Math.max(sharedPixelWidth, grouping.groupPixelWidth)
+            if (grouping.forced || this.countVisiblePoints(s, xAxis) > this.plotWidth / grouping.groupPixelWidth)
+                doGrouping = true
+        })
+        const firstLoad = xAxis.userMin === undefined && xAxis.userMax === undefined &&
+            !isNumber(xAxis.options.range)
+        this.series.forEach((s, i) => {
+            const grouping = groupings[i]
+            if (grouping && doGrouping) {
                 const defApprox = /column|bar/.test(s.type) ? 'sum' : 'average'
-                s.plotPoints = groupSeriesData(s.points, grouping, xAxis.min, xAxis.max, this.plotWidth, defApprox)
+                const finerStep = firstLoad && grouping.finerFirstLoad !== false
+                s.plotPoints = groupSeriesData(s.points, {...grouping, groupPixelWidth: sharedPixelWidth, finerStep},
+                    xAxis.min, xAxis.max, this.plotWidth, defApprox)
             } else {
                 s.plotPoints = s.points
             }
-        }
+        })
+    }
+
+    //number of points inside the currently visible x-window (grouping density is decided on what's
+    //on screen, not the full dataset — so zooming into a sparse period turns grouping off)
+    countVisiblePoints(s, xAxis) {
+        const {min, max} = xAxis
+        if (!isNumber(min) || !isNumber(max))
+            return s.points.length
+        let count = 0
+        for (const p of s.points)
+            if (p.x >= min && p.x <= max)
+                count++
+        return count
     }
 
     getStacking(s) {
@@ -355,8 +392,6 @@ export class Chart {
         this.pointRange = pr === Infinity ? (this.xAxis[0].max - this.xAxis[0].min) / 50 : pr
     }
 
-    //breathing room on both x-edges so data doesn't sit flush against the axes; at least half a
-    //point-width (so edge columns/candles aren't clipped) and at least ~2% of the range
     //draw a white separator at the boundary between stacked y-axis panes (e.g. Total XLM over Fee Pool)
     renderPaneSeparators() {
         const tops = new Set()
@@ -384,8 +419,11 @@ export class Chart {
         const range = xa.max - xa.min
         if (!(range > 0))
             return
-        const slotPad = (this.hasSlottedSeries && this.pointRange > 0) ? this.pointRange / 2 : 0
-        const pad = Math.max(slotPad, range * 0.02)
+        //pad only charts with slotted series (columns/candles), so their edge bars aren't clipped in half;
+        //pure line/area charts render flush to the plot edges
+        if (!this.hasSlottedSeries || !(this.pointRange > 0))
+            return
+        const pad = Math.max(this.pointRange / 2, range * 0.02)
         xa.min -= pad
         xa.max += pad
     }
@@ -504,6 +542,7 @@ export class Chart {
             this.navigator.render(navGroup, navTop, 32)
         }
         this.tooltip.bind()
+        this.zoomSelection.bind()
         if (this.rangeSelector)
             this.rangeSelector.reposition()
     }
@@ -511,6 +550,7 @@ export class Chart {
     redraw() {
         //clear and re-render into the same container
         this.tooltip.destroy()
+        this.zoomSelection.destroy()
         this.renderer.destroy()
         this.renderer = new SvgRenderer(this.container, this.chartWidth, this.chartHeight)
         this.render()
@@ -558,6 +598,8 @@ export class Chart {
             this.rangeSelector.destroy()
         if (this.tooltip)
             this.tooltip.destroy()
+        if (this.zoomSelection)
+            this.zoomSelection.destroy()
         if (this.renderer)
             this.renderer.destroy()
         this.container = null

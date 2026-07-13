@@ -1,6 +1,20 @@
 //Downsample raw series points into calendar-aligned time buckets (stock data grouping).
 import {isNumber} from '../core/utilities'
 
+/**
+ * Default bucket pixel size per series type: columns/candles need room for a
+ * readable bar, lines/areas keep near-raw resolution
+ * @param {string} type - series type
+ * @return {number}
+ */
+export function defaultGroupPixelWidth(type) {
+    if (/^(column|bar|candlestick)$/.test(type))
+        return 10
+    if (/^(ohlc|hlc)$/.test(type))
+        return 5
+    return 2
+}
+
 const day = 24 * 3600 * 1000
 const week = 7 * day
 

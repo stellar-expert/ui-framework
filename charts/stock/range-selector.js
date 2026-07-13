@@ -136,6 +136,13 @@ export class RangeSelector {
         this.reposition()
     }
 
+    //deselect all period buttons — the current extremes were set manually (e.g. drag-to-zoom)
+    //and don't correspond to any predefined period
+    clearSelection() {
+        this.selected = null
+        this.highlight()
+    }
+
     highlight() {
         if (!this.buttons)
             return

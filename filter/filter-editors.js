@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from 'react'
-import {StrKey} from '@stellar/stellar-sdk'
+import {StrKey, xdr} from '@stellar/stellar-sdk'
 import {shortenString} from '@stellar-expert/formatter'
 import {AssetLink} from '../asset/asset-link'
 import {useAutoFocusRef} from '../interaction/autofocus'
@@ -58,7 +58,7 @@ function LiquidityPoolEditor({value, setValue}) {
     if (!setValue) {
         if (/^[a-f0-9]{64}$/.test(value)) { //remap hex format to pool id format
             try {
-                value = StrKey.encodeLiquidityPool(Buffer.from(value, 'hex'))
+                value = StrKey.encodeLiquidityPool(xdr.decodeBytes(value, 'hex'))
             } catch (_) {
             }
         }

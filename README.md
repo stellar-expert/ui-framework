@@ -46,8 +46,6 @@ Global variables:
 
 Override them before importing components if needed.
 
----
-
 ## API Reference
 
 ### Modules
@@ -822,6 +820,124 @@ Calculate available balance for an account trustline, accounting for reserves an
 
 ---
 
+### Asset Descriptor
+
+Asset wrapper covering classic assets, Soroban contract assets and liquidity pool shares.
+
+#### `AssetDescriptor`
+
+```js
+import {AssetDescriptor} from '@stellar-expert/ui-framework'
+
+const asset = new AssetDescriptor('USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN')
+asset.toString()   // 'USDC-GA5Z…'
+asset.toFQAN()     // 'USDC-GA5Z…-1'
+asset.toCurrency() // 'USDC'
+asset.toAsset()    // stellar-sdk Asset instance
+```
+
+| Member | Type | Description |
+|--------|------|-------------|
+| `code` | `string` | Asset code |
+| `issuer` | `string` | Issuer account address |
+| `type` | `number` | `0` native, `1` alphanum4, `2` alphanum12, `3` pool share, `4` contract |
+| `isNative` | `boolean` | Whether the asset is XLM |
+| `equals(other)` | `boolean` | Compare two descriptors |
+| `toString()` | `string` | `CODE-ISSUER` representation |
+| `toFQAN()` | `string` | `CODE-ISSUER-TYPE` representation |
+| `toCurrency(issuerMaxLength?)` | `string` | Display name, optionally shortening the issuer |
+| `toAsset()` | `Asset` | Convert to a stellar-sdk `Asset` |
+| `AssetDescriptor.native` | `AssetDescriptor` | Native XLM descriptor |
+| `AssetDescriptor.parse(source)` | `AssetDescriptor` | Parse an asset code, contract address, pool id or raw object |
+
+`AssetDescriptor.parse()` dispatches on the input and may return a `LiquidityPoolDescriptor` (adds `poolId`, `poolType`)
+or a `ContractAssetDescriptor` (adds `contract`, `isContract`). Both throw from `toAsset()`, since neither is a
+transferable classic asset.
+
+#### `isAssetValid(asset)`
+
+Check whether an asset descriptor or its string representation is valid. Returns `boolean`.
+
+#### `isValidAssetCode(code)`, `isValidContract(address)`, `isValidPoolId(poolId)`
+
+Individual format checks. `isValidPoolId` accepts a 64-char hex string, an `L`-strkey, or 32 raw bytes.
+
+#### `generateLiquidityPoolId(assetProps)`
+
+Generate a constant-product liquidity pool id for an asset pair. Returns a 64-character hex string, or `null` when both
+assets are identical.
+
+```js
+generateLiquidityPoolId(['XLM', 'USDC-GA5Z…']) // 'a468d41d…'
+```
+
+#### `getLiquidityPoolAsset(asset)`
+
+Build a stellar-sdk `LiquidityPoolAsset` for a given `[assetA, assetB]` pair. Returns `null` for an invalid pool.
+
+#### `parseAssetFromObject(obj, prefix?)`
+
+Parse an asset out of a Horizon API response object, handling both the `asset` field and the split
+`asset_type`/`asset_code`/`asset_issuer` form. `prefix` selects a field group, e.g. `'selling_'`.
+
+---
+
+### Client Cache
+
+Lightweight cache for API responses and other short-lived data.
+
+#### `InMemoryClientCache`
+
+```js
+import {InMemoryClientCache} from '@stellar-expert/ui-framework'
+
+const cache = new InMemoryClientCache(60) //default ttl, in seconds
+cache.set('key', {some: 'data'})
+cache.set('other', data, 600)             //explicit ttl
+const entry = cache.get('key')
+if (entry && !entry.isExpired) use(entry.data)
+```
+
+| Method | Description |
+|--------|-------------|
+| `has(key)` | Whether a non-stale entry exists |
+| `get(key)` | Returns a `CacheItem`, or `null` when missing or stale |
+| `set(key, value, ttl?)` | Stores a value; `ttl` defaults to the constructor's `cleanupInterval` |
+| `keys()` | Live cache keys, pruning stale entries |
+| `delete(key)` / `clear()` | Remove one entry / all entries |
+
+An entry becomes **expired** after `ttl` (refresh it) and **stale** after `3*ttl` (discarded on next access).
+Eviction happens lazily on access — no background timer is scheduled, so the cache is safe to construct during SSR.
+
+#### `CacheItem`
+
+Immutable entry returned by `get()`/`set()`, exposing `data`, `ts`, `ttl`, `isExpired` and `isStale`.
+
+---
+
+### Claimable Balance Utilities
+
+#### `xdrParseClaimant(claimant)`
+
+Parse a claimable balance claimant into a human-readable predicate. Accepts `{destination, predicate}` where
+`destination` is a `G`-address, an `xdr.PublicKey`, or an `xdr.MuxedAccount`, and `predicate` is an
+`xdr.ClaimPredicate`.
+
+```js
+xdrParseClaimant({destination, predicate})
+// {destination: 'GA5Z…', predicate: '(before 2030-01-01 00:00:00)'}
+```
+
+#### `getClaimableBalanceClaimStatus(claimant, pointInTime?)`
+
+Determine whether a claimable balance can be claimed, based on its claim conditions. Expects the **Horizon JSON**
+predicate shape (`abs_before`, `abs_after`, `rel_before`, `rel_after`, `and`, `or`, `not`, `unconditional`).
+
+Returns `'available' | 'pending' | 'expired' | 'unfeasible'`. `pointInTime` (a `Date` or ISO string, now by default)
+only shifts the origin used by *relative* predicates.
+
+---
+
 ### Asset Components
 
 #### `AssetLink`
@@ -1195,12 +1311,21 @@ export default withRouter(function AssetView({location, match}) {
 
 #### `EffectDescription`
 
-Renders a human-readable description of a transaction effect.
+Renders a human-readable description of a transaction effect. Covers every effect type emitted by
+`@stellar-expert/tx-meta-effects-parser` v10 except `contractMetrics`, which `SorobanTxMetricsView` renders instead.
 
 | Prop | Type | Description |
 |------|------|-------------|
 | `effect` | `Object` | Parsed effect with `type` field |
 | `operation` | `Object` | Parent operation context |
+
+CAP-85 external executable references are described alongside the classic Wasm/SAC forms:
+
+- `contractExecutableRefCreated` / `contractExecutableRefUpdated` — the owner contract published or re-pointed a named
+  executable tag; the update variant also renders `prevWasmHash`.
+- `contractCreated` / `contractUpdated` / `contractRestored` with `kind: 'external'` — the contract resolves its
+  executable through the `executableOwner`/`executableTag` pair instead of embedding a Wasm hash in its own instance
+  entry.
 
 ---
 
@@ -1227,6 +1352,9 @@ Renders Stellar smart contract values in human-readable format.
 | `value` | `string\|xdr.ScVal\|Array` | — | ScVal (base64 XDR, parsed, or array) |
 | `indent` | `boolean` | `false` | Block-level indentation |
 
+All `ScVal` arms are supported, including the CAP-85 additions: `scvExecutableTag` renders as a quoted tag name, and a
+`scvContractInstance` holding a `contractExecutableExternalRef` executable renders as `<ownerContract>/<tag>`.
+
 ```jsx
 import {ScVal} from '@stellar-expert/ui-framework'
 
@@ -1244,7 +1372,12 @@ Structural wrapper for ScVal elements (handles indentation and separators).
 
 #### `primitiveTypes`
 
-`Set<string>` of primitive ScVal type identifiers.
+`Set<string>` of contract interface spec type names that render inline on a single line — used to decide whether an
+invocation argument list needs multi-line formatting.
+
+Values match the type names produced by `parseContractMetadata` (integers and booleans lowercased, every other name
+derived from its `scSpecType` prefix): `bool`, `i32`, `u32`, `i64`, `u64`, `i128`, `u128`, `I256`, `U256`, `Address`,
+`MuxedAddress`, `Bytes`, `String`, `Symbol`, `Timepoint`, `Duration`, `Void`, `Error`.
 
 ---
 

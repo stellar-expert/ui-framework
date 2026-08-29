@@ -13,21 +13,21 @@ function decodeSigner(signer) {
         return null
     let weight
     let key
-    if (typeof signer.arm === 'function') { //raw xdr
-        const type = signer.arm()
-        weight = signer.weight()
-        switch (type) {
-            case 'ed25519':
-                key = StrKey.encodeEd25519PublicKey(signer.ed25519())
+    const signerKey = signer.key !== null && typeof signer.key === 'object' ? signer.key : signer
+    if (typeof signerKey.type === 'string' && signerKey.type.startsWith('signerKeyType')) {
+        weight = signer.weight
+        switch (signerKey.type) {
+            case 'signerKeyTypeEd25519':
+                key = StrKey.encodeEd25519PublicKey(toBytes(signerKey.ed25519))
                 break
-            case 'preAuthTx':
-                key = StrKey.encodePreAuthTx(signer.preAuthTx())
+            case 'signerKeyTypePreAuthTx':
+                key = StrKey.encodePreAuthTx(toBytes(signerKey.preAuthTx))
                 break
-            case 'hashX':
-                key = StrKey.encodeSha256Hash(signer.hashX())
+            case 'signerKeyTypeHashX':
+                key = StrKey.encodeSha256Hash(toBytes(signerKey.hashX))
                 break
-            case 'ed25519SignedPayload':
-                key = StrKey.encodeSignedPayload(signer.ed25519SignedPayload())
+            case 'signerKeyTypeEd25519SignedPayload':
+                key = StrKey.encodeSignedPayload(encodeSignedPayloadBytes(signerKey.ed25519SignedPayload))
                 break
         }
     } else { //parsed
@@ -45,6 +45,29 @@ function decodeSigner(signer) {
     if (!key)
         throw new Error('Unknown signer type: ' + JSON.stringify(signer))
     return {key, weight}
+}
+
+/**
+ * @param {Uint8Array|{toBytes: function}} value
+ * @return {Uint8Array}
+ * @private
+ */
+function toBytes(value) {
+    return value instanceof Uint8Array ? value : value.toBytes()
+}
+
+/**
+ * @param {xdr.SignerKeyEd25519SignedPayload} signedPayload
+ * @return {Uint8Array}
+ * @private
+ */
+function encodeSignedPayloadBytes(signedPayload) {
+    const payload = toBytes(signedPayload.payload)
+    const raw = new Uint8Array(36 + Math.ceil(payload.length / 4) * 4)
+    raw.set(toBytes(signedPayload.ed25519))
+    new DataView(raw.buffer).setUint32(32, payload.length)
+    raw.set(payload, 36)
+    return raw
 }
 
 /**

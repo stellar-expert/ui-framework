@@ -1,5 +1,5 @@
 import React from 'react'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 import {AccountAddress} from '../account/account-address'
 import {useAssetMeta} from './asset-meta-hooks'
 

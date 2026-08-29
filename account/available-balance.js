@@ -1,5 +1,5 @@
 import {toStroops, fromStroops} from '@stellar-expert/formatter'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 
 /**
  * Calculate available balance for a given account balance trustline

@@ -1,3 +1,4 @@
+import {xdr} from '@stellar/stellar-sdk'
 import {parseTxOperationsMeta} from '@stellar-expert/tx-meta-effects-parser'
 import OperationDescriptor from './op-descriptor'
 import TxMatcher from './tx-matcher'
@@ -45,7 +46,7 @@ import TxMatcher from './tx-matcher'
 export function parseTxDetails({network, txEnvelope, result, meta, id, context, createdAt, skipUnrelated, protocol}) {
     const parsedTx = parseTxOperationsMeta({network, tx: txEnvelope, meta, result, protocol, processSystemEvents: true, processFailedOpEffects: true, mapSac: true})
     const {tx, effects, operations, isEphemeral, failed} = parsedTx
-    const txHash = tx.hash().toString('hex')
+    const txHash = xdr.encodeBytes(tx.hash(), 'hex')
     const txMatcher = new TxMatcher(context, skipUnrelated)
     let parsedOps = OperationDescriptor.parseOperations(operations, txHash, isEphemeral, !isEphemeral && !failed)
     //filter out irrelevant operations

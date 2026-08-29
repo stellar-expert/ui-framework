@@ -38,9 +38,9 @@ export function retrieveLedgerInfo(data) {
         failedOperations: data.failed_operations || 0,
         txSuccess: data.successful_transactions,
         txFailed: data.failed_transactions,
-        xlm: parsed.totalCoins().toBigInt(),
-        feePool: parsed.feePool().toBigInt(),
-        baseFee: parsed.baseFee(),
-        baseReserve: parsed.baseReserve()
+        xlm: parsed.totalCoins,
+        feePool: parsed.feePool,
+        baseFee: parsed.baseFee,
+        baseReserve: parsed.baseReserve
     }
 }

@@ -1,4 +1,4 @@
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 import {initHorizon, applyListQueryParameters} from './horizon-client-helpers'
 
 /**

@@ -19,11 +19,7 @@ import {sacInterface} from './sac-interface'
 export default function InvocationInfoView({contract, func, args, result, sac}) {
     if (typeof args === 'string') {
         args = parseScValValue(args)
-        if (args._arm !== 'vec') {
-            args = [args]
-        } else {
-            args = args._value
-        }
+        args = args.type === 'scvVec' ? args.vec || [] : [args]
     }
     return <>
         {!!sac && <><AssetLink asset={sac}/> </>}
@@ -49,7 +45,7 @@ const ExtendedInvocationInfoView = React.memo(function ({contract, func, args, r
             <div className="loader large"/>
             <div className="text-small">Loading contract...</div>
         </div>
-    const meta = sac ? sacInterface : parseContractMetadata(Buffer.from(source))
+    const meta = sac ? sacInterface : parseContractMetadata(new Uint8Array(source))
     const fd = meta.functions[func]
     if (!fd)
         return <div className="error"><i className="icon-warning-circle"/> Failed to parse contract code</div>

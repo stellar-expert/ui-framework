@@ -1,6 +1,6 @@
 import React from 'react'
-import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag} from '@stellar/stellar-sdk'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag, xdr} from '@stellar/stellar-sdk'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 import {formatPrice, formatWithAutoPrecision, fromStroops, toStroops, shortenString} from '@stellar-expert/formatter'
 import {xdrParserUtils, contractPreimageEncoder} from '@stellar-expert/tx-meta-effects-parser'
 import {AccountAddress} from '../account/account-address'
@@ -783,15 +783,15 @@ function WithdrawLiquidityDescriptionView({op, compact}) {
 function InvokeHostFunctionView({op, compact}) {
     const network = useStellarNetwork()
     const {func} = op.operation
-    const value = func.value()
-    switch (func.arm()) {
-        case 'invokeContract':
-            const contractAddress = xdrParserUtils.xdrParseScVal(value._attributes.contractAddress)
+    const value = func.value
+    switch (func.type) {
+        case 'hostFunctionTypeInvokeContract':
+            const contractAddress = xdrParserUtils.xdrParseScAddress(value.contractAddress)
             const sac = op.operation.sacMap?.[contractAddress]
             const invocationArgs = {
                 contract: contractAddress,
-                func: value.functionName().toString(),
-                args: value.args(),
+                func: value.functionName.toString(),
+                args: value.args,
                 sac
             }
             if (op.isEphemeral)
@@ -805,10 +805,11 @@ function InvokeHostFunctionView({op, compact}) {
                 <OpSourceAccount op={op}/> invoked contract <AccountAddress account={contractAddress}/>{' '}
                 <InvocationInfoView {...invocationArgs} result={invocationEffect?.result}/>
             </>
-        case 'wasm':
-            const wasmCode = value.toString('base64')
+        case 'hostFunctionTypeUploadContractWasm':
+            //`value` is a raw Uint8Array here - Uint8Array.toString() ignores the encoding argument
+            const wasmCode = xdr.encodeBytes(value, 'base64')
             const codeReference = <>
-                <code title={wasmCode}>{shortenString(value.toString('base64'), 16)}</code>
+                <code title={wasmCode}>{shortenString(wasmCode, 16)}</code>
                 <CopyToClipboard text={wasmCode}/>
             </>
             if (op.isEphemeral)
@@ -818,27 +819,27 @@ function InvokeHostFunctionView({op, compact}) {
             return <>
                 <OpSourceAccount op={op}/> uploaded contract code {codeReference}
             </>
-        case 'createContract':
-        case 'createContractV2':
-            const preimage = value.contractIdPreimage()
-            const executable = value.executable()
-            const executableType = executable.switch().name
+        case 'hostFunctionTypeCreateContract':
+        case 'hostFunctionTypeCreateContractV2':
+            const preimage = value.contractIdPreimage
+            const executable = value.executable
+            const executableType = executable.type
             const contract = contractPreimageEncoder.contractIdFromPreimage(preimage, Networks[network.toUpperCase()])
             let contractProps
             switch (executableType) {
                 case 'contractExecutableWasm':
-                    const wasmHash = executable.wasmHash().toString('hex')
+                    const wasmHash = executable.wasmHash.toString() //BytesValue.toString() renders hex
                     contractProps = <>
                         WASM code <code title={wasmHash}>{shortenString(wasmHash, 16)}</code>
                         <CopyToClipboard text={wasmHash}/>
                     </>
                     break
                 case 'contractExecutableStellarAsset':
-                    const preimageParams = preimage.value()
-                    switch (preimage.switch().name) {
+                    const preimageParams = preimage.value
+                    switch (preimage.type) {
                         case 'contractIdPreimageFromAddress':
-                            const issuerAddress = xdrParserUtils.xdrParseAccountAddress(preimageParams.address().value())
-                            const salt = preimageParams.salt().toString('base64')
+                            const issuerAddress = xdrParserUtils.xdrParseScAddress(preimageParams.address)
+                            const salt = xdr.encodeBytes(preimageParams.salt.toBytes(), 'base64') //salt is a Uint256Bytes wrapper
                             contractProps = <>address <AccountAddress account={issuerAddress}/> with salt {salt}</>
                             break
                         case 'contractIdPreimageFromAsset':
@@ -846,9 +847,21 @@ function InvokeHostFunctionView({op, compact}) {
                             break
                     }
                     break
+                case 'contractExecutableExternalRef': {
+                    //CAP-85 - the code is resolved through the owner contract tag entry instead of a Wasm hash
+                    const {executableOwner, tag} = executable.externalRef
+                    contractProps = <>
+                        external reference <AccountAddress account={xdrParserUtils.xdrParseScAddress(executableOwner)}/>
+                        /<code>"{tag.toString()}"</code>
+                    </>
+                    break
+                }
+                default:
+                    contractProps = <span className="dimmed">(unsupported executable)</span>
+                    break
             }
-            if (func.arm() === 'createContractV2') {
-                const args = value.constructorArgs() //array
+            if (func.type === 'hostFunctionTypeCreateContractV2') {
+                const args = value.constructorArgs //array
                 if (args.length > 0) {
                     contractProps = <>{contractProps} with <InvocationInfoView func="__constructor" args={args}/></>
                 }

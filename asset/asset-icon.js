@@ -1,5 +1,5 @@
 import React from 'react'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 import {drawIdenticon} from '../account/identicon'
 import {useAssetMeta} from './asset-meta-hooks'
 

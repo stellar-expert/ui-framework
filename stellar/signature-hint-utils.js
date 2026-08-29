@@ -2,19 +2,30 @@ import {Keypair} from '@stellar/stellar-sdk'
 
 /**
  * Convert the signature hint to the StrKey mask
- * @param {Buffer} hint - Hint to convert
+ * @param {Uint8Array|xdr.SignatureHint} hint - Hint to convert
  * @return {string}
  */
 export function signatureHintToMask(hint) {
-    const partialPublicKey = Buffer.concat([new Buffer(28).fill(0), hint]),
-        hintKeypair = new Keypair({type: 'ed25519', publicKey: partialPublicKey}),
+    const partialPublicKey = new Uint8Array(32)
+    partialPublicKey.set(normalizeHint(hint), 28)
+    const hintKeypair = new Keypair({type: 'ed25519', publicKey: partialPublicKey}),
         pk = hintKeypair.publicKey()
     return pk.substring(0, 1) + '_'.repeat(46) + pk.substring(47, 52) + '_'.repeat(4)
 }
 
 /**
+ * Unwrap xdr.SignatureHint into raw bytes
+ * @param {Uint8Array|xdr.SignatureHint} hint
+ * @return {Uint8Array}
+ * @private
+ */
+function normalizeHint(hint) {
+    return hint instanceof Uint8Array ? hint : hint.toBytes()
+}
+
+/**
  * Format the signature hint to the friendly form for UI
- * @param {Buffer} hint - Hint to convert
+ * @param {Uint8Array|xdr.SignatureHint} hint - Hint to convert
  * @return {string}
  */
 export function formatSignatureHint(hint) {
@@ -24,7 +35,7 @@ export function formatSignatureHint(hint) {
 
 /**
  * Check if the hint matches the specific key
- * @param {Buffer} hint - Hint to check
+ * @param {Uint8Array|xdr.SignatureHint} hint - Hint to check
  * @param {string} key - Key to compare
  * @return {boolean}
  */
@@ -34,7 +45,7 @@ export function signatureHintMatchesKey(hint, key) {
 
 /**
  * Find a key by the signature hint
- * @param {Buffer} hint - Hint to look for
+ * @param {Uint8Array|xdr.SignatureHint} hint - Hint to look for
  * @param {Array<string>} allKeys - Array of potentially matching keys
  * @return {string|null}
  */
@@ -49,17 +60,17 @@ export function findKeyBySignatureHint(hint, allKeys) {
  * @returns {Signature}
  */
 export function findSignatureByKey(key, allSignatures = []) {
-    return allSignatures.find(sig => signatureHintMatchesKey(sig.hint(), key))
+    return allSignatures.find(sig => signatureHintMatchesKey(sig.hint, key))
 }
 
 /**
  * Check if the hint matches any of the provided keys
- * @param {Buffer} signature - Tx signature
+ * @param {xdr.DecoratedSignature} signature - Tx signature
  * @param {Array<string>} publicKeys - Array of available public keys
  * @returns {Array<string>}
  */
 export function findKeysBySignatureHint(signature, keys) {
-    const mask = signatureHintToMask(signature.hint())
+    const mask = signatureHintToMask(signature.hint)
     return keys.filter(address => mask[0] === address[0] &&
         mask.substr(47, 5) === address.substr(47, 5))
 }

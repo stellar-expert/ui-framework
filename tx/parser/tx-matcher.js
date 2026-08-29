@@ -1,5 +1,5 @@
 import {LiquidityPoolAsset} from '@stellar/stellar-sdk'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../../asset-descriptor/index.js'
 import {TypeFilterMatcher} from './type-filter-matcher'
 
 export default class TxMatcher {

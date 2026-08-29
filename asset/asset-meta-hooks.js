@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
-import {InMemoryClientCache} from '@stellar-expert/client-cache'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
+import {InMemoryClientCache} from '../client-cache/index.js'
 import {stringifyQuery} from '../navigation/query'
 import {fetchExplorerApi} from '../api/explorer-api-call'
 import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'

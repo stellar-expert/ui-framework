@@ -6,6 +6,9 @@ import React from 'react';
 
 export type StellarNetwork = 'public' | 'testnet';
 
+/** Raw signature hint bytes, or the xdr.SignatureHint wrapper carried by a decorated signature */
+export type SignatureHintSource = Uint8Array | { toBytes(): Uint8Array };
+
 // ============================================================================
 // Modules
 // ============================================================================
@@ -1352,23 +1355,177 @@ export function parseMuxedAccount(muxedAddress: string): {
 /** Encode an address and ID into a multiplexed address */
 export function encodeMuxedAccount(address: string, muxedId: bigint): string;
 
-/** Convert signature hint to a StrKey mask */
-export function signatureHintToMask(hint: Buffer): string;
+/** Convert signature hint to a StrKey mask. Accepts raw bytes or an xdr.SignatureHint wrapper. */
+export function signatureHintToMask(hint: SignatureHintSource): string;
 
 /** Format signature hint for display */
-export function formatSignatureHint(hint: Buffer): string;
+export function formatSignatureHint(hint: SignatureHintSource): string;
 
 /** Check if a hint matches a specific key (note: function name has a typo) */
-export function signatureHintMatchesKey(hint: Buffer, key: string): boolean;
+export function signatureHintMatchesKey(hint: SignatureHintSource, key: string): boolean;
 
 /** Find a key matching a signature hint */
-export function findKeyBySignatureHint(hint: Buffer, allKeys: string[]): string | null;
+export function findKeyBySignatureHint(hint: SignatureHintSource, allKeys: string[]): string | null;
 
 /** Find a transaction signature for a given signer key */
 export function findSignatureByKey(key: string, allSignatures?: any[]): any;
 
 /** Find all keys matching a signature hint */
 export function findKeysBySignatureHint(signature: any, keys: string[]): string[];
+
+// ============================================================================
+// Asset Descriptor
+// ============================================================================
+
+/** Stellar asset definition - wraps classic assets, contract assets and liquidity pool shares */
+export declare class AssetDescriptor {
+    constructor(code: string | AssetDescriptor | { code: string; issuer?: string }, issuer?: string, type?: string | number);
+
+    readonly code?: string;
+    readonly issuer?: string;
+    /** 0 - native, 1 - alphanum4, 2 - alphanum12, 3 - liquidity pool, 4 - contract */
+    readonly type: number;
+    readonly isNative: boolean;
+
+    /** Compare two descriptors by canonical representation */
+    equals(anotherAsset?: AssetDescriptor | null): boolean;
+    /** Asset name in CODE-ISSUER format */
+    toString(): string;
+    /** Fully-qualified asset name in CODE-ISSUER-TYPE format */
+    toFQAN(): string;
+    /** Display name, optionally shortening the issuer */
+    toCurrency(issuerMaxLength?: number): string;
+    toJSON(): string;
+    /** Convert to a stellar-sdk Asset instance */
+    toAsset(): any;
+
+    /** Native XLM descriptor */
+    static readonly native: AssetDescriptor;
+    /** Parse an asset code, contract address, pool id, or raw object */
+    static parse(source?: string | Record<string, any> | AssetDescriptor | null):
+        AssetDescriptor | ContractAssetDescriptor | LiquidityPoolDescriptor | null;
+}
+
+/** Liquidity pool share descriptor */
+export declare class LiquidityPoolDescriptor extends AssetDescriptor {
+    /** Accepts either a 64-char hex pool id or an L-strkey */
+    constructor(id: string);
+
+    /** Pool identifier as an L-strkey */
+    readonly poolId: string;
+    readonly poolType: number;
+
+    /** Always throws - a pool share is not a transferable Asset */
+    toAsset(): never;
+}
+
+/** Soroban contract asset descriptor */
+export declare class ContractAssetDescriptor extends AssetDescriptor {
+    constructor(contractAddress: string);
+
+    readonly contract: string;
+    readonly isContract: true;
+
+    /** Always throws - a contract asset is not a classic Asset */
+    toAsset(): never;
+}
+
+/** Check whether an asset descriptor or its string representation is valid */
+export function isAssetValid(asset: string | AssetDescriptor): boolean;
+
+/** Validate an asset code (1-12 alphanumeric characters) */
+export function isValidAssetCode(code: string): boolean;
+
+/** Check whether a pool identifier is valid (hex string, L-strkey, or 32 raw bytes) */
+export function isValidPoolId(poolId: string | Uint8Array): boolean;
+
+/** Lazy contract address format check */
+export function isValidContract(address: string): boolean;
+
+/** Generate a constant-product liquidity pool id (64-char hex) for an asset pair */
+export function generateLiquidityPoolId(assetProps: [string, string] | any): string | null;
+
+/** Build a stellar-sdk LiquidityPoolAsset for a given asset pair */
+export function getLiquidityPoolAsset(asset: [string, string]): any | null;
+
+/** Parse an asset from a Horizon API response object */
+export function parseAssetFromObject(obj: Record<string, any>, prefix?: string): AssetDescriptor;
+
+// ============================================================================
+// Client Cache
+// ============================================================================
+
+/** Immutable cache entry with expiration tracking */
+export declare class CacheItem {
+    constructor(data: any, ts: number, ttl: number);
+
+    readonly data: any;
+    /** Creation timestamp, Unix seconds */
+    readonly ts: number;
+    /** Time-to-live in seconds */
+    readonly ttl: number;
+    /** True once ttl has elapsed - the value should be refreshed */
+    readonly isExpired: boolean;
+    /** True once 3*ttl has elapsed - the value is discarded on next access */
+    readonly isStale: boolean;
+
+    toJSON(): { data: any; ts: number; ttl: number };
+}
+
+/**
+ * Simple in-memory cache for API responses and other short-lived data.
+ * Stale entries are evicted lazily on access - no background timer is scheduled.
+ */
+export declare class InMemoryClientCache {
+    /** @param cleanupInterval Default entry time-to-live in seconds (120 by default) */
+    constructor(cleanupInterval?: number);
+
+    readonly cleanupInterval: number;
+
+    /** Namespace a key before it hits the underlying storage */
+    formatKey(key: string): string;
+    /** Check whether a non-stale entry exists */
+    has(key: string): boolean;
+    /** Retrieve an entry, discarding it if stale */
+    get(key: string): CacheItem | null;
+    /** Store a value, optionally overriding the default ttl */
+    set(key: string, value: any, ttl?: number): CacheItem;
+    /** All live cache keys, pruning stale entries */
+    keys(): string[];
+    delete(key: string): void;
+    clear(): void;
+}
+
+// ============================================================================
+// Claimable Balance Utilities
+// ============================================================================
+
+/** Claim status of a claimable balance at a given point in time */
+export type ClaimableBalanceStatus = 'available' | 'pending' | 'expired' | 'unfeasible';
+
+/** Claimant condition in raw XDR form */
+export interface XdrClaimant {
+    destination: string | any;
+    predicate: any;
+}
+
+/** Human-readable claimant condition */
+export interface ParsedClaimant {
+    destination: string;
+    predicate: string;
+}
+
+/** Parse a claimable balance condition into a human-friendly predicate */
+export function xdrParseClaimant(claimant: XdrClaimant): ParsedClaimant;
+
+/**
+ * Detect the status of a claimable balance based on its claim conditions.
+ * Expects a Horizon JSON predicate (`abs_before`, `rel_before`, `and`, `or`, `not`, `unconditional`).
+ */
+export function getClaimableBalanceClaimStatus(
+    claimant: { predicate: Record<string, any> },
+    pointInTime?: string | Date
+): ClaimableBalanceStatus;
 
 // ============================================================================
 // Global Declarations

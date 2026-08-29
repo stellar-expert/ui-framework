@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {AuthRequiredFlag, AuthRevocableFlag, AuthImmutableFlag, AuthClawbackEnabledFlag} from '@stellar/stellar-sdk'
-import {AssetDescriptor} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor} from '../asset-descriptor/index.js'
 import {shortenString, formatWithAutoPrecision} from '@stellar-expert/formatter'
 import {CopyToClipboard} from '../interaction/copy-to-clipboard'
 import {AccountAddress} from '../account/account-address'
@@ -174,6 +174,17 @@ export function EffectDescription({effect, operation}) {
                 balance <ClaimableBalanceId balance={effect.balance}/> sponsorship
                 {effect.source !== effect.prevSponsor && <> for account <AccountAddress account={effect.source}/></>}
             </>
+        case 'liquidityPoolSponsorshipCreated':
+        case 'liquidityPoolSponsorshipUpdated':
+            return <>
+                Account <AccountAddress account={effect.sponsor}/> sponsored liquidity
+                pool <AssetLink asset={effect.pool}/> reserve for <AccountAddress account={effect.source}/>
+            </>
+        case 'liquidityPoolSponsorshipRemoved':
+            return <>
+                Account <AccountAddress account={effect.prevSponsor}/> revoked liquidity
+                pool <AssetLink asset={effect.pool}/> sponsorship for <AccountAddress account={effect.source}/>
+            </>
         case 'signerSponsorshipCreated':
         case 'signerSponsorshipUpdated':
             return <>
@@ -218,8 +229,15 @@ export function EffectDescription({effect, operation}) {
             return <>Inflation distribution initialized</>
         case 'contractCodeUploaded':
         case 'contractCodeRestored':
+        case 'contractCodeRemoved':
             return <>Contract code {getEffectAction(effect, 'contractCode')}
                 <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasmHash || effect.wasm}/></LedgerKeyHint></>
+        case 'contractExecutableRefCreated':
+        case 'contractExecutableRefUpdated':
+            return <>Contract <AccountAddress account={effect.owner}/> {getEffectAction(effect, 'contractExecutableRef')}
+                executable reference <ExecutableTag tag={effect.tag}/> pointing to{' '}
+                <LedgerKeyHint effect={effect}><ContractCodeWasm wasm={effect.wasmHash}/></LedgerKeyHint>
+                {!!effect.prevWasmHash && <> (was <ContractCodeWasm wasm={effect.prevWasmHash}/>)</>}</>
         case 'contractCreated':
         case 'contractUpdated':
         case 'contractRestored':
@@ -313,9 +331,15 @@ function ContractDetails({effect}) {
             return <>from issuer <AccountAddress account={effect.issuer}/> with salt <ContractCodeWasm wasm={effect.salt}/></>
         case 'fromAsset':
             return <>from asset <AssetLink asset={effect.asset}/></>
+        case 'external':
+            return <>from external reference <AccountAddress account={effect.executableOwner}/>/<ExecutableTag tag={effect.executableTag}/></>
         default:
-            return <span className="dimme">(contract type not supported)</span>
+            return <span className="dimmed">(contract type not supported)</span>
     }
+}
+
+function ExecutableTag({tag}) {
+    return <code>"{tag}"</code>
 }
 
 function ConstructorDetails({effect}) {

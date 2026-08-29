@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "StellarExpert shared UI components library",
   "author": "team@stellar.expert",
   "license": "MIT",
@@ -19,13 +19,10 @@
     "UI"
   ],
   "peerDependencies": {
-    "@stellar-expert/asset-descriptor": "^2.0.0",
-    "@stellar-expert/claimable-balance-utils": "^2.0.0",
-    "@stellar-expert/client-cache": "^1.1.0",
-    "@stellar-expert/contract-wasm-interface-parser": "^5.0.1",
+    "@stellar-expert/contract-wasm-interface-parser": "^6.0.0",
     "@stellar-expert/formatter": "^3.1.0",
-    "@stellar-expert/tx-meta-effects-parser": "^9.3.0",
-    "@stellar/stellar-sdk": "^16.0.0",
+    "@stellar-expert/tx-meta-effects-parser": "^10.1.1",
+    "@stellar/stellar-sdk": "^17.0.1",
     "classnames": ">=2",
     "deepmerge": "^4.3.1",
     "prop-types": ">=15",
@@ -52,11 +49,13 @@
     ".npmrc",
     "account/*",
     "api/*",
+    "asset-descriptor/*",
     "asset/*",
     "basic-styles/*",
     "charts/*",
     "charts/**/*",
     "claimable-balance/*",
+    "client-cache/*",
     "contract/*",
     "controls/*",
     "date/*",
@@ -77,5 +76,8 @@
     "stellar/*",
     "toast/*",
     "tx/*"
-  ]
+  ],
+  "engines": {
+    "node": ">=22.12.0"
+  }
 }

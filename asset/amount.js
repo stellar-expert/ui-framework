@@ -1,6 +1,6 @@
 import React from 'react'
 import {formatWithPrecision, formatWithAutoPrecision, fromStroops} from '@stellar-expert/formatter'
-import {AssetDescriptor, isAssetValid, isValidPoolId} from '@stellar-expert/asset-descriptor'
+import {AssetDescriptor, isAssetValid, isValidPoolId} from '../asset-descriptor/index.js'
 import {useAssetMeta} from './asset-meta-hooks'
 import {AssetLink} from './asset-link'
 

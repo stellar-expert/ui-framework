@@ -7,3 +7,9 @@ const win = {
 }
 global.window = win
 global.document = {defaultView: win}
+
+//globals normally installed by index.js at import time
+win.origin = 'http://localhost'
+global.explorerFrontendOrigin = win.explorerFrontendOrigin = 'https://stellar.expert'
+global.explorerApiOrigin = win.explorerApiOrigin = 'https://api.stellar.expert'
+global.horizonOrigin = win.horizonOrigin = 'https://horizon.stellar.org'

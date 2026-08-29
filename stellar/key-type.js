@@ -1,4 +1,4 @@
-import {StrKey} from '@stellar/stellar-sdk'
+import {StrKey, xdr} from '@stellar/stellar-sdk'
 
 /**
  * Decode StrKey-encoded Stellar key and determine its type
@@ -43,11 +43,12 @@ export function decodeKeyType(key) {
                 }
             case 'P':
                 const spayload = StrKey.decodeSignedPayload(key)
+                const payloadLength = readUint32BE(spayload, 32)
                 return {
                     type: 'signedPayload',
                     address: key,
-                    publicKey: StrKey.encodeEd25519PublicKey(spayload.slice(0, 32)),
-                    payload: spayload.slice(36, 36 + spayload.readUIntBE(32, 4)).toString('hex')
+                    publicKey: StrKey.encodeEd25519PublicKey(spayload.subarray(0, 32)),
+                    payload: xdr.encodeBytes(spayload.subarray(36, 36 + payloadLength), 'hex')
                 }
             default:
                 console.error(new Error('Unknown key prefix: ' + typeof key))
@@ -72,8 +73,8 @@ function checkLength(key, length = 56) {
 export function parseMuxedAccount(muxedAddress) {
     const muxed = StrKey.decodeMed25519PublicKey(muxedAddress)
     return {
-        address: StrKey.encodeEd25519PublicKey(muxed.slice(0, 32)),
-        muxedId: muxed.readBigInt64BE(32)
+        address: StrKey.encodeEd25519PublicKey(muxed.subarray(0, 32)),
+        muxedId: asDataView(muxed).getBigInt64(32)
     }
 }
 
@@ -84,10 +85,18 @@ export function parseMuxedAccount(muxedAddress) {
  * @return {string}
  */
 export function encodeMuxedAccount(address, muxedId) {
-    const raw = Buffer.allocUnsafe(40)
+    const raw = new Uint8Array(40)
     //write 32 bytes of ed25519 pubkey
-    StrKey.decodeEd25519PublicKey(address).copy(raw)
+    raw.set(StrKey.decodeEd25519PublicKey(address))
     //write 8 id bytes
-    raw.writeBigInt64BE(muxedId, 32)
+    asDataView(raw).setBigInt64(32, muxedId)
     return StrKey.encodeMed25519PublicKey(raw)
+}
+
+function asDataView(bytes) {
+    return new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+}
+
+function readUint32BE(bytes, offset) {
+    return asDataView(bytes).getUint32(offset)
 }

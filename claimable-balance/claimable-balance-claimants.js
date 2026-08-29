@@ -1,5 +1,5 @@
 import React from 'react'
-import {xdrParseClaimant} from '@stellar-expert/claimable-balance-utils'
+import {xdrParseClaimant} from '../claimable-balance/claim-conditions-xdr-parser.js'
 import {AccountAddress} from '../account/account-address'
 import {CodeBlock} from '../controls/code-block'
 

@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react'
 import {StrKey} from '@stellar/stellar-sdk'
-import {InMemoryClientCache} from '@stellar-expert/client-cache'
+import {InMemoryClientCache} from '../client-cache/index.js'
 import {stringifyQuery} from '../navigation/query'
 import {fetchExplorerApi} from '../api/explorer-api-call'
 import {ExplorerBatchInfoLoader} from '../api/explorer-batch-info-loader'
 
-const cache = new InMemoryClientCache({})
+const cache = new InMemoryClientCache()
 
 function isValidAddress(address) {
     if (!address)

@@ -14,6 +14,8 @@ export * from './state/screen-orientation-hooks'
 export * from './state/page-visibility-helpers'
 export * from './state/theme'
 export * from './meta/page-meta-tags'
+//client-side cache
+export * from './client-cache/index.js'
 //explorer API bindings
 export * from './api/explorer-api-hooks'
 export * from './api/explorer-api-paginated-list-hooks'
@@ -67,6 +69,7 @@ export * from './account/account-address'
 export * from './account/signer-key'
 export * from './account/available-balance'
 //asset-related components
+export * from './asset-descriptor/index.js'
 export * from './asset/asset-link'
 export * from './asset/asset-issuer'
 export * from './asset/asset-icon'
@@ -76,6 +79,8 @@ export * from './asset/asset-meta-hooks'
 export * from './asset/asset-list-hooks'
 //claimable-balance-related components
 export * from './claimable-balance/claimable-balance-claimants'
+export * from './claimable-balance/claim-conditions-xdr-parser.js'
+export * from './claimable-balance/claimable-balance-overlap.js'
 //DEX-related components
 export * from './dex/price-dynamic'
 //directory-related components

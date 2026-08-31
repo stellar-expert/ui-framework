@@ -45,7 +45,7 @@ const ExtendedInvocationInfoView = React.memo(function ({contract, func, args, r
             <div className="loader large"/>
             <div className="text-small">Loading contract...</div>
         </div>
-    const meta = sac ? sacInterface : parseContractMetadata(new Uint8Array(source))
+    const meta = sac ? sacInterface : parseContractMetadata(new Buffer(source))
     const fd = meta.functions[func]
     if (!fd)
         return <div className="error"><i className="icon-warning-circle"/> Failed to parse contract code</div>

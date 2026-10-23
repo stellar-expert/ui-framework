@@ -57,6 +57,49 @@ export function nearestPoint(series, xVal) {
 }
 
 /**
+ * Resolve a pointer position to the nearest drawn point, with the matching point of every visible series
+ * @param {Chart} chart
+ * @param {MouseEvent} e - Pointer event over the chart
+ * @param {DOMRect} [bounds] - Measured chart bounds, when the caller already has them
+ * @return {{key: Number, points: {series: {}, point: {}}[]}|null} null outside the plot area
+ */
+export function resolvePointerTarget(chart, e, bounds) {
+    const rect = bounds || chart.renderer.root.element.getBoundingClientRect()
+    const mx = (e.clientX - rect.left) * (chart.chartWidth / rect.width)
+    const my = (e.clientY - rect.top) * (chart.chartHeight / rect.height)
+    if (mx < chart.plotLeft || mx > chart.plotLeft + chart.plotWidth ||
+        my < chart.plotTop || my > chart.plotTop + chart.plotHeight)
+        return null
+    const xAxis = chart.xAxis[0]
+    const span = (xAxis.max - xAxis.min) || 1
+    const xVal = xAxis.min + ((mx - xAxis.left) / xAxis.len) * span
+    //snap to the nearest DRAWN point (grouped buckets / columns), so the crosshair jumps column-to-column
+    //and the tooltip reports the group value - not the raw ungrouped sample
+    let key = null
+    for (const s of chart.series) {
+        if (!s.visible || !s.plotPoints.length)
+            continue
+        const best = nearestPoint(s, xVal)
+        if (best) {
+            key = best.x
+            break
+        }
+    }
+    if (key === null)
+        return null
+    const points = []
+    for (const s of chart.series) {
+        if (!s.visible)
+            continue
+        const best = nearestPoint(s, key)
+        if (best && isNumber(best.y)) {
+            points.push({series: s, point: best})
+        }
+    }
+    return points.length ? {key, points} : null
+}
+
+/**
  * How much time a single plotted point covers — the data-grouping bucket when grouping is active
  * (authoritative even where the data is sparse), otherwise the measured spacing of the drawn points.
  * @param {{}} point - hovered point
@@ -137,45 +180,27 @@ export class Tooltip {
     onMove(e) {
         const chart = this.chart
         const rect = this.svg.getBoundingClientRect()
-        const scaleX = chart.chartWidth / rect.width
-        const mx = (e.clientX - rect.left) * scaleX
-        const my = (e.clientY - rect.top) * (chart.chartHeight / rect.height)
-        if (mx < chart.plotLeft || mx > chart.plotLeft + chart.plotWidth ||
-            my < chart.plotTop || my > chart.plotTop + chart.plotHeight) {
+        const target = resolvePointerTarget(chart, e, rect)
+        if (!target) {
             this.hide()
             return
         }
+        const {key, points} = target
         const xAxis = chart.xAxis[0]
-        const span = (xAxis.max - xAxis.min) || 1
-        const xVal = xAxis.min + ((mx - xAxis.left) / xAxis.len) * span
-
-        //snap to the nearest DRAWN point (grouped buckets / columns), so the crosshair jumps column-to-column
-        //and the tooltip reports the group value — not the raw ungrouped sample
-        let key = null
-        for (const s of chart.series) {
-            if (!s.visible || !s.plotPoints.length) continue
-            const best = nearestPoint(s, xVal)
-            if (best) { key = best.x; break }
-        }
-        if (key === null) { this.hide(); return }
+        const scaleX = chart.chartWidth / rect.width
 
         const rows = []
         const markers = []
-        for (const s of chart.series) {
-            if (!s.visible) continue
-            const best = nearestPoint(s, key)
-            if (best && isNumber(best.y)) {
-                //series-level tooltip wins; fall back to the chart-level tooltip (e.g. OHLC pointFormatter)
-                const tOpts = s.options.tooltip || chart.options.tooltip
-                if (tOpts && typeof tOpts.pointFormatter === 'function') {
-                    rows.push(`<div><span style="color:${s.getColor()}">●</span> ${tOpts.pointFormatter.call(best)}</div>`)
-                } else {
-                    rows.push(`<div><span style="color:${s.getColor()}">●</span> ${s.name || ''}: <b>${formatValue(best.y, tOpts)}</b></div>`)
-                }
-                markers.push({s, p: best})
+        for (const {series: s, point: best} of points) {
+            //series-level tooltip wins; fall back to the chart-level tooltip (e.g. OHLC pointFormatter)
+            const tOpts = s.options.tooltip || chart.options.tooltip
+            if (tOpts && typeof tOpts.pointFormatter === 'function') {
+                rows.push(`<div><span style="color:${s.getColor()}">●</span> ${tOpts.pointFormatter.call(best)}</div>`)
+            } else {
+                rows.push(`<div><span style="color:${s.getColor()}">●</span> ${s.name || ''}: <b>${formatValue(best.y, tOpts)}</b></div>`)
             }
+            markers.push({s, p: best})
         }
-        if (!rows.length) { this.hide(); return }
 
         //crosshair
         const cx = xAxis.toPixels(key)

@@ -4,6 +4,7 @@ import {createSeries} from '../series'
 import {Legend} from '../interaction/legend'
 import {Tooltip} from '../interaction/tooltip'
 import {ZoomSelection} from '../interaction/zoom'
+import {PointClick} from '../interaction/point-click'
 import {groupSeriesData, defaultGroupPixelWidth} from '../stock/data-grouping'
 import {RangeSelector} from '../stock/range-selector'
 import {renderPolar} from '../polar/polar-chart'
@@ -26,6 +27,7 @@ export class Chart {
         this.legend = new Legend(this)
         this.tooltip = new Tooltip(this)
         this.zoomSelection = new ZoomSelection(this)
+        this.pointClick = new PointClick(this)
         this.init()
     }
 
@@ -577,6 +579,7 @@ export class Chart {
         }
         this.tooltip.bind()
         this.zoomSelection.bind()
+        this.pointClick.bind()
         if (this.rangeSelector)
             this.rangeSelector.reposition()
     }
@@ -585,6 +588,7 @@ export class Chart {
         //clear and re-render into the same container
         this.tooltip.destroy()
         this.zoomSelection.destroy()
+        this.pointClick.destroy()
         this.renderer.destroy()
         this.renderer = new SvgRenderer(this.container, this.chartWidth, this.chartHeight)
         this.render()
@@ -634,6 +638,8 @@ export class Chart {
             this.tooltip.destroy()
         if (this.zoomSelection)
             this.zoomSelection.destroy()
+        if (this.pointClick)
+            this.pointClick.destroy()
         if (this.renderer)
             this.renderer.destroy()
         this.container = null

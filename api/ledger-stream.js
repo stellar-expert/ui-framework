@@ -19,6 +19,12 @@ class LedgerStream {
      * @private
      */
     listeners
+    /**
+     * Number of consecutive failed requests, used for the retry backoff
+     * @type {number}
+     * @private
+     */
+    failures = 0
 
     /**
      * @param {function} listener
@@ -69,15 +75,23 @@ class LedgerStream {
                 const err = new Error(errorExt?.error || resp.statusText || 'Failed to fetch data from the server')
                 err.status = resp.status
                 err.ext = errorExt
+                err.retryAfter = parseInt(resp.headers.get('Retry-After'), 10)
                 throw err
             }
             const {ledger} = await resp.json()
+            this.failures = 0
             this.notify(ledger)
             if (this.listening) {
                 setTimeout(() => this.waitForLedger(), 1000)
             }
         } catch (e) {
             console.error(e)
+            if (this.listening) {
+                //resume streaming after the delay requested by the server, or with an exponential backoff (2s up to 1m)
+                const delay = e.retryAfter > 0 ? e.retryAfter * 1000 : Math.min(2000 * 2 ** this.failures, 60000)
+                this.failures++
+                setTimeout(() => this.waitForLedger(), delay)
+            }
             if (e instanceof Error) {
                 e = {
                     error: e.message,

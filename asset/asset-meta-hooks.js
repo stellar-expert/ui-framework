@@ -24,10 +24,7 @@ import {getCurrentStellarNetwork} from '../state/stellar-network-hooks'
 const cache = new InMemoryClientCache()
 
 const loader = new ExplorerBatchInfoLoader(batch => {
-    return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({
-        asset: batch,
-        origin: window.location.origin
-    }))
+    return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch}))
 }, entry => {
     cache.set(entry.name, entry)
     return {

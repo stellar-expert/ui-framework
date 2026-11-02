@@ -256,7 +256,7 @@ import {useExplorerApi} from '@stellar-expert/ui-framework'
 
 const {data, loaded, error} = useExplorerApi('account/' + address)
 
-const {data: valueInfo} = useExplorerApi(`account/${address}/value`)
+const {data: valueInfo} = useExplorerApi(`account/${address}/balance?value=USD`)
 
 const accountInfo = useExplorerApi('account/' + address, {
     processResult(data) { /* transform */ return data }

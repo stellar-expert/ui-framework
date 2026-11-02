@@ -1,6 +1,6 @@
 {
   "name": "@stellar-expert/ui-framework",
-  "version": "3.0.2",
+  "version": "3.1.0",
   "description": "StellarExpert shared UI components library",
   "author": "team@stellar.expert",
   "license": "MIT",
@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@swc/jest": "0.2.39",
-    "jest": "30.4.2"
+    "jest": "30.5.2"
   },
   "files": [
     "index.js",

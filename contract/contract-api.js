@@ -25,7 +25,7 @@ export function useContractInfo(address) {
  * @return {string} Full URL to the contract WASM source
  */
 export function generateContractSourceLink(hash) {
-    return `${explorerApiOrigin}/explorer/${getCurrentStellarNetwork()}/contract/wasm/${hash}`
+    return `${explorerApiOrigin}/explorer/${getCurrentStellarNetwork()}/contract-wasm/${hash}`
 }
 
 /**

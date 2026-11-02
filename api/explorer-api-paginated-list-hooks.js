@@ -274,13 +274,15 @@ class PaginatedListViewModel {
         this.canLoadNextPage = true //this.nextCursor && this.nextCursor !== self.href && records.length >= this.limit
         this.canLoadPrevPage = true //this.prevCursor && this.prevCursor !== self.href
         const selfQuery = parseQuery(self.href.split('?')[1])
+        //the server silently clamps the limit to the plan cap, so rely on the effective limit echoed in the self link
+        const effectiveLimit = parseInt(selfQuery.limit, 10) || this.limit
         if ((selfQuery.order === inverseOrder(this.defaultSortOrder))) {
             this.prevCursor = next ? next.href : null
             this.nextCursor = prev ? prev.href : null
             if (!selfQuery.cursor) {
                 this.canLoadNextPage = false
             }
-            if (this.data.length < this.limit) {
+            if (this.data.length < effectiveLimit) {
                 this.canLoadPrevPage = false
             }
         } else {
@@ -289,7 +291,7 @@ class PaginatedListViewModel {
             if (!selfQuery.cursor) {
                 this.canLoadPrevPage = false
             }
-            if (this.data.length < this.limit) {
+            if (this.data.length < effectiveLimit) {
                 this.canLoadNextPage = false
             }
         }

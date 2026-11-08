@@ -1,6 +1,7 @@
-import {LiquidityPoolAsset} from '@stellar/stellar-sdk'
+import {LiquidityPoolAsset, StrKey, xdr} from '@stellar/stellar-sdk'
 import {AssetDescriptor} from '../../asset-descriptor/index.js'
 import {TypeFilterMatcher} from './type-filter-matcher'
+import {retrieveClaimAtoms, retrieveInflationPayouts} from './tx-result-utils'
 
 export default class TxMatcher {
     constructor(filters, skipUnrelated = false) {
@@ -107,7 +108,7 @@ export default class TxMatcher {
                     break
                 case 'inflation':
                     if (od.successful) {
-                        const payouts = op.effects.filter(e => e.type === 'accountCredited').map(e => e.source)
+                        const payouts = retrieveInflationPayouts(op.result)
                         if (payouts.length) {
                             matchingProps.account = new Set(payouts)
                             matchingProps.destination = new Set(payouts)
@@ -122,10 +123,6 @@ export default class TxMatcher {
                             matchingProps.account.add(optionsRelated)
                         }
                     }
-                    for (const e of (op.effects || []))
-                        if (e.prevSponsor) {
-                            matchingProps.account.add(e.prevSponsor)
-                        }
                     break
                 case 'allowTrust':
                 case 'setTrustLineFlags':
@@ -163,18 +160,6 @@ export default class TxMatcher {
                     matchingProps.account = new Set([op.from])
                     matchingProps.destination = new Set([op.from])
                     break
-                case 'invokeHostFunction':
-                    matchingProps.account = new Set()
-                    for (const effect of op.effects) {
-                        matchingProps.account.add(effect.source)
-                        if (effect.issuer !== undefined) {
-                            matchingProps.account.add(effect.issuer)
-                        }
-                        if (effect.contract !== undefined) {
-                            matchingProps.account.add(effect.contract)
-                        }
-                    }
-                    break
                 case 'liquidityPoolDeposit':
                 case 'liquidityPoolWithdraw':
                 case 'claimClaimableBalance':
@@ -188,6 +173,7 @@ export default class TxMatcher {
                 case 'clawbackClaimableBalance':
                 case 'extendFootprintTtl':
                 case 'restoreFootprint':
+                case 'invokeHostFunction': //Soroban txs contain a single op, it's shown regardless of the match
                     matchingProps.account = new Set()
                     break
                 default:
@@ -268,29 +254,7 @@ export default class TxMatcher {
                     matchingProps.dest_asset = new Set([asset])
                 }
                     break
-                case 'liquidityPoolDeposit':
-                case 'liquidityPoolWithdraw':
-                    if (od.successful) { // TODO: find a workaround for this (operations won't match for failed transactions)
-                        const poolUpdatedEffect = op.effects.find(e => e.type === 'liquidityPoolUpdated')
-                        const assets = poolUpdatedEffect.reserves.map(r => AssetDescriptor.parse(r.asset).toFQAN())
-                        matchingProps.asset = new Set(assets)
-                        matchingProps.src_asset = new Set(assets)
-                        matchingProps.dest_asset = new Set(assets)
-                    }
-                    break
-                case 'invokeHostFunction':
-                    matchingProps.asset = new Set()
-                    matchingProps.src_asset = new Set()
-                    matchingProps.dest_asset = new Set()
-                    const assets = new Set()
-                    for (const effect of op.effects) {
-                        if (effect.asset !== undefined) {
-                            matchingProps.asset.add(effect.asset)
-                            matchingProps.src_asset.add(effect.asset)
-                            matchingProps.dest_asset.add(effect.asset)
-                        }
-                    }
-                    break
+                //liquidityPoolDeposit/liquidityPoolWithdraw reference only the pool id, so reserve assets are unknown
             }
 
         //process liquidity pools and offers
@@ -299,13 +263,13 @@ export default class TxMatcher {
                 case 'liquidityPoolDeposit':
                 case 'liquidityPoolWithdraw':
                 case 'revokeLiquidityPoolSponsorship':
-                    matchingProps.pool = new Set([op.liquidityPoolId])
+                    matchingProps.pool = new Set(poolIdForms(op.liquidityPoolId))
                     break
                 case 'changeTrust':
                 case 'revokeTrustlineSponsorship':
                     const asset = AssetDescriptor.parse(op.line || op.asset).toFQAN()
                     if (asset.length === 64 && !asset.includes('-')) {
-                        matchingProps.pool = new Set([asset])
+                        matchingProps.pool = new Set(poolIdForms(asset))
                     }
                     break
                 case 'manageBuyOffer':
@@ -316,23 +280,20 @@ export default class TxMatcher {
                     if (od.successful) {
                         const offers = []
                         const pools = []
-                        for (const e of op.effects)
-                            if (e.type === 'trade') {
-                                if (e.pool) {
-                                    pools.push(e.pool)
-                                }
-                                if (e.offer) {
-                                    offers.push(e.offer)
-                                    if (!skipUnrelated) {
-                                        if (!matchingProps.account) {
-                                            matchingProps.account = new Set()
-                                        }
-                                        if (!matchingProps.account.has(e.seller)) {
-                                            matchingProps.account.add(e.seller)
-                                        }
+                        for (const atom of retrieveClaimAtoms(op.result)) {
+                            if (atom.pool) {
+                                pools.push(...poolIdForms(atom.pool))
+                            }
+                            if (atom.offer) {
+                                offers.push(atom.offer)
+                                if (!skipUnrelated) {
+                                    if (!matchingProps.account) {
+                                        matchingProps.account = new Set()
                                     }
+                                    matchingProps.account.add(atom.seller)
                                 }
                             }
+                        }
                         if (offers.length) {
                             matchingProps.offer = new Set(offers)
                         }
@@ -360,6 +321,22 @@ export default class TxMatcher {
         }
         //TODO: handle trustline authorization effects (deauthorization may cancel offers and withdraw liquidity pool stakes)
         return matchingProps
+    }
+}
+
+/**
+ * Both representations of the liquidity pool id (filters may contain either of them)
+ * @param {string} poolId - Pool id as hex hash or L-strkey
+ * @return {string[]}
+ */
+function poolIdForms(poolId) {
+    try {
+        return poolId.startsWith('L') ?
+            [poolId, xdr.encodeBytes(StrKey.decodeLiquidityPool(poolId), 'hex')] :
+            [poolId, StrKey.encodeLiquidityPool(xdr.decodeBytes(poolId, 'hex'))]
+    } catch (e) {
+        console.warn('Invalid liquidity pool id: ' + poolId)
+        return [poolId]
     }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import {renderToStaticMarkup} from 'react-dom/server'
 import {xdr} from '@stellar/stellar-sdk'
-import effectTypes from '@stellar-expert/tx-meta-effects-parser/src/effect-types.js'
+import effectTypes from './effect-types.js'
 import {EffectDescription} from '../effect/effect-description'
 
 const account = 'GBLWPGXVH47YGMODIUHZJ7FETRISFU3TB7JGADTRIMU36OLWJ7PYEZ6M'
@@ -11,7 +11,7 @@ const pool = 'LB7X6737P57X6737P57X6737P57X6737P57X6737P57X6737P57X7OG2'
 const wasmHash = 'ab'.repeat(32)
 const prevWasmHash = 'cd'.repeat(32)
 
-const operation = {operation: {sacMap: {}}}
+const operation = {operation: {}}
 const scValXdr = xdr.ScVal.scvSymbol('v').toXdr('base64')
 
 const commonFields = {
@@ -76,7 +76,7 @@ const typeOverrides = {
 const describeEffect = effect => renderToStaticMarkup(React.createElement(EffectDescription, {effect, operation}))
 
 describe('EffectDescription', () => {
-    test('every effect type emitted by the parser has a renderer', () => {
+    test('every effect type returned by the API has a renderer', () => {
         //contractMetrics is consumed by SorobanTxMetricsView before it reaches EffectDescription
         const types = Object.values(effectTypes).filter(t => t !== effectTypes.contractMetrics)
         expect(types.length).toBeGreaterThan(70)
@@ -147,6 +147,16 @@ describe('EffectDescription', () => {
     test('contract code removal is described', () => {
         expect(describeEffect({type: effectTypes.contractCodeRemoved, source: account, wasmHash, keyHash: wasmHash}))
             .toContain('removed')
+    })
+
+    test('balance changes name the account or contract holder', () => {
+        const balance = {asset: 'XLM', amount: '10000000'}
+        expect(describeEffect({type: effectTypes.accountCredited, source: account, ...balance})).toContain('credited to account')
+        expect(describeEffect({type: effectTypes.accountDebited, source: account, ...balance})).toContain('debited from account')
+        const credited = describeEffect({type: effectTypes.contractCredited, source: contract, ...balance})
+        expect(credited).toContain('credited to contract')
+        expect(credited).toContain(contract.slice(0, 4))
+        expect(describeEffect({type: effectTypes.contractDebited, source: contract, ...balance})).toContain('debited from contract')
     })
 
     test('unknown effect types still report as unsupported', () => {

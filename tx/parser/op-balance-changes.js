@@ -1,4 +1,5 @@
 const manageOfferOpTypes = ['manageSellOffer', 'manageBuyOffer', 'createPassiveSellOffer']
+const balanceChangeEffectTypes = ['accountDebited', 'accountCredited', 'contractDebited', 'contractCredited']
 
 /**
  * Calculate operation resulting balance changes
@@ -10,7 +11,7 @@ export function retrieveOpBalanceChanges(op) {
     if (typeof account !== 'string')
         return []
     const {effects} = op.operation
-    const changes = effects.filter(e => e.source === account && (e.type === 'accountDebited' || e.type === 'accountCredited'))
+    const changes = effects.filter(e => e.source === account && balanceChangeEffectTypes.includes(e.type))
     if (changes.length) {
         changes.sort((a, b) => a.type - b.type)
         return changes

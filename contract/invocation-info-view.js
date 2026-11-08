@@ -3,6 +3,7 @@ import {parseContractMetadata} from '@stellar-expert/contract-wasm-interface-par
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
 import {AssetLink} from '../asset/asset-link'
+import {useAssetMeta} from '../asset/asset-meta-hooks'
 import {Tooltip} from '../controls/tooltip'
 import {parseScValValue, primitiveTypes, ScVal, ScValStruct} from './sc-val'
 import {useContractSource} from './contract-api'
@@ -14,9 +15,9 @@ import {sacInterface} from './sac-interface'
  * @param {string} func - Invoked function name
  * @param {Array|string} args - Function arguments (ScVal array or XDR string)
  * @param {string|xdr.ScVal} [result] - Invocation result
- * @param {string} [sac] - Stellar Asset Contract identifier
  */
-export default function InvocationInfoView({contract, func, args, result, sac}) {
+export default function InvocationInfoView({contract, func, args, result}) {
+    const sac = useSacAsset(contract)
     if (typeof args === 'string') {
         args = parseScValValue(args)
         args = args.type === 'scvVec' ? args.vec || [] : [args]
@@ -30,6 +31,19 @@ export default function InvocationInfoView({contract, func, args, result, sac}) 
             <ExtendedInvocationInfoView {...{contract, func, args, result, sac}}/>
         </Tooltip>}{' '}
     </>
+}
+
+/**
+ * Resolve the classic asset wrapped by a Stellar Asset Contract
+ * @param {string} [contract] - Contract address
+ * @return {string|undefined} - Classic asset id if the contract is a SAC
+ */
+function useSacAsset(contract) {
+    //asset metadata API maps SAC addresses to the wrapped asset; other tokens resolve to themselves
+    const meta = useAssetMeta(contract)
+    if (!contract || !meta || meta.contract !== contract || meta.name === contract)
+        return undefined
+    return meta.name
 }
 
 const InvocationResult = React.memo(function ({result, indent}) {

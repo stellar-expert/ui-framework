@@ -1,7 +1,6 @@
 import React from 'react'
 import cn from 'classnames'
-import {xdr, scValToBigInt} from '@stellar/stellar-sdk'
-import {xdrParserUtils} from '@stellar-expert/tx-meta-effects-parser'
+import {xdr, scValToBigInt, Address} from '@stellar/stellar-sdk'
 import {shortenString} from '@stellar-expert/formatter'
 import {AccountAddress} from '../account/account-address'
 import './sc-val.scss'
@@ -70,7 +69,7 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
             return <>{scValToBigInt(value).toString()}<ScValType type={scalarTypeLabels[value.type]}/></>
         case 'scvAddress':
             try {
-                return <AccountAddress account={xdrParserUtils.xdrParseScAddress(value.address)}/>
+                return <AccountAddress account={Address.fromScAddress(value.address).toString()}/>
             } catch (e) {
                 return <span className="dimmed">(unsupported address)</span>
             }
@@ -97,7 +96,7 @@ export const ScVal = React.memo(function ScVal({value, nested = false, indent = 
                     //CAP-85 - the executable lives in another contract under a named tag instead of this instance entry
                     const {executableOwner, tag} = executable.externalRef
                     return <span className="word-break">
-                        <AccountAddress account={xdrParserUtils.xdrParseScAddress(executableOwner)}/>/{tag.toString()}
+                        <AccountAddress account={Address.fromScAddress(executableOwner).toString()}/>/{tag.toString()}
                         <ScValType type="ref"/>
                     </span>
                 }

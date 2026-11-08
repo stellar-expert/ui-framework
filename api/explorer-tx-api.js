@@ -5,9 +5,10 @@ import {fetchExplorerApi} from './explorer-api-call'
 /**
  * Load transaction from API
  * @param {string} txHashOrId - Transaction hash or generic id
+ * @param {{effects?: boolean}} [options] - Set `effects` to retrieve parsed transaction effects
  * @return {Promise<Object>}
  */
-export function loadTransaction(txHashOrId) {
+export function loadTransaction(txHashOrId, {effects = false} = {}) {
     if (/^\d+$/.test(txHashOrId)) { //treat as generic tx id
         const {type} = parseStellarGenericId(txHashOrId)
         if (type !== 'transaction')
@@ -15,7 +16,7 @@ export function loadTransaction(txHashOrId) {
     } else if (!/^[a-fA-F0-9]{64}$/.test(txHashOrId))
         return Promise.reject(new Error('Invalid transaction hash or id: ' + txHashOrId))
 
-    return fetchExplorerApi(getCurrentStellarNetwork() + '/tx/' + txHashOrId)
+    return fetchExplorerApi(getCurrentStellarNetwork() + '/tx/' + txHashOrId + (effects ? '?effects=true' : ''))
 }
 
 

@@ -7,14 +7,17 @@ import {throttle} from 'throttle-debounce'
 export class ExplorerBatchInfoLoader {
     /**
      * @param {function(string[]): Promise<{_embedded: {records: Object[]}}>} fetchCallback - Fetches a batch of entries by their keys
-     * @param {function(Object): {key: string, info: *}} processResponseCallback - Extracts key and info from each response record
+     * @param {function(Object): {key?: string, keys?: string[], info: *}} processResponseCallback - Extracts the key (or all
+     * keys the record answers to, e.g. an asset name and its contract address) and info from each response record
+     * @param {function(string)} [processMissingCallback] - Invoked for requested keys absent from a successful response
      */
-    constructor(fetchCallback, processResponseCallback) {
+    constructor(fetchCallback, processResponseCallback, processMissingCallback) {
         this.pendingRequests = {}
         this.requestsQueue = []
         this.fetchDataFromServer = throttle(500, this.fetchDataFromServer, {noLeading: true})
         this.fetchCallback = fetchCallback
         this.processResponseCallback = processResponseCallback
+        this.processMissingCallback = processMissingCallback
     }
 
     /**
@@ -37,6 +40,11 @@ export class ExplorerBatchInfoLoader {
      * @private
      */
     processResponseCallback
+    /**
+     * @type {function|undefined}
+     * @private
+     */
+    processMissingCallback
 
     /**
      * Load a single entry by key, batching the request with other pending loads
@@ -79,17 +87,21 @@ export class ExplorerBatchInfoLoader {
                     batchMap[key] = finished
                 }
                 for (const entry of data._embedded.records) {
-                    const {key} = this.processResponseCallback(entry)
-                    const finalizeRequest = batchMap[key]
-                    if (finalizeRequest) {
-                        finalizeRequest(entry)
+                    const {key, keys = [key]} = this.processResponseCallback(entry)
+                    //a single record may answer several requested keys
+                    for (const k of keys) {
+                        const finalizeRequest = batchMap[k]
+                        if (finalizeRequest) {
+                            finalizeRequest(entry)
+                        }
+                        //cleanup promise reference
+                        delete batchMap[k]
+                        delete this.pendingRequests[k]
                     }
-                    //cleanup promise reference
-                    delete batchMap[key]
-                    delete this.pendingRequests[key]
                 }
                 //return null for all keys that have not been found
                 for (const key of Object.keys(batchMap)) {
+                    this.processMissingCallback?.(key)
                     const finalizeRequest = batchMap[key]
                     if (finalizeRequest) {
                         finalizeRequest(null)

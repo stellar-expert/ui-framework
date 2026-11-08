@@ -89,6 +89,7 @@ export * from './directory/directory-hooks'
 export * from './tx/tx-operations-list'
 export * from './tx/parser/tx-details-parser'
 export * from './tx/tx-list-hooks'
+export * from './tx/tx-effects-hooks'
 export * from './effect/effect-description'
 //contract-related components
 export * from './contract/contract-api'

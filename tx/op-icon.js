@@ -52,9 +52,10 @@ const opIconMapping = {
  * Transaction operation icon
  * @param {OperationDescriptor|'feeCharge'} op - Operation descriptor
  * @param {boolean} failed - Whether the transaction failed during execution
+ * @param {boolean} [effectsLoaded] - Whether operation effects have been retrieved (re-renders the icon with refined type)
  * @constructor
  */
-export const OpIcon = React.memo(function OpIcon({op, failed = false}) {
+export const OpIcon = React.memo(function OpIcon({op, failed = false, effectsLoaded = false}) {
     let type
     let title
     if (op === 'feeCharge') {
@@ -74,10 +75,10 @@ export const OpIcon = React.memo(function OpIcon({op, failed = false}) {
                 }
                 break
             case 'manageData':
-                if (operation.effects.some(e => e.type === 'dataEntryCreated')) {
-                    type += 'Add'
-                } else if (operation.effects.some(e => e.type === 'dataEntryRemoved')) {
+                if (!operation.value) {
                     type += 'Remove'
+                } else if (effectsLoaded && operation.effects.some(e => e.type === 'dataEntryCreated')) {
+                    type += 'Add'
                 }
                 break
             case 'changeTrust':

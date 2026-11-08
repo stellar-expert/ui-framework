@@ -1,8 +1,9 @@
 import React from 'react'
-import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag, xdr} from '@stellar/stellar-sdk'
+import {Networks, AuthRequiredFlag, AuthRevocableFlag, AuthClawbackEnabledFlag, AuthImmutableFlag, Address, Asset, xdr} from '@stellar/stellar-sdk'
 import {AssetDescriptor} from '../asset-descriptor/index.js'
-import {formatPrice, formatWithAutoPrecision, fromStroops, toStroops, shortenString} from '@stellar-expert/formatter'
-import {xdrParserUtils, contractPreimageEncoder} from '@stellar-expert/tx-meta-effects-parser'
+import {formatPrice, formatWithAutoPrecision, fromStroops, shortenString} from '@stellar-expert/formatter'
+import {contractIdFromPreimage} from '../contract/contract-id'
+import {retrieveClaimableBalanceId, retrievePathPaymentAmounts} from './parser/tx-result-utils'
 import {AccountAddress} from '../account/account-address'
 import {AccountIdenticon} from '../account/identicon'
 import {SignerKey} from '../account/signer-key'
@@ -21,15 +22,16 @@ import {ClaimableBalanceId} from '../claimable-balance/claimable-balance-id'
  * Detailed operation description within a transaction
  * @param {OperationDescriptor} op
  * @param {boolean} [compact]
+ * @param {boolean} [effectsLoaded] - Whether operation effects have been retrieved (refines the description)
  * @constructor
  */
-export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false}) {
+export const OpDescriptionView = React.memo(function OpDescriptionView({op, compact = false, effectsLoaded = false}) {
     const render = typeMapping[op.operation.type]
     if (!render) {
         console.warn(`No operation text type mapping for operation ${op.operation.type}`)
         return null
     }
-    return React.createElement(render, {op, compact})
+    return React.createElement(render, {op, compact, effectsLoaded})
 })
 
 /**
@@ -100,14 +102,12 @@ function PaymentDescriptionView({op, compact}) {
  * @constructor
  */
 function PathPaymentDescriptionView({op, compact}) {
-    let {source, destination, sendAsset, sendMax, sendAmount, destAsset, destAmount, destMin, path, effects} = op.operation
+    let {source, destination, sendAsset, sendMax, sendAmount, destAsset, destAmount, destMin, path, result} = op.operation
     const isSwap = source === destination
     let src = sendAmount || sendMax
     let dst = destAmount || destMin
     sendAsset = AssetDescriptor.parse(sendAsset)
     destAsset = AssetDescriptor.parse(destAsset)
-    const sendAssetId = sendAsset.toFQAN()
-    const destAssetId = destAsset.toFQAN()
     const pathData = <>
         <i className="icon icon-shuffle color-primary"/>{' '}
         {!compact && path.map((asset, i) => <span key={i + '-' + asset.toString()}>
@@ -122,32 +122,14 @@ function PathPaymentDescriptionView({op, compact}) {
             {!isSwap && <> to <AccountAddress account={destination}/></>}
             <OpSourceAccount op={op}/>
         </>
-    if (sendMax !== undefined) {
-        if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
-            const changeEffect = effects.find(e => e.source === source && e.asset === sendAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
-            if (changeEffect) { //arbitrage successful, otherwise src = dst and no account changes happened
-                const change = BigInt(changeEffect.amount)
-                src = fromStroops(toStroops(destAmount) + (changeEffect.type === 'accountCredited' ? -change : change))
-            }
-        } else {
-            const debitedEffect = effects.find(e => e.source === source && e.type === 'accountDebited' && e.asset === sendAssetId)
-            if (debitedEffect) {
-                src = fromStroops(debitedEffect.amount)
-            }
+    //actual amounts from the execution result (only max/min bounds are known for failed operations)
+    const executed = retrievePathPaymentAmounts(result)
+    if (executed) {
+        if (sendMax !== undefined) {
+            src = fromStroops(executed.sent)
         }
-    }
-    if (destMin !== undefined) {
-        if (isSwap && sendAssetId === destAssetId && effects.length) { //circular trades yield accountCredited/Debited effect
-            const changeEffect = effects.find(e => e.source === source && e.asset === destAssetId && (e.type === 'accountCredited' || e.type === 'accountDebited'))
-            if (changeEffect) { //arbitrage successful, otherwise src = dst and no account changes happened
-                const change = BigInt(changeEffect.amount)
-                dst = fromStroops(toStroops(sendAmount) + (changeEffect.type === 'accountCredited' ? change : -change))
-            }
-        } else {
-            const creditedEffect = effects.find(e => e.source === destination && e.type === 'accountCredited' && e.asset === destAssetId)
-            if (creditedEffect) {
-                dst = fromStroops(creditedEffect.amount)
-            }
+        if (destMin !== undefined) {
+            dst = fromStroops(executed.received)
         }
     }
     return <>
@@ -321,7 +303,7 @@ function SetOptionsDescriptionView({op, compact}) {
  * @param {boolean} compact
  * @constructor
  */
-function ChangeTrustDescriptionView({op, compact}) {
+function ChangeTrustDescriptionView({op, compact, effectsLoaded}) {
     const {line, limit, effects} = op.operation
     const trustAsset = AssetDescriptor.parse(line)
     const established = limit > 0
@@ -337,7 +319,11 @@ function ChangeTrustDescriptionView({op, compact}) {
         </>
     }
     if (established) {
-        const description = effects.some(e => e.type === 'trustlineCreated') ? 'established' : 'updated'
+        //trustline creation can be detected only from effects
+        let description = 'set'
+        if (effectsLoaded) {
+            description = effects.some(e => e.type === 'trustlineCreated') ? 'established' : 'updated'
+        }
         return <>
             <OpSourceAccount op={op}/> {description} trustline to <AssetLink asset={line} issuer={!compact}/>
             {limit !== '922337203685.4775807' && <> with limit <Amount amount={limit} asset={line} issuer={!compact}/></>}
@@ -456,8 +442,8 @@ function BumpSequenceDescriptionView({op, compact}) {
  * @constructor
  */
 function CreateClaimableBalanceDescriptionView({op, compact}) {
-    const {asset, amount, claimants, effects} = op.operation
-    const balanceId = effects.find(e => e.type === 'claimableBalanceCreated')?.balance
+    const {asset, amount, claimants, result} = op.operation
+    const balanceId = retrieveClaimableBalanceId(result)
     if (op.isEphemeral)
         return <>
             <b>Create claimable balance</b> <Amount amount={amount} asset={AssetDescriptor.parse(asset)} issuer={!compact}/>
@@ -786,13 +772,11 @@ function InvokeHostFunctionView({op, compact}) {
     const value = func.value
     switch (func.type) {
         case 'hostFunctionTypeInvokeContract':
-            const contractAddress = xdrParserUtils.xdrParseScAddress(value.contractAddress)
-            const sac = op.operation.sacMap?.[contractAddress]
+            const contractAddress = Address.fromScAddress(value.contractAddress).toString()
             const invocationArgs = {
                 contract: contractAddress,
                 func: value.functionName.toString(),
-                args: value.args,
-                sac
+                args: value.args
             }
             if (op.isEphemeral)
                 return <>
@@ -824,7 +808,7 @@ function InvokeHostFunctionView({op, compact}) {
             const preimage = value.contractIdPreimage
             const executable = value.executable
             const executableType = executable.type
-            const contract = contractPreimageEncoder.contractIdFromPreimage(preimage, Networks[network.toUpperCase()])
+            const contract = contractIdFromPreimage(preimage, Networks[network.toUpperCase()])
             let contractProps
             switch (executableType) {
                 case 'contractExecutableWasm':
@@ -838,12 +822,12 @@ function InvokeHostFunctionView({op, compact}) {
                     const preimageParams = preimage.value
                     switch (preimage.type) {
                         case 'contractIdPreimageFromAddress':
-                            const issuerAddress = xdrParserUtils.xdrParseScAddress(preimageParams.address)
+                            const issuerAddress = Address.fromScAddress(preimageParams.address).toString()
                             const salt = xdr.encodeBytes(preimageParams.salt.toBytes(), 'base64') //salt is a Uint256Bytes wrapper
                             contractProps = <>address <AccountAddress account={issuerAddress}/> with salt {salt}</>
                             break
                         case 'contractIdPreimageFromAsset':
-                            contractProps = <>asset <AssetLink asset={xdrParserUtils.xdrParseAsset(preimageParams)}/></>
+                            contractProps = <>asset <AssetLink asset={AssetDescriptor.parse(Asset.fromOperation(preimageParams))}/></>
                             break
                     }
                     break
@@ -851,7 +835,7 @@ function InvokeHostFunctionView({op, compact}) {
                     //CAP-85 - the code is resolved through the owner contract tag entry instead of a Wasm hash
                     const {executableOwner, tag} = executable.externalRef
                     contractProps = <>
-                        external reference <AccountAddress account={xdrParserUtils.xdrParseScAddress(executableOwner)}/>
+                        external reference <AccountAddress account={Address.fromScAddress(executableOwner).toString()}/>
                         /<code>"{tag.toString()}"</code>
                     </>
                     break

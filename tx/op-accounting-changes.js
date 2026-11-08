@@ -11,8 +11,8 @@ export function OpAccountingChanges({op}) {
     const changes = retrieveOpBalanceChanges(op)
     return <div className="accounting-effects condensed">
         {changes.map((ch, i) => <div key={op.txHash + op.order + i}
-                                     className={ch.type === 'accountDebited' ? 'dimmed' : 'color-success'}>
-            {ch.type === 'accountDebited' ? '-' : '+'}
+                                     className={ch.type.endsWith('Debited') ? 'dimmed' : 'color-success'}>
+            {ch.type.endsWith('Debited') ? '-' : '+'}
             <Amount amount={ch.amount} asset={ch.asset} issuer={false} icon={false} adjust/>
         </div>)}
     </div>

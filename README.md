@@ -1082,7 +1082,9 @@ import {TxOperationsList} from '@stellar-expert/ui-framework'
 
 #### `parseTxDetails(params)`
 
-Parse transaction details from raw XDR.
+Parse transaction details from the raw envelope and result XDR. Operation descriptions, the fee charge and the
+operation filtering use only the envelope and result.
+details.
 
 | Param | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -1090,23 +1092,33 @@ Parse transaction details from raw XDR.
 | `txEnvelope` | `string` | Yes | Base64 tx envelope XDR |
 | `result` | `string` | No | Base64 tx result |
 | `meta` | `string` | No | Base64 tx meta |
+| `effects` | `TxEffects \| null` | No | Effects from the `tx/{id}?effects=true` API response |
 | `context` | `TxFiltersContext` | No | Filter context |
 | `createdAt` | `string` | No | Timestamp |
-| `protocol` | `number` | No | Protocol version |
 
 ```jsx
-import {parseTxDetails} from '@stellar-expert/ui-framework'
+import {parseTxDetails, loadTransaction} from '@stellar-expert/ui-framework'
 
+const txResponse = await loadTransaction(txHash, {effects: true})
 const parsedTx = parseTxDetails({
     network: appSettings.networkPassphrase,
     txEnvelope: txResponse.body,
     result: txResponse.result,
     meta: txResponse.meta,
+    effects: txResponse.effects,
     createdAt: txResponse.ts,
-    context: {},
-    protocol: txResponse.protocol
+    context: {}
 })
 ```
+
+#### `applyTxEffects(parsedTx, effects)`
+
+Attach effects retrieved from the API to a parsed transaction in place. `null` marks effects as unavailable.
+
+#### `useTxEffects(parsedTx, enabled)`
+
+React hook that loads `tx/{hash}?effects=true` once `enabled` is set, then applies the effects to `parsedTx`.
+Returns `{loading, error}`. `TxOperationsList` uses it for the "Show operation details" toggle.
 
 #### `useTxHistory(params)`
 
@@ -1311,8 +1323,10 @@ export default withRouter(function AssetView({location, match}) {
 
 #### `EffectDescription`
 
-Renders a human-readable description of a transaction effect. Covers every effect type emitted by
-`@stellar-expert/tx-meta-effects-parser` v10 except `contractMetrics`, which `SorobanTxMetricsView` renders instead.
+Renders a human-readable description of a transaction effect. Covers every effect type returned by the
+`tx/{id}?effects=true` API endpoint except `contractMetrics`, which `SorobanTxMetricsView` renders instead. The API
+reports contract balance changes as `contractCredited` / `contractDebited` (`accountCredited` / `accountDebited`
+are used for account balances only).
 
 | Prop | Type | Description |
 |------|------|-------------|

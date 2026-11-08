@@ -82,7 +82,7 @@ describe('ScVal rendering', () => {
 
     test('contract addresses decode to a C-strkey', () => {
         const raw = new Uint8Array(32).fill(3)
-        const scv = xdr.ScVal.scvAddress(xdr.ScAddress.scAddressTypeContract(raw))
+        const scv = xdr.ScVal.scvAddress(xdr.ScAddress.scAddressTypeContract(new xdr.ContractId(raw)))
         expect(render(scv)).toContain(StrKey.encodeContract(raw))
     })
 
@@ -109,7 +109,7 @@ describe('ScVal rendering', () => {
         const owner = new Uint8Array(32).fill(0xcd)
         const scv = xdr.ScVal.scvContractInstance(new xdr.ScContractInstance({
             executable: xdr.ContractExecutable.contractExecutableExternalRef(new xdr.ContractExecutableExternalRef({
-                executableOwner: xdr.ScAddress.scAddressTypeContract(owner),
+                executableOwner: xdr.ScAddress.scAddressTypeContract(new xdr.ContractId(owner)),
                 tag: 'pocket'
             })),
             storage: null

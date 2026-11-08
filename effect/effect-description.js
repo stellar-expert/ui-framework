@@ -28,11 +28,13 @@ export function EffectDescription({effect, operation}) {
         case 'accountRemoved':
             return <>Account <AccountAddress account={effect.source}/> removed</>
         case 'accountCredited':
-            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> credited to
-                {effect.source.startsWith('C') ? ' contract' : ' account'} <AccountAddress account={effect.source}/></>
+            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> credited to account <AccountAddress account={effect.source}/></>
         case 'accountDebited':
-            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> debited from
-                {effect.source.startsWith('C') ? ' contract' : ' account'} <AccountAddress account={effect.source}/></>
+            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> debited from account <AccountAddress account={effect.source}/></>
+        case 'contractCredited':
+            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> credited to contract <AccountAddress account={effect.source}/></>
+        case 'contractDebited':
+            return <><Amount asset={effect.asset} amount={effect.amount} adjust/> debited from contract <AccountAddress account={effect.source}/></>
         case 'accountThresholdsUpdated':
             return <>Account <AccountAddress account={effect.source}/> set thresholds to {effect.thresholds.join('/')}</>
         case 'accountHomeDomainUpdated':
@@ -247,7 +249,7 @@ export function EffectDescription({effect, operation}) {
             return <>{effect.depth > 0 &&
                 <i className="icon-level-down text-tiny color-primary" style={{paddingLeft: (effect.depth - 1) + 'em'}}/>}
                 Invoked contract <AccountAddress account={effect.contract}/>{' '}
-                <InvocationInfoView func={effect.function} args={effect.rawArgs} contract={effect.contract} result={effect.result} sac={operation.operation.sacMap?.[effect.contract]}/>
+                <InvocationInfoView func={effect.function} args={effect.rawArgs} contract={effect.contract} result={effect.result}/>
             </>
         case 'contractEvent':
             return <>Contract <AccountAddress account={effect.contract}/> raised event <ScVal value={effect.rawTopics}/>{' '}

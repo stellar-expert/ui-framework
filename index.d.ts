@@ -208,7 +208,7 @@ export function useExplorerPaginatedApi(
 ): ExplorerApiListResponse;
 
 /** Load a single transaction by hash or ID */
-export function loadTransaction(txHashOrId: string): Promise<any>;
+export function loadTransaction(txHashOrId: string, options?: {effects?: boolean}): Promise<any>;
 
 /** Load all transactions for a given ledger sequence */
 export function loadLedgerTransactions(sequence: number): Promise<any[]>;
@@ -1083,13 +1083,25 @@ export interface ParsedTxDetails {
     unmatched: boolean;
     /** Whether the transaction was successful */
     successful?: boolean;
-    /** Transaction-level effects */
+    /** Transaction-level effects (fee charge built from the result until server effects are loaded) */
     effects?: any[];
+    /** Whether operation effects have been retrieved from the server */
+    effectsLoaded?: boolean;
+    /** Whether the server failed to parse effects for this transaction */
+    effectsUnavailable?: boolean;
     /** Ledger application timestamp */
     createdAt?: string;
 }
 
-/** Parse transaction details from raw XDR envelope, result, and meta */
+/** Effects returned by the `tx/{id}?effects=true` API endpoint */
+export interface TxEffects {
+    /** Transaction-level effects */
+    tx: any[];
+    /** Effects of each operation, index-aligned with transaction operations */
+    operations: any[][];
+}
+
+/** Parse transaction details from raw XDR envelope and result */
 export function parseTxDetails(params: {
     /** Network passphrase */
     network: string;
@@ -1097,8 +1109,10 @@ export function parseTxDetails(params: {
     txEnvelope: string;
     /** Base64-encoded transaction result */
     result?: string;
-    /** Base64-encoded transaction meta */
+    /** Base64-encoded transaction meta (its presence marks executed transactions) */
     meta?: string;
+    /** Effects from the `tx/{id}?effects=true` API response */
+    effects?: TxEffects | null;
     /** Transaction ID */
     id?: string;
     /** Filter context */
@@ -1107,9 +1121,13 @@ export function parseTxDetails(params: {
     createdAt?: string;
     /** Skip unrelated operations */
     skipUnrelated?: boolean;
-    /** Stellar protocol version */
-    protocol?: number;
 }): ParsedTxDetails;
+
+/** Attach effects retrieved from the server to the parsed transaction in place */
+export function applyTxEffects(parsedTx: ParsedTxDetails, effects: TxEffects | null): void;
+
+/** Lazily load transaction effects from the server and attach them to the parsed transaction */
+export function useTxEffects(parsedTx: ParsedTxDetails, enabled: boolean): {loading: boolean; error: string | null};
 
 /** React hook for fetching paginated transaction history */
 export function useTxHistory(params: {

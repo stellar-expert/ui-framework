@@ -26,13 +26,24 @@ const cache = new InMemoryClientCache()
 const loader = new ExplorerBatchInfoLoader(batch => {
     return fetchExplorerApi(getCurrentStellarNetwork() + '/asset/meta' + stringifyQuery({asset: batch}))
 }, entry => {
-    cache.set(entry.name, entry)
-    return {
-        key: entry.name,
-        info: entry
+    //SAC addresses resolve to the wrapped classic asset record, which carries the requested address in `contract`
+    const keys = [entry.name]
+    if (entry.contract && entry.contract !== entry.name) {
+        keys.push(entry.contract)
     }
+    for (const key of keys) {
+        cache.set(key, entry)
+    }
+    return {keys, info: entry}
+}, key => {
+    //remember assets and contracts without metadata to avoid repeated lookups
+    cache.set(key, null)
 })
 
+/**
+ * @param {string} asset
+ * @return {AssetMeta|null|undefined} - Cached metadata, null if the asset has no metadata, undefined if not cached
+ */
 function retrieveFromCache(asset) {
     //try to load from the shared cache
     const cachedEntry = cache.get(asset)
@@ -67,7 +78,7 @@ export function useAssetMeta(asset) {
             return
         const cached = retrieveFromCache(asset)
         setAssetInfo(cached)
-        if (cached)
+        if (cached !== undefined)
             return
         let unloaded = false
         //load from the server

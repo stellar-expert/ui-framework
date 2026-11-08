@@ -5,6 +5,7 @@ import {OpAccountingChanges, TxFeeAccountingChanges} from './op-accounting-chang
 import TxFeeEffect from './tx-fee-effect'
 import {OpDescriptionView} from './op-description-view'
 import {OpIcon} from './op-icon'
+import {useTxEffects} from './tx-effects-hooks'
 import './op-description.scss'
 
 /*
@@ -56,6 +57,27 @@ const TxChargedFee = React.memo(function TxChargedFee({parsedTx, compact}) {
 })
 
 /**
+ * Operation effects, or the loading state while they are retrieved from the server
+ * @param {ParsedTxDetails} parsedTx
+ * @param {OperationDescriptor} op
+ * @param {boolean} loading
+ * @param {string|null} error
+ */
+function OpEffectsPlaceholder({parsedTx, op, loading, error}) {
+    if (parsedTx.isEphemeral || parsedTx.effectsLoaded && !parsedTx.effectsUnavailable)
+        return <OpEffectsView operation={op}/>
+    let state
+    if (parsedTx.effectsUnavailable) {
+        state = <div className="dimmed">(effects unavailable)</div>
+    } else if (error && !loading) {
+        state = <div className="dimmed">(failed to load effects: {error})</div>
+    } else { //loading, or the request is about to start
+        state = <div className="loader micro inline"/>
+    }
+    return <div className="op-effects">{state}</div>
+}
+
+/**
  * Renders a list of transaction operations
  * @param {ParsedTxDetails} parsedTx - Transaction descriptor
  * @param {function} [filter] - Filter matcher function
@@ -74,6 +96,8 @@ export const TxOperationsList = React.memo(function TxOperationsList({
     const [opsExpanded, setOpsExpanded] = useState(false)
     const toggleEffects = useCallback(e => setEffectsExpanded(e.expanded), [])
     const toggleAdditionalOps = useCallback(e => setOpsExpanded(e.expanded), [])
+    const effectsState = useTxEffects(parsedTx, effectsExpanded)
+    const effectsLoaded = !!parsedTx.effectsLoaded
     let {operations, successful} = parsedTx
     let opdiff = 0
     if (!opsExpanded) {
@@ -101,13 +125,13 @@ export const TxOperationsList = React.memo(function TxOperationsList({
         <div className="condensed">
             {operations.map((op, i) => <div className="op-container" key={op.txHash + op.order + op.isEphemeral}>
                 <div className="op-layout">
-                    <OpIcon op={op} failed={!successful}/>
+                    <OpIcon op={op} failed={!successful} effectsLoaded={effectsLoaded}/>
                     <div>
-                        <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact}/>
+                        <OpDescriptionView key={parsedTx.txHash + op.order} op={op} compact={compact} effectsLoaded={effectsLoaded}/>
                     </div>
                     {!!compact && !op.isEphemeral && <OpAccountingChanges op={op}/>}
                 </div>
-                {effectsExpanded && <OpEffectsView operation={op}/>}
+                {effectsExpanded && <OpEffectsPlaceholder parsedTx={parsedTx} op={op} {...effectsState}/>}
             </div>)}
             {showFees && <TxChargedFee {...{parsedTx, compact}}/>}
         </div>

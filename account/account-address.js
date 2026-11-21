@@ -7,6 +7,7 @@ import {useDirectory} from '../directory/directory-hooks'
 import {formatExplorerLink} from '../ledger/ledger-entry-href-formatter'
 import {useStellarNetwork} from '../state/stellar-network-hooks'
 import {decodeKeyType} from '../stellar/key-type'
+import {useSimilarAddressWarning} from './similar-addresses'
 import './account-address.scss'
 
 
@@ -73,6 +74,7 @@ export const AccountAddress = React.memo(function AccountAddress({
                                                                  }) {
     useStellarNetwork()
     const keyType = decodeKeyType(account)
+    const similar = useSimilarAddressWarning(keyType && isPublicKeyOrContract(keyType.type) ? keyType.address : undefined)
     if (!keyType)
         return null //failed to decode address type
     let {type, address, muxedId, publicKey, payload} = keyType
@@ -81,13 +83,16 @@ export const AccountAddress = React.memo(function AccountAddress({
 
     let ed25519Address = address
     if (chars && chars !== 'all') {
-        address = shortenString(account, chars)
+        //lookalike addresses are indistinguishable when shortened as usual - show more characters to reveal the difference
+        address = shortenString(account, similar ? Math.max(chars * 2, 16) : chars)
     }
 
     const children = <>
         {prefix}
         {icon !== false && isPublicKeyOrContract(type) && <AccountIdenticon key="identicon" address={ed25519Address}/>}
         <AccountDisplayName type={type} address={ed25519Address} name={name}/>
+        {similar && <i className="icon icon-warning color-warning"
+                       title="Another address on this page starts and ends with the same characters. This may be an address poisoning attempt. Check the full address before sending funds to it."/>}
         <span className="account-key">{address}</span>
         {muxedId !== undefined && <InfoTooltip icon="icon-plus">
             Subaccount of a custodial account<br/>

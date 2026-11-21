@@ -792,6 +792,25 @@ import {AccountAddress} from '@stellar-expert/ui-framework'
 <AccountAddress account={address} className="plain" link={false} chars="all"/>
 ```
 
+#### `SimilarAddressesScope`
+
+Address poisoning protection. Every `AccountAddress` rendered inside the scope is compared with the other addresses
+in the same scope. Addresses that differ but start and end with the same characters are marked with a warning icon
+and displayed with twice as many visible characters, so that they can be told apart.
+Outside the scope `AccountAddress` behaves as usual.
+
+```jsx
+import {SimilarAddressesScope, TxOperationsList} from '@stellar-expert/ui-framework'
+
+<SimilarAddressesScope>
+    {txList.map(tx => <TxOperationsList key={tx.txHash} parsedTx={tx}/>)}
+</SimilarAddressesScope>
+```
+
+#### `findSimilarAddresses(addresses)`
+
+Returns a `Set` of addresses from the list that can be confused with another address from the same list.
+
 #### `AccountIdenticon`
 
 Renders an account-specific identicon.

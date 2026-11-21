@@ -66,6 +66,7 @@ export * from './ledger/ledger-info-parser'
 //account-related components
 export * from './account/identicon'
 export * from './account/account-address'
+export * from './account/similar-addresses'
 export * from './account/signer-key'
 export * from './account/available-balance'
 //asset-related components

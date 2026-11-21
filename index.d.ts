@@ -858,6 +858,27 @@ export interface AccountAddressProps {
 
 export const AccountAddress: React.FC<AccountAddressProps>;
 
+/** Leading and trailing characters of an address that an attacker has to match in order to imitate it */
+export function getAddressSimilarityKey(address: string): string;
+
+/** Find addresses that share the same leading and trailing characters but are not the same (address poisoning) */
+export function findSimilarAddresses(addresses: Iterable<string>): Set<string>;
+
+/** Keeps track of the addresses displayed within a scope and notifies listeners when a lookalike address shows up or goes away */
+export class SimilarAddressesTracker {
+    /** Register a displayed address; returns a callback that removes it */
+    track(address: string, listener: () => void): () => void;
+
+    /** Check whether some other tracked address looks like the given one */
+    hasSimilar(address: string): boolean;
+}
+
+/** AccountAddress components rendered inside of this container warn about lookalike addresses */
+export const SimilarAddressesScope: React.FC<{children?: React.ReactNode}>;
+
+/** Check whether a lookalike address is displayed within the enclosing SimilarAddressesScope */
+export function useSimilarAddressWarning(address?: string): boolean;
+
 export interface SignerKeyProps {
     /** Signer object (raw XDR or parsed) */
     signer: any;
